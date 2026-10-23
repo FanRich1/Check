@@ -265,6 +265,36 @@ def test_dangling_modification_not_silent_no_charge(tmp_path):
     assert any(i.code == "UNASSIGNED_MODIFICATION" for i in result.files[0].issues)
 
 
+@pytest.mark.parametrize(
+    "note",
+    [
+        "PLEASE ENSURE ALL REQUESTS TO CLEAR AT THE PORT OF DISCHARGE ARE RECEIVED.",
+        "Please clear your cargo with Customs against the following B/L",
+    ],
+)
+def test_customs_instruction_does_not_require_an_old_bill(tmp_path, note):
+    model = AuthoredModel()
+    path = eml(tmp_path / "customs.eml", note=note)
+    result = run([path], tmp_path, client=model)
+    assert result.exit_code == 0 and result.counts["CREATE"] == 1
+    assert model.calls == ["ExtractionDraft"]
+    intent = load_json(tmp_path / "run/intents.json")
+    assert intent["files"][0]["status"] == "not_needed"
+    assert intent["files"][0]["issue_codes"] == []
+
+
+def test_actual_update_still_requires_an_old_bill_after_customs_instruction(tmp_path):
+    path = eml(
+        tmp_path / "customs-update.eml",
+        note="Please clear your cargo with Customs; Update amount from 40 to 50",
+    )
+    result = run([path], tmp_path)
+    assert result.counts["UPDATE"] == 0 and result.counts["PENDING_REVIEW"] == 1
+    assert load_json(tmp_path / "run/intents.json")["files"][0]["issue_codes"] == [
+        "UPDATE_WITHOUT_OLD_SNAPSHOT"
+    ]
+
+
 def test_attachment_registration_and_traceability(tmp_path):
     attachment = documents(tmp_path / "docs")["xlsx"]
     path = eml(tmp_path / "message.eml", attachment=attachment)

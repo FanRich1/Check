@@ -24,10 +24,14 @@ dependencies = [
     "olefile>=0.47,<1",
     "python-docx>=1.2,<2",
     "pywin32>=310 ; sys_platform == 'win32'",
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.34,<1",
+    "python-multipart>=0.0.20,<1",
 ]
 
 [project.scripts]
 shipping-billing = "shipping_billing.cli:main"
+shipping-billing-web = "shipping_billing.web.server:main"
 
 [project.optional-dependencies]
 local-ocr = [
@@ -49,6 +53,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "shipping_billing.domain" = ["data/*.json"]
+"shipping_billing.web" = ["static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests/unit", "tests/integration"]

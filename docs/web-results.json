@@ -1,0 +1,118 @@
+{
+  "passed": true,
+  "scope": "local_browser_workspace_using_existing_pipeline",
+  "backend_rules_changed": true,
+  "full_tests": {
+    "tests": 474,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "non_editable_web_tests": {
+    "tests": 20,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser_replay_checks": {
+    "passed": true,
+    "browser": "Microsoft Edge",
+    "live": false,
+    "checks": [
+      "disconnected_upload_has_actionable_message_preserves_files_and_does_not_retry",
+      "help_and_safe_filename_rendering",
+      "archived_workbook_filter_evidence_review_download_and_history",
+      "mobile_390px_no_global_horizontal_overflow"
+    ],
+    "javascript_errors": []
+  },
+  "actual_online_synthetic_jobs": [
+    {
+      "job_id": "4f3ed3cf3cfc40a6b0d9aa6601e346c8",
+      "mode": "live",
+      "status": "completed",
+      "counts": {
+        "CREATE": 0,
+        "UPDATE": 0,
+        "NO_CHANGE": 1,
+        "PENDING_REVIEW": 0,
+        "input_documents": 1,
+        "sources": 1,
+        "fee_lines": 1,
+        "records": 1,
+        "ignored_inputs": 0
+      },
+      "model_invocations": 1,
+      "base_job": "cbf072bc979d47f9be5a98038f11a14e"
+    },
+    {
+      "job_id": "cbf072bc979d47f9be5a98038f11a14e",
+      "mode": "live",
+      "status": "completed",
+      "counts": {
+        "CREATE": 1,
+        "UPDATE": 0,
+        "NO_CHANGE": 0,
+        "PENDING_REVIEW": 0,
+        "input_documents": 1,
+        "sources": 1,
+        "fee_lines": 1,
+        "records": 1,
+        "ignored_inputs": 0
+      },
+      "model_invocations": 1,
+      "base_job": null
+    }
+  ],
+  "retained_online_failures": [
+    {
+      "job_id": "c5191ade11af4533b1329e9749fb7b86",
+      "mode": "live",
+      "status": "error",
+      "counts": {
+        "CREATE": 0,
+        "UPDATE": 0,
+        "NO_CHANGE": 0,
+        "PENDING_REVIEW": 0,
+        "input_documents": 1,
+        "sources": 1,
+        "fee_lines": 0,
+        "records": 0,
+        "ignored_inputs": 0
+      },
+      "model_invocations": 1,
+      "base_job": null,
+      "issue_codes": [
+        "MODEL_CALL_FAILED"
+      ]
+    }
+  ],
+  "credential_matches": 0,
+  "packaged_static_assets": [
+    "index.html",
+    "app.css",
+    "app.js",
+    "mark.svg"
+  ],
+  "ui_url_after_start": "http://127.0.0.1:8765",
+  "historical_stage8_release_unchanged": true,
+  "backend_rule_change_scope": "Exclude explicit customs clearance phrases from billing edit hints; retain financial and OCR review requirements.",
+  "non_editable_web_tests_scope": "Historical verification of the initial frontend package, before the customs-clearance fix.",
+  "customs_clearance_regression": {
+    "fee_count": 1,
+    "amount": "245.0",
+    "currency": "USD",
+    "operation": "PENDING_REVIEW",
+    "remaining_issue_codes": [
+      "OCR_STRUCTURED_REQUIRES_CHECK",
+      "OCR_NO_ORIGINAL_TEXT",
+      "UNKNOWN_PARTY_ROLE",
+      "INVALID_MERGED_CORE"
+    ],
+    "network_calls": 0,
+    "original_job_preserved": true,
+    "added_tests": 15
+  },
+  "current_web_api_tests": 22,
+  "current_delivery_verification": "stage9-results.json"
+}

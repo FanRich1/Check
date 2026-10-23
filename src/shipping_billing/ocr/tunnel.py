@@ -17,6 +17,31 @@ from shipping_billing.ocr.client import OCRClient, http_url
 from shipping_billing.ocr.file_bridge import TemporaryFileServer
 
 
+def verify_download(url, sha256, *, transport=None):
+    """Retry only safe GET checks before an OCR request exists; never retry mismatched bytes."""
+    with httpx.Client(timeout=httpx.Timeout(10, connect=5), transport=transport) as client:
+        for attempt in range(3):
+            try:
+                response = client.get(url)
+            except httpx.RequestError as exc:
+                if attempt == 2:
+                    raise BillingError(
+                        "TUNNEL_DOWNLOAD_FAILED", "Public file verification failed; OCR was not submitted."
+                    ) from exc
+            else:
+                if response.status_code == 200:
+                    if hashlib.sha256(response.content).hexdigest() != sha256:
+                        raise BillingError(
+                            "TUNNEL_CONTENT_MISMATCH", "Public download did not match the selected document."
+                        )
+                    return
+                if response.status_code not in (404, 502, 503, 504) or attempt == 2:
+                    raise BillingError(
+                        "TUNNEL_DOWNLOAD_FAILED", "Public file was unavailable; OCR was not submitted."
+                    )
+            time.sleep(0.5 * (attempt + 1))
+
+
 @contextmanager
 def temporary_url(content, content_type, executable: Path, storage: Path):
     if not executable.is_file():
@@ -64,20 +89,7 @@ def temporary_url(content, content_type, executable: Path, storage: Path):
                         "Temporary file tunnel did not become ready; OCR was not submitted.",
                     )
                 url = hostname + server.path
-                try:
-                    with httpx.Client(timeout=30) as client:
-                        response = client.get(url)
-                    if (
-                        response.status_code != 200
-                        or hashlib.sha256(response.content).hexdigest() != server.sha256
-                    ):
-                        raise BillingError(
-                            "TUNNEL_CONTENT_MISMATCH", "Public download did not match the selected document."
-                        )
-                except httpx.RequestError as exc:
-                    raise BillingError(
-                        "TUNNEL_DOWNLOAD_FAILED", "Public file verification failed; OCR was not submitted."
-                    ) from exc
+                verify_download(url, server.sha256)
                 yield url, server
     finally:
         if process is not None and process.poll() is None:
@@ -134,20 +146,7 @@ class PageOCR:
             return url, server
         self._server.replace_document(content, content_type)
         url = self._base_url + self._server.path
-        try:
-            with httpx.Client(timeout=30) as client:
-                response = client.get(url)
-            if (
-                response.status_code != 200
-                or hashlib.sha256(response.content).hexdigest() != self._server.sha256
-            ):
-                raise BillingError(
-                    "TUNNEL_CONTENT_MISMATCH", "Public download did not match the selected document."
-                )
-        except httpx.RequestError as exc:
-            raise BillingError(
-                "TUNNEL_DOWNLOAD_FAILED", "Public file verification failed; OCR was not submitted."
-            ) from exc
+        verify_download(url, self._server.sha256)
         return url, self._server
 
     def __call__(self, content, source_id, page, content_type):

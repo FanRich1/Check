@@ -23,9 +23,16 @@ HINT = re.compile(
     r"\b(change|update|replace|correct|clear|remove|amend|revised)\b|修改|更改|调整|更新|清空|置空|改为|修正",
     re.I,
 )
+CUSTOMS_CLEAR = re.compile(
+    r"\bclear\s+(?:(?:at|through)\s+(?:the\s+)?port(?:\s+of\s+(?:discharge|loading))?"
+    r"|(?:the\s+)?customs|(?:(?:your|the)\s+)?cargo\s+(?:with|through)\s+customs)\b",
+    re.I,
+)
 
 
 def active_hint(text):
+    # Clearing cargo/customs is a shipping instruction, not permission to empty a billing field.
+    text = CUSTOMS_CLEAR.sub("customs clearance", text)
     # Forwarded unchanged invoices are not requests to amend the ledger.
     clauses = re.split(r"[。;；\n]", text)
     return any(

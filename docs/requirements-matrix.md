@@ -40,6 +40,8 @@
 
 ## 额外明确的实现约定
 
+阶段 9 的 R31/R32 交付证据：`docs/design-considerations.md` 提供 11 点具体业务技术思考，`docs/architecture.md` 和 `docs/delivery-guide.md` 说明架构、安装、操作、模型/OCR 边界及故障处理；`scripts/package_release.py` 生成带逐文件哈希的公开 ZIP，`scripts/install_windows.py` 和 `scripts/verify_delivery.py` 已在独立解压目录的非 editable 环境运行。当前 474/474 测试和 60 个公开原始文档回放通过；真实材料费用保留与 OCR 完整在线成功分开报告，外部失败仍保留。详细结果见 [阶段 9 记录](stage9-report.md)。
+
 阶段 8 的 R30 执行证据：`harness/dataset.py`、`runner.py`、`scoring.py` 及 `benchmark`/`freeze-evaluation`。最终 30/15/15 原始文档集、三次独立真实模型验证、冻结后留出验收、故障注入和逐字段/快照差异已执行；初版留出失败后消耗为回归并更换版式家族。完整测试 428/428，新安装环境公开回放共 60 案通过。实际分母、失败历史及固定 OCR/助手标注边界见 [阶段 8 报告](stage8-report.md)，该结果不代表 R06 的 OCR 质量问题已修复。
 
 阶段 7 实现证据：`pipeline/engine.py` 与 `run` CLI 串联 R02–R08、R10–R29、R33 的已有能力；`pipeline/intents.py` 自动提取修改请求并经过 R20 的证据授权；`pipeline/inputs.py`、PipelineManifest 及逐来源状态支持 R24/R29 的无遗漏登记和部分失败；records.json 保持 R28/R33 核心结构。17/17 流程用例、9 种格式、19/19 来源与 12/12 已接受记录证据通过；合成原始邮件的真实 LangChain 新增/更新/重传和真实 7 条费用回放见 [阶段 7 验收](stage7-report.md)。R30 的完整数据集与独立模型稳定性评测继续在阶段 8 完成。

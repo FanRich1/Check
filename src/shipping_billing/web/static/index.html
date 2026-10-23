@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="本地航运账单工作台：上传材料、提取费用、核对变更与原文证据。">
+  <title>航运账单 · 本地工作台</title>
+  <link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="航运账单首页"><img src="/assets/mark.svg" alt="" width="38" height="38"><span>航运账单<small>BILLING WORKSPACE</small></span></a>
+    <div class="nav-label">工作空间</div>
+    <nav aria-label="主导航">
+      <button class="nav-item active" id="nav-new"><span class="nav-icon">▦</span>处理工作台<span class="nav-arrow">↗</span></button>
+      <button class="nav-item" id="nav-history"><span class="nav-icon">◷</span>历史任务<span class="nav-count" id="history-count">0</span></button>
+      <button class="nav-item" id="nav-help"><span class="nav-icon">ⓘ</span>使用说明</button>
+    </nav>
+    <div class="sidebar-note"><div class="mini-label">EVERY DETAIL MATTERS</div><p>从材料中提取，<br>在证据中核对。</p><div class="sidebar-line"></div><small>每一条费用，都能回到它的来源。</small></div>
+    <footer class="sidebar-footer"><span class="local-dot"></span><div>本地工作台<small>工作记录保存在本机</small></div><span class="version">v1.0</span></footer>
+  </aside>
+  <div class="main-shell">
+    <header class="topbar"><div class="breadcrumb">工作空间<span>/</span><strong id="breadcrumb-title">处理工作台</strong></div><div class="topbar-right"><span class="system-status" id="model-status"><i></i>正在读取配置</span><span class="avatar" title="本机使用">本</span></div></header>
+    <main>
+      <section id="new-view">
+        <div class="page-heading"><div><div class="eyebrow"><span></span> DOCUMENT WORKSPACE</div><h1>把繁杂材料，整理成清晰账单<span>。</span></h1><p>上传邮件与附件，提取费用、核对旧账，让每一步都有据可查。</p></div><button type="button" id="demo-button" class="button secondary"><span>▷</span> 先体验示例</button></div>
+        <div class="notice" id="configuration-notice" hidden></div>
+        <form id="upload-form" class="workspace-grid">
+          <section class="card upload-card"><div class="card-heading"><div><span class="step-number">01</span><h2>添加业务材料</h2></div><span class="muted-label">支持一次上传多个文件</span></div>
+            <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-label="点击选择或拖入业务材料">
+              <div class="document-art" aria-hidden="true"><div class="paper back-paper"></div><div class="paper front-paper"><div class="paper-lines"></div><span>↥</span></div><span class="art-badge">＋</span></div>
+              <h3>将文件拖到这里</h3><p>或者 <span class="choose-text">点击选择文件</span></p><span class="format-line">EML · PDF · PNG / JPG / TIFF · Excel · Word</span>
+            </div>
+            <input id="document-input" type="file" multiple accept=".eml,.pdf,.png,.jpg,.jpeg,.tif,.tiff,.xls,.xlsx,.doc,.docx" hidden>
+            <div class="upload-limits"><span>单文件 ≤ 20 MB · 合计 ≤ 60 MB</span><span>最多 20 个文件</span></div>
+            <div id="selected-files" class="selected-files" aria-live="polite"></div>
+            <div class="material-tip"><span>↳</span><p><strong>邮件附件也会一并读取</strong><br>可以直接上传 EML 邮件，保留正文与附件的关联。</p></div>
+          </section>
+          <section class="card settings-card"><div class="card-heading"><div><span class="step-number">02</span><h2>设置处理方式</h2></div></div>
+            <label for="entity" class="field-label">记账主体 <span class="required">*</span></label><input id="entity" name="entity" class="text-input" placeholder="填写你方公司的完整名称" required maxlength="300" autocomplete="organization"><p class="field-help">按这家公司的视角判断应收（AR）或应付（AP）。</p>
+            <div class="field-label spaced">旧账单 <span class="optional">可选</span></div><label class="file-picker" for="old-state"><span class="file-picker-icon">⇅</span><span id="old-state-name">选择旧账单或账本 JSON</span><span>＋</span></label><input id="old-state" type="file" accept=".json,application/json" hidden><button type="button" class="text-button clear-option" id="clear-old" hidden>移除旧账单</button><p class="field-help">提供旧账单后，可以识别新增、修改和重复费用。</p>
+            <div class="base-job-banner" id="base-job-banner" hidden><div><strong>已接续上次任务账本</strong><small id="base-job-title"></small></div><button type="button" class="text-button" id="clear-base">取消</button></div>
+            <div class="ocr-option"><label><input id="temporary-ocr" type="checkbox"><span>为 PDF / 图片启用指定 OCR</span></label><p>允许生成临时识别链接；处理后撤销。邮件中的图片也适用。</p><span id="ocr-status" class="tiny-status">正在检查识别工具</span></div>
+            <div class="ocr-option"><label><input id="local-ocr" type="checkbox"><span>为图片 / 扫描件补充本地文字识别</span></label><p>补充可核对的文字和位置；仍会调用已启用的指定 OCR，识别结果需要人工核对。</p><span id="local-ocr-status" class="tiny-status">正在检查本地识别组件</span></div>
+            <details class="advanced"><summary>更多选项<span>＋</span></summary><label class="field-label" for="context-file">业务策略 JSON <span class="optional">可选</span></label><input id="context-file" type="file" accept=".json"><p class="field-help">用于公司别名、贷项关联、舍入及合计等明确业务规则。</p><label class="field-label" for="ocr-map">已有 OCR 页面链接映射 <span class="optional">可选</span></label><input id="ocr-map" type="file" accept=".json"><p class="field-help">已有映射时可替代临时链接。未配置时，识别失败的来源会保留原因。</p></details>
+            <div id="form-error" class="form-error" role="alert" hidden></div><button id="submit-button" type="submit" class="button primary start-button">开始处理材料<span>→</span></button><div class="submit-note">结果将保存为独立任务，原始文件保持不变。</div>
+          </section>
+        </form>
+        <div class="workflow-strip"><div><span>01</span><p><strong>读取与提取</strong><small>邮件、附件和费用明细</small></p></div><b>→</b><div><span>02</span><p><strong>匹配与核对</strong><small>币种、记账方向和明确变更</small></p></div><b>→</b><div><span>03</span><p><strong>查看与导出</strong><small>账单结果及原文依据</small></p></div></div>
+        <div class="recent-section"><div class="section-heading"><h2>最近处理</h2><button type="button" id="show-history" class="text-button">查看全部 <span>↗</span></button></div><div id="recent-jobs" class="recent-jobs"></div></div>
+      </section>
+      <section id="history-view" hidden><div class="page-heading"><div><div class="eyebrow"><span></span> TASK HISTORY</div><h1>每一次处理，都有记录<span>。</span></h1><p>重新打开处理结果，核对来源，或接续已有账本。</p></div><button class="button primary" id="history-new">＋ 新建处理</button></div><div id="history-jobs" class="history-jobs"></div></section>
+      <section id="result-view" hidden>
+        <div class="result-heading"><div><button id="back-workspace" class="text-button">← 返回工作台</button><h1 id="result-title">正在读取任务</h1><p id="result-meta"></p></div><div class="result-actions"><button class="button secondary" id="continue-button" hidden>接续账本处理下一批 ↗</button><button class="button secondary" id="result-refresh">刷新</button></div></div>
+        <div id="progress-card" class="card progress-card" hidden><div class="progress-heading"><div class="spinner"></div><div><h2 id="progress-title">正在处理</h2><p>请保留此页面。你也可以稍后从历史任务重新打开。</p></div></div><ol id="progress-steps"><li data-stage="parse">读取材料</li><li data-stage="extract">提取费用</li><li data-stage="intents">识别修改</li><li data-stage="reconcile">核对账单</li><li data-stage="write">保存结果</li></ol></div>
+        <div id="result-banner" class="notice" hidden></div>
+        <div id="result-content" hidden><div id="metrics" class="metrics"></div>
+          <section class="card result-card"><div class="result-card-top"><div><h2>费用明细</h2><span id="result-count" class="muted-label"></span></div><div class="export-actions"><select id="download-kind" aria-label="选择下载内容"><option value="records.json">账单结果 JSON</option><option value="state.json">可续用账本 JSON</option><option value="audit.json">字段审计 JSON</option><option value="manifest.json">来源清单 JSON</option><option value="reviews.json">核对备注 JSON</option></select><button class="button primary compact" id="download-button">↓ 下载</button></div></div>
+            <div class="table-tools"><div id="operation-filters" class="tabs" aria-label="按操作筛选"><button data-operation="all" class="selected">全部</button><button data-operation="CREATE">新增</button><button data-operation="UPDATE">修改</button><button data-operation="NO_CHANGE">无变化</button><button data-operation="PENDING_REVIEW">待复核</button></div><input id="record-search" class="search-input" placeholder="搜索费用、单据或交易方" aria-label="搜索费用明细"></div>
+            <div class="table-scroll"><table class="records-table"><thead><tr><th>费用项目 / 单据</th><th>交易双方</th><th class="number-cell">金额</th><th>记账方向</th><th>处理结果</th><th>核对标记</th><th></th></tr></thead><tbody id="record-rows"></tbody></table></div><div id="records-empty" class="empty-state" hidden>没有符合条件的费用。</div><div class="table-footer"><span>点击「查看依据」核对原文、变更及复核原因。</span><span>金额按币种分别展示</span></div>
+          </section>
+          <section class="card source-card"><div class="card-heading"><div><span class="step-number">↳</span><h2>来源文件与处理情况</h2></div><span id="source-count" class="muted-label"></span></div><div id="source-files"></div></section>
+        </div>
+      </section>
+      <footer class="main-footer"><span>航运账单工作台</span><span>保留原文 · 明确变更 · 有据可查</span></footer>
+    </main>
+  </div>
+  <dialog id="detail-dialog" class="detail-dialog"><div class="dialog-header"><div><div class="eyebrow">BILLING DETAILS</div><h2 id="detail-title"></h2></div><button id="close-detail" class="close-button" aria-label="关闭费用详情">×</button></div><div id="detail-body" class="dialog-body"></div><form id="review-form" class="review-form"><h3>核对与跟进</h3><div class="review-fields"><label>核对标记<select id="review-status"><option value="unreviewed">待核对</option><option value="checked">已核对</option><option value="needs_followup">需补材料</option></select></label><label>备注<textarea id="review-note" rows="2" maxlength="2000" placeholder="记录需要补充的材料或核对结论"></textarea></label></div><div class="review-bottom"><small>核对标记用于跟进；待复核账单不会因此自动入账。</small><button type="submit" class="button primary compact">保存核对记录</button></div></form></dialog>
+  <dialog id="help-dialog" class="help-dialog"><div class="dialog-header"><h2>从这里开始使用</h2><button id="close-help" class="close-button" aria-label="关闭使用说明">×</button></div><div class="dialog-body"><div class="help-step"><b>1</b><div><h3>上传你的业务材料</h3><p>邮件上传 EML，附件会自动展开。也可以分别上传 PDF、图片、Excel 或 Word。旧版 DOC 需要本机安装 Microsoft Word。</p></div></div><div class="help-step"><b>2</b><div><h3>填写记账公司，按需选择旧账单</h3><p>记账主体用于判断应收、应付。第一次可以不传旧账单；以后点击「接续账本处理下一批」保留已处理费用及去重信息。</p></div></div><div class="help-step"><b>3</b><div><h3>查看明细，核对需要确认的内容</h3><p>新增、修改、无变化与待复核会分别标出。点击「查看依据」查看原文；缺少币种、匹配不唯一及 OCR 问题不会自动猜测为成功。</p></div></div><div class="help-note"><h3>关于 PDF、图片与模型</h3><p>模型配置从项目的 .env 读取，密钥不会发送给浏览器。PDF、图片及邮件图片使用指定 OCR，需要勾选临时链接或上传已有链接映射；识别失败会展示具体原因。材料中的文字会按配置发送给模型服务，启用 OCR 时相应页面会发送给指定识别服务。</p><p>处理记录保存在项目 outputs/web，上传材料保存在 data/local/web。这些本地资料不会随 Git 提交。</p></div></div></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

@@ -1,0 +1,592 @@
+{
+  "version": "stage9-v1",
+  "scope": "engineering_delivery_with_explicit_external_ocr_limitations",
+  "engineering_delivery_checks_passed": true,
+  "real_batch_fully_online_successful": false,
+  "application_sha256": "4a7d7fac16d5bcc570e86261125dbaf637c883272f535b96e2da62c7a4660c6a",
+  "source_tests": {
+    "tests": 474,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "zip_non_editable_tests": {
+    "tests": 474,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "packaged_static_assets": [
+    "index.html",
+    "app.css",
+    "app.js",
+    "mark.svg"
+  ],
+  "public_regression": {
+    "development": {
+      "passed": true,
+      "cases": 30,
+      "behavior_passed": 30,
+      "metrics": {
+        "precision": {
+          "numerator": 33,
+          "denominator": 33,
+          "value": 1.0
+        },
+        "recall": {
+          "numerator": 33,
+          "denominator": 34,
+          "value": 0.9705882352941176
+        },
+        "key_field_accuracy": {
+          "numerator": 197,
+          "denominator": 203,
+          "value": 0.9704433497536946
+        },
+        "unknown_fields": {
+          "numerator": 1,
+          "denominator": 1,
+          "value": 1.0
+        },
+        "operation_accuracy": {
+          "numerator": 33,
+          "denominator": 34,
+          "value": 0.9705882352941176
+        },
+        "automatic_completion": {
+          "numerator": 21,
+          "denominator": 21,
+          "value": 1.0
+        },
+        "accepted_core_accuracy": {
+          "numerator": 21,
+          "denominator": 21,
+          "value": 1.0
+        },
+        "risk_interception": {
+          "numerator": 11,
+          "denominator": 11,
+          "value": 1.0
+        },
+        "evidence_locatable": {
+          "numerator": 197,
+          "denominator": 197,
+          "value": 1.0
+        },
+        "file_status": {
+          "numerator": 30,
+          "denominator": 30,
+          "value": 1.0
+        },
+        "idempotence": {
+          "numerator": 29,
+          "denominator": 29,
+          "value": 1.0
+        },
+        "posting_accuracy": {
+          "numerator": 32,
+          "denominator": 33,
+          "value": 0.9696969696969697
+        }
+      },
+      "live_model_calls": 0,
+      "code_sha256": "4a7d7fac16d5bcc570e86261125dbaf637c883272f535b96e2da62c7a4660c6a"
+    },
+    "validation": {
+      "passed": true,
+      "cases": 15,
+      "behavior_passed": 15,
+      "metrics": {
+        "precision": {
+          "numerator": 26,
+          "denominator": 26,
+          "value": 1.0
+        },
+        "recall": {
+          "numerator": 26,
+          "denominator": 27,
+          "value": 0.9629629629629629
+        },
+        "key_field_accuracy": {
+          "numerator": 154,
+          "denominator": 160,
+          "value": 0.9625
+        },
+        "unknown_fields": {
+          "numerator": 2,
+          "denominator": 2,
+          "value": 1.0
+        },
+        "operation_accuracy": {
+          "numerator": 26,
+          "denominator": 27,
+          "value": 0.9629629629629629
+        },
+        "automatic_completion": {
+          "numerator": 20,
+          "denominator": 20,
+          "value": 1.0
+        },
+        "accepted_core_accuracy": {
+          "numerator": 20,
+          "denominator": 20,
+          "value": 1.0
+        },
+        "risk_interception": {
+          "numerator": 5,
+          "denominator": 5,
+          "value": 1.0
+        },
+        "evidence_locatable": {
+          "numerator": 154,
+          "denominator": 154,
+          "value": 1.0
+        },
+        "file_status": {
+          "numerator": 15,
+          "denominator": 15,
+          "value": 1.0
+        },
+        "idempotence": {
+          "numerator": 15,
+          "denominator": 15,
+          "value": 1.0
+        },
+        "posting_accuracy": {
+          "numerator": 26,
+          "denominator": 27,
+          "value": 0.9629629629629629
+        }
+      },
+      "live_model_calls": 0,
+      "code_sha256": "4a7d7fac16d5bcc570e86261125dbaf637c883272f535b96e2da62c7a4660c6a"
+    },
+    "holdout": {
+      "passed": true,
+      "cases": 15,
+      "behavior_passed": 15,
+      "metrics": {
+        "precision": {
+          "numerator": 24,
+          "denominator": 24,
+          "value": 1.0
+        },
+        "recall": {
+          "numerator": 24,
+          "denominator": 24,
+          "value": 1.0
+        },
+        "key_field_accuracy": {
+          "numerator": 143,
+          "denominator": 143,
+          "value": 1.0
+        },
+        "unknown_fields": {
+          "numerator": 1,
+          "denominator": 1,
+          "value": 1.0
+        },
+        "operation_accuracy": {
+          "numerator": 24,
+          "denominator": 24,
+          "value": 1.0
+        },
+        "automatic_completion": {
+          "numerator": 17,
+          "denominator": 17,
+          "value": 1.0
+        },
+        "accepted_core_accuracy": {
+          "numerator": 17,
+          "denominator": 17,
+          "value": 1.0
+        },
+        "risk_interception": {
+          "numerator": 5,
+          "denominator": 5,
+          "value": 1.0
+        },
+        "evidence_locatable": {
+          "numerator": 143,
+          "denominator": 143,
+          "value": 1.0
+        },
+        "file_status": {
+          "numerator": 15,
+          "denominator": 15,
+          "value": 1.0
+        },
+        "idempotence": {
+          "numerator": 15,
+          "denominator": 15,
+          "value": 1.0
+        },
+        "posting_accuracy": {
+          "numerator": 24,
+          "denominator": 24,
+          "value": 1.0
+        }
+      },
+      "live_model_calls": 0,
+      "code_sha256": "4a7d7fac16d5bcc570e86261125dbaf637c883272f535b96e2da62c7a4660c6a"
+    }
+  },
+  "offline_demo": {
+    "scope": "synthetic_raw_eml_end_to_end",
+    "all_passed": true,
+    "cases": [
+      {
+        "case": "create",
+        "passed": true,
+        "expected_operation": "CREATE",
+        "counts": {
+          "CREATE": 1,
+          "UPDATE": 0,
+          "NO_CHANGE": 0,
+          "PENDING_REVIEW": 0,
+          "input_documents": 1,
+          "sources": 1,
+          "fee_lines": 1,
+          "records": 1,
+          "ignored_inputs": 0
+        },
+        "model_invocations": 0,
+        "mode": "replay",
+        "ocr_network_calls": 0
+      },
+      {
+        "case": "update",
+        "passed": true,
+        "expected_operation": "UPDATE",
+        "counts": {
+          "CREATE": 0,
+          "UPDATE": 1,
+          "NO_CHANGE": 0,
+          "PENDING_REVIEW": 0,
+          "input_documents": 1,
+          "sources": 1,
+          "fee_lines": 1,
+          "records": 1,
+          "ignored_inputs": 0
+        },
+        "model_invocations": 0,
+        "mode": "replay",
+        "ocr_network_calls": 0
+      },
+      {
+        "case": "repeat",
+        "passed": true,
+        "expected_operation": "NO_CHANGE",
+        "counts": {
+          "CREATE": 0,
+          "UPDATE": 0,
+          "NO_CHANGE": 1,
+          "PENDING_REVIEW": 0,
+          "input_documents": 1,
+          "sources": 1,
+          "fee_lines": 1,
+          "records": 1,
+          "ignored_inputs": 0
+        },
+        "model_invocations": 0,
+        "mode": "replay",
+        "ocr_network_calls": 0
+      }
+    ]
+  },
+  "clean_install_live_synthetic_demo": {
+    "scope": "synthetic_raw_eml_end_to_end",
+    "all_passed": true,
+    "cases": [
+      {
+        "case": "create",
+        "passed": true,
+        "expected_operation": "CREATE",
+        "counts": {
+          "CREATE": 1,
+          "UPDATE": 0,
+          "NO_CHANGE": 0,
+          "PENDING_REVIEW": 0,
+          "input_documents": 1,
+          "sources": 1,
+          "fee_lines": 1,
+          "records": 1,
+          "ignored_inputs": 0
+        },
+        "model_invocations": 1,
+        "mode": "live",
+        "ocr_network_calls": 0
+      },
+      {
+        "case": "update",
+        "passed": true,
+        "expected_operation": "UPDATE",
+        "counts": {
+          "CREATE": 0,
+          "UPDATE": 1,
+          "NO_CHANGE": 0,
+          "PENDING_REVIEW": 0,
+          "input_documents": 1,
+          "sources": 1,
+          "fee_lines": 1,
+          "records": 1,
+          "ignored_inputs": 0
+        },
+        "model_invocations": 2,
+        "mode": "live",
+        "ocr_network_calls": 0
+      },
+      {
+        "case": "repeat",
+        "passed": true,
+        "expected_operation": "NO_CHANGE",
+        "counts": {
+          "CREATE": 0,
+          "UPDATE": 0,
+          "NO_CHANGE": 1,
+          "PENDING_REVIEW": 0,
+          "input_documents": 1,
+          "sources": 1,
+          "fee_lines": 1,
+          "records": 1,
+          "ignored_inputs": 0
+        },
+        "model_invocations": 0,
+        "mode": "replay",
+        "ocr_network_calls": 0
+      }
+    ]
+  },
+  "browser_clean_install": {
+    "passed": true,
+    "scope": "ZIP non-editable offline Edge browser",
+    "checks": [
+      "offline_config",
+      "local_ocr_option",
+      "real_archived_demo",
+      "download",
+      "mobile_width"
+    ],
+    "javascript_errors": []
+  },
+  "browser_configured_workspace": {
+    "passed": true,
+    "browser": "Microsoft Edge",
+    "live": false,
+    "checks": [
+      "disconnected_upload_has_actionable_message_preserves_files_and_does_not_retry",
+      "help_and_safe_filename_rendering",
+      "archived_workbook_filter_evidence_review_download_and_history",
+      "mobile_390px_no_global_horizontal_overflow"
+    ],
+    "javascript_errors": []
+  },
+  "private_sample_checks": [
+    {
+      "mode": "live",
+      "scope": "private_assistant_reviewed_samples_not_independent_business_signoff",
+      "input_documents": 4,
+      "sources": 7,
+      "expected_fees": 7,
+      "actual_fees": 7,
+      "fee_name_amount_currency_and_root_match": true,
+      "all_unknown_roles_remain_pending": true,
+      "unexpected_update_hint": false,
+      "model_invocations": 7,
+      "ocr_network_calls": null,
+      "issue_codes": [
+        "ACCOUNTING_ENTITY_NOT_PARTY",
+        "AMBIGUOUS_CURRENCY",
+        "CHILD_REQUIRES_REVIEW",
+        "CURRENCY_UNRESOLVED",
+        "EXPLICIT_EMAIL_ALLOCATION_REQUIRES_REVIEW",
+        "IMAGE_TEXT_REQUIRES_VERIFICATION",
+        "INVALID_MERGED_CORE",
+        "LINE_AMOUNT_MISMATCH",
+        "LOCAL_OCR_LOW_CONFIDENCE",
+        "OCR_INVALID_JSON",
+        "OCR_NO_ORIGINAL_TEXT",
+        "OCR_STRUCTURED_REQUIRES_CHECK",
+        "PAYMENT_CONDITION_ONLY",
+        "TOTAL_OBSERVATION_UNPARSED",
+        "TUNNEL_DOWNLOAD_FAILED",
+        "UNKNOWN_PARTY_ROLE"
+      ],
+      "status": "error",
+      "passed": true,
+      "known_ocr_limitations_retained": true,
+      "passed_scope": "fee_preservation_and_safe_review_only_not_all_ocr_requests_successful",
+      "complete_online_success": false,
+      "ocr_page_outcomes": {
+        "error": 5,
+        "completed": 3
+      },
+      "ocr_page_modes": {
+        "error": 5,
+        "live": 3
+      },
+      "ocr_page_errors": {
+        "TUNNEL_DOWNLOAD_FAILED": 4,
+        "OCR_INVALID_JSON": 1
+      },
+      "label": "real-live"
+    },
+    {
+      "mode": "live",
+      "scope": "private_assistant_reviewed_samples_not_independent_business_signoff",
+      "input_documents": 4,
+      "sources": 7,
+      "expected_fees": 7,
+      "actual_fees": 7,
+      "fee_name_amount_currency_and_root_match": true,
+      "all_unknown_roles_remain_pending": true,
+      "unexpected_update_hint": false,
+      "model_invocations": 7,
+      "ocr_network_calls": null,
+      "issue_codes": [
+        "ACCOUNTING_ENTITY_NOT_PARTY",
+        "AMBIGUOUS_CURRENCY",
+        "CHILD_REQUIRES_REVIEW",
+        "CURRENCY_UNRESOLVED",
+        "EXPLICIT_EMAIL_ALLOCATION_REQUIRES_REVIEW",
+        "IMAGE_TEXT_REQUIRES_VERIFICATION",
+        "INVALID_MERGED_CORE",
+        "LOCAL_OCR_LOW_CONFIDENCE",
+        "OCR_IDENTIFIER_NOT_CORROBORATED",
+        "OCR_NO_ORIGINAL_TEXT",
+        "OCR_POSSIBLE_MERGED_FEE_ROWS",
+        "OCR_STRUCTURED_REQUIRES_CHECK",
+        "PAYMENT_CONDITION_ONLY",
+        "TOTAL_OBSERVATION_UNPARSED",
+        "TUNNEL_DOWNLOAD_FAILED",
+        "UNKNOWN_PARTY_ROLE"
+      ],
+      "status": "error",
+      "passed": true,
+      "known_ocr_limitations_retained": true,
+      "complete_online_success": false,
+      "passed_scope": "fee_preservation_and_safe_review_only_not_all_ocr_requests_successful",
+      "ocr_page_outcomes": {
+        "completed": 7,
+        "error": 1
+      },
+      "ocr_page_modes": {
+        "live": 7,
+        "error": 1
+      },
+      "ocr_page_errors": {
+        "TUNNEL_DOWNLOAD_FAILED": 1
+      },
+      "label": "real-live-final"
+    },
+    {
+      "mode": "live",
+      "scope": "private_assistant_reviewed_samples_not_independent_business_signoff",
+      "input_documents": 4,
+      "sources": 7,
+      "expected_fees": 7,
+      "actual_fees": 7,
+      "fee_name_amount_currency_and_root_match": true,
+      "all_unknown_roles_remain_pending": true,
+      "unexpected_update_hint": false,
+      "model_invocations": 7,
+      "ocr_network_calls": null,
+      "issue_codes": [
+        "ACCOUNTING_ENTITY_NOT_PARTY",
+        "AMBIGUOUS_CURRENCY",
+        "CHILD_REQUIRES_REVIEW",
+        "CURRENCY_UNRESOLVED",
+        "EXPLICIT_EMAIL_ALLOCATION_REQUIRES_REVIEW",
+        "IMAGE_TEXT_REQUIRES_VERIFICATION",
+        "INVALID_MERGED_CORE",
+        "LINE_AMOUNT_MISMATCH",
+        "LOCAL_OCR_LOW_CONFIDENCE",
+        "OCR_IDENTIFIER_NOT_CORROBORATED",
+        "OCR_NO_ORIGINAL_TEXT",
+        "OCR_POSSIBLE_MERGED_FEE_ROWS",
+        "OCR_STRUCTURED_REQUIRES_CHECK",
+        "PAYMENT_CONDITION_ONLY",
+        "TOTAL_OBSERVATION_UNPARSED",
+        "TUNNEL_NOT_READY",
+        "UNKNOWN_PARTY_ROLE"
+      ],
+      "status": "error",
+      "passed": true,
+      "known_ocr_limitations_retained": true,
+      "complete_online_success": false,
+      "passed_scope": "fee_preservation_and_safe_review_only_not_all_ocr_requests_successful",
+      "ocr_page_outcomes": {
+        "completed": 7,
+        "error": 1
+      },
+      "ocr_page_modes": {
+        "cache": 7,
+        "error": 1
+      },
+      "ocr_page_errors": {
+        "TUNNEL_NOT_READY": 1
+      },
+      "label": "real-delivery"
+    },
+    {
+      "mode": "replay",
+      "scope": "private_assistant_reviewed_samples_not_independent_business_signoff",
+      "input_documents": 4,
+      "sources": 7,
+      "expected_fees": 7,
+      "actual_fees": 7,
+      "fee_name_amount_currency_and_root_match": true,
+      "all_unknown_roles_remain_pending": true,
+      "unexpected_update_hint": false,
+      "model_invocations": 0,
+      "ocr_network_calls": 0,
+      "issue_codes": [
+        "ACCOUNTING_ENTITY_NOT_PARTY",
+        "AMBIGUOUS_CURRENCY",
+        "CHILD_REQUIRES_REVIEW",
+        "CURRENCY_UNRESOLVED",
+        "EXPLICIT_EMAIL_ALLOCATION_REQUIRES_REVIEW",
+        "IMAGE_TEXT_REQUIRES_VERIFICATION",
+        "INVALID_MERGED_CORE",
+        "LINE_AMOUNT_MISMATCH",
+        "LOCAL_OCR_LOW_CONFIDENCE",
+        "OCR_IDENTIFIER_NOT_CORROBORATED",
+        "OCR_NO_ORIGINAL_TEXT",
+        "OCR_POSSIBLE_MERGED_FEE_ROWS",
+        "OCR_REPLAY_PAGE_MISSING",
+        "OCR_STRUCTURED_REQUIRES_CHECK",
+        "PAYMENT_CONDITION_ONLY",
+        "TOTAL_OBSERVATION_UNPARSED",
+        "UNKNOWN_PARTY_ROLE"
+      ],
+      "status": "error",
+      "passed": true,
+      "known_ocr_limitations_retained": true,
+      "complete_online_success": false,
+      "passed_scope": "fee_preservation_and_safe_review_only_not_all_ocr_requests_successful",
+      "ocr_page_outcomes": {
+        "completed": 7,
+        "error": 1
+      },
+      "ocr_page_modes": {
+        "replay": 7,
+        "error": 1
+      },
+      "ocr_page_errors": {
+        "OCR_REPLAY_PAGE_MISSING": 1
+      },
+      "label": "real-delivery-replay"
+    }
+  ],
+  "private_sources_and_credentials_in_delivery": false,
+  "current_code_regression_is_not_new_unseen_holdout": true,
+  "annotation_review": "assistant_authored_not_independently_business_signed",
+  "external_dependencies": [
+    "Python 3.12",
+    "Windows Microsoft Word for legacy DOC",
+    "Optional cloudflared and external OCR reachability"
+  ],
+  "release_archive": "Check-stage9-v1.zip",
+  "archive_file_hashes": "release-manifest.json inside ZIP; ZIP SHA-256 sidecar",
+  "source_delivery": "Git commit message: stage 9; exact published commit is reported after push"
+}

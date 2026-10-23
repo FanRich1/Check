@@ -1,0 +1,420 @@
+"use strict";
+
+const $ = (id) => document.getElementById(id);
+const S = {config: null, files: [], jobs: [], jobId: null, result: null, baseJob: null, operation: "all", search: "", timer: null, historyTimer: null, recordId: null, submitting: false};
+const operationNames = {CREATE: "新增", UPDATE: "修改", NO_CHANGE: "无变化", PENDING_REVIEW: "待复核"};
+const statusNames = {queued: "等待处理", running: "处理中", completed: "已完成", processed: "已处理", pending_review: "待复核", error: "来源异常", failed: "处理失败", interrupted: "已中断", no_charge: "无费用"};
+const reviewNames = {unreviewed: "待核对", checked: "已核对", needs_followup: "需补材料"};
+const fieldNames = {"/charge_details/charge_item": "标准费用名称", "/charge_details/charge_item_raw": "原始费用名称", "/charge_details/amount": "费用金额", "/charge_details/currency": "币种", "/charge_details/payment_term": "付款方式", "/document_info/reference_no": "单据编号", "/document_info/document_type": "单据类型", "/document_info/document_date": "单据日期", "/transaction_party/issuer": "签发方", "/transaction_party/recipient": "接收方", "/financial_attributes/accounting_entity": "记账主体", "/financial_attributes/posting_type": "记账方向"};
+const stages = ["parse", "extract", "intents", "reconcile", "write"];
+const allowed = new Set(["eml", "pdf", "png", "jpg", "jpeg", "tif", "tiff", "xls", "xlsx", "doc", "docx"]);
+
+function node(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = String(text);
+  return element;
+}
+function show(id, visible = true) { $(id).hidden = !visible; }
+function clear(id) { $(id).replaceChildren(); }
+function toast(message) {
+  $("toast").textContent = message;
+  show("toast");
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => show("toast", false), 4500);
+}
+function dateText(value) {
+  return new Date(value).toLocaleString("zh-CN", {month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false});
+}
+function sizeText(size) { return size >= 1048576 ? `${(size / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(size / 1024))} KB`; }
+function pill(status, text) { return node("span", `pill ${status}`, text || operationNames[status] || statusNames[status] || status); }
+function busy(value) {
+  S.submitting = value;
+  $("submit-button").disabled = value || !S.config?.model_ready;
+  $("demo-button").disabled = value || !S.config?.demo_ready;
+  $("submit-button").firstChild.textContent = value ? "正在创建任务…" : "开始处理材料";
+}
+async function api(path, options = {}) {
+  let response;
+  try {
+    response = await fetch(path, {...options, headers: {"X-Workspace-Token": S.config?.token || "", ...options.headers}});
+  } catch {
+    throw new Error("无法连接本地工作台。请双击「启动账单工作台.cmd」并保持启动窗口打开，然后刷新页面。若刚才已提交，请先检查历史任务，避免重复处理。");
+  }
+  let data;
+  try { data = await response.json(); } catch { throw new Error("服务没有返回有效结果，请检查工作台是否仍在运行。"); }
+  if (!response.ok) throw new Error(data.error?.message || data.detail || "请求未能完成，请重试。");
+  return data;
+}
+function view(name) {
+  for (const key of ["new", "history", "result"]) show(`${key}-view`, key === name);
+  $("nav-new").classList.toggle("active", name !== "history");
+  $("nav-history").classList.toggle("active", name === "history");
+  $("breadcrumb-title").textContent = {new: "处理工作台", history: "历史任务", result: "处理结果"}[name];
+  if (name !== "result") {
+    clearTimeout(S.timer); S.jobId = null;
+    if (S.config) refreshJobs().catch((error) => toast(error.message));
+  } else { clearTimeout(S.historyTimer); }
+  window.scrollTo({top: 0, behavior: "instant"});
+}
+function formError(message) {
+  $("form-error").textContent = message;
+  show("form-error", Boolean(message));
+}
+function addFiles(files) {
+  formError("");
+  let error = "";
+  for (const file of files) {
+    const extension = file.name.split(".").pop().toLowerCase();
+    if (!allowed.has(extension)) { error = `「${file.name}」不是支持的业务文件。旧账单 JSON 请在右侧单独选择。`; continue; }
+    if (!file.size || file.size > 20 * 1048576) { error = `「${file.name}」为空或超过 20 MB。`; continue; }
+    if (S.files.some((f) => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified)) continue;
+    if (S.files.length >= 20 || S.files.reduce((n, f) => n + f.size, 0) + file.size > 60 * 1048576) { error = "每次最多 20 个文件，合计不超过 60 MB。"; break; }
+    S.files.push(file);
+  }
+  renderFiles();
+  if (error) formError(error);
+}
+function renderFiles() {
+  clear("selected-files");
+  S.files.forEach((file, index) => {
+    const row = node("div", "selected-file");
+    const remove = node("button", "remove-file", "×");
+    remove.type = "button";
+    remove.setAttribute("aria-label", `移除 ${file.name}`);
+    remove.addEventListener("click", () => { S.files.splice(index, 1); renderFiles(); });
+    row.append(node("strong", "", file.name.split(".").pop().toUpperCase()), node("span", "", file.name), node("small", "", sizeText(file.size)), remove);
+    $("selected-files").append(row);
+  });
+}
+function renderBase() {
+  show("base-job-banner", Boolean(S.baseJob));
+  $("base-job-title").textContent = S.baseJob?.title || "";
+  $("old-state").disabled = Boolean(S.baseJob);
+}
+function renderJobs() {
+  $("history-count").textContent = S.jobs.length;
+  for (const [id, jobs] of [["recent-jobs", S.jobs.slice(0, 4)], ["history-jobs", S.jobs]]) {
+    clear(id);
+    if (!jobs.length) {
+      $(id).append(node("div", "empty-state", "还没有处理记录。上传第一份材料，或先体验一个示例。"));
+      continue;
+    }
+    jobs.forEach((job) => {
+      const button = node("button", "job-card");
+      button.type = "button";
+      const content = node("span", "job-card-main");
+      content.append(node("strong", "", `${job.demo ? "[示例] " : ""}${job.title}`), node("small", "", `${job.entity} · ${dateText(job.created_at)}`));
+      button.append(node("span", "job-file-icon", "▤"), content, pill(job.status), node("span", "chevron", "›"));
+      button.addEventListener("click", () => openJob(job.id));
+      $(id).append(button);
+    });
+  }
+}
+async function refreshJobs() {
+  clearTimeout(S.historyTimer);
+  const data = await api("/api/jobs");
+  S.jobs = data.jobs;
+  renderJobs();
+  if (!S.jobId && S.jobs.some((job) => ["queued", "running"].includes(job.status))) {
+    S.historyTimer = setTimeout(() => refreshJobs().catch((error) => toast(error.message)), 2500);
+  }
+}
+async function openJob(id) {
+  clearTimeout(S.timer);
+  S.jobId = id;
+  S.operation = "all";
+  S.search = "";
+  $("record-search").value = "";
+  S.result = null;
+  show("result-content", false);
+  show("result-banner", false);
+  show("progress-card", true);
+  $("progress-title").textContent = "正在读取任务";
+  $("result-title").textContent = "处理结果";
+  show("continue-button", false);
+  view("result");
+  await loadJob(id);
+}
+async function loadJob(id) {
+  try {
+    const data = await api(`/api/jobs/${id}`);
+    if (S.jobId !== id) return;
+    S.result = data;
+    renderResult();
+    if (["queued", "running"].includes(data.job.status)) {
+      S.timer = setTimeout(() => loadJob(id), 1200);
+    } else {
+      await refreshJobs();
+    }
+  } catch (error) {
+    if (S.jobId !== id) return;
+    toast(error.message);
+    S.timer = setTimeout(() => loadJob(id), 5000);
+  }
+}
+function renderResult() {
+  const data = S.result;
+  const job = data.job;
+  const active = ["queued", "running"].includes(job.status);
+  $("result-title").textContent = `${job.demo ? "示例 · " : ""}${job.title}`;
+  $("result-meta").textContent = `${job.entity} · ${dateText(job.created_at)} · ${job.input_files.length} 个上传文件${job.demo ? " · 已归档模型响应回放，不调用在线服务" : ""}`;
+  show("progress-card", active);
+  $("progress-title").textContent = job.message;
+  const stageIndex = stages.indexOf(job.stage);
+  for (const step of $("progress-steps").children) {
+    const index = stages.indexOf(step.dataset.stage);
+    step.classList.toggle("done", index < stageIndex);
+    step.classList.toggle("active", index === stageIndex);
+  }
+  show("result-banner", !active);
+  $("result-banner").textContent = `${job.message}${job.error_code ? `（${job.error_code}）` : ""}`;
+  $("result-banner").className = `notice ${["error", "failed", "interrupted"].includes(job.status) ? "error" : job.status === "pending_review" ? "warning" : ""}`;
+  show("result-content", data.downloads.includes("records.json"));
+  show("continue-button", data.downloads.includes("state.json") && !job.demo && !active);
+  if (!data.downloads.includes("records.json")) return;
+  clear("metrics");
+  const descriptions = {CREATE: "明确的新费用", UPDATE: "仅应用授权变更", NO_CHANGE: "已存在或重复来源", PENDING_REVIEW: "需要进一步确认"};
+  for (const operation of ["CREATE", "UPDATE", "NO_CHANGE", "PENDING_REVIEW"]) {
+    // Main records are deduplicated; per-source decisions are counted separately in the manifest.
+    const count = data.records.filter((r) => r.operation === operation).length;
+    const metric = node("div", "metric");
+    const label = node("div", "metric-label", operationNames[operation]);
+    label.append(node("span", "metric-dot"));
+    metric.append(label, node("strong", "", count), node("small", "", descriptions[operation]));
+    $("metrics").append(metric);
+  }
+  $("result-count").textContent = `${data.records.length} 条费用`;
+  for (const option of $("download-kind").options) option.disabled = !data.downloads.includes(option.value);
+  if (!data.downloads.includes($("download-kind").value)) $("download-kind").value = "records.json";
+  renderRecords();
+  renderSources();
+}
+function renderRecords() {
+  if (!S.result) return;
+  clear("record-rows");
+  for (const button of $("operation-filters").children) button.classList.toggle("selected", button.dataset.operation === S.operation);
+  const query = S.search.trim().toLocaleLowerCase();
+  const records = S.result.records.filter((row) => (S.operation === "all" || row.operation === S.operation) && (!query || [row.charge_details.charge_item, row.document_info.reference_no, row.transaction_party.issuer, row.transaction_party.recipient].some((v) => String(v || "").toLocaleLowerCase().includes(query))));
+  show("records-empty", !records.length);
+  if (!S.result.records.length) $("records-empty").textContent = "本次没有可输出的费用。请查看下方来源文件中的识别结果及原因。";
+  else $("records-empty").textContent = "没有符合条件的费用。";
+  records.forEach((record) => {
+    const row = node("tr");
+    const name = node("td");
+    name.append(node("strong", "", record.charge_details.charge_item || record.charge_details.charge_item_raw || "未确定费用名"), node("small", "", record.document_info.reference_no || "未提供单据编号"));
+    const parties = node("td");
+    parties.append(node("strong", "", record.transaction_party.issuer || "签发方待确认"), node("small", "", `→ ${record.transaction_party.recipient || "接收方待确认"}`));
+    const amount = node("td", "number-cell");
+    amount.append(node("strong", "amount", record.amount_display), node("small", "currency", record.charge_details.currency || "币种待确认"));
+    const posting = node("td", `posting ${record.financial_attributes.posting_type === "AR" ? "ar" : ""}`, {AR: "应收 AR", AP: "应付 AP"}[record.financial_attributes.posting_type] || "待确认");
+    const operation = node("td");
+    operation.append(pill(record.operation));
+    const review = S.result.reviews[record.record_id]?.status || "unreviewed";
+    const reviewCell = node("td", `review-mark ${review}`, reviewNames[review]);
+    const actions = node("td");
+    const details = node("button", "text-button", "查看依据 ↗");
+    details.addEventListener("click", () => openDetail(record.record_id));
+    actions.append(details);
+    row.append(name, parties, amount, posting, operation, reviewCell, actions);
+    $("record-rows").append(row);
+  });
+}
+function renderSources() {
+  clear("source-files");
+  $("source-count").textContent = `${S.result.files.length} 个来源（含附件）`;
+  for (const file of S.result.files) {
+    const row = node("div", "source-row");
+    const info = node("div", "source-info");
+    info.append(node("strong", "", file.original_name), node("small", "", `${file.detected_format.toUpperCase()} · ${file.source_id}`));
+    const seen = new Set();
+    for (const issue of file.issues) {
+      if (seen.has(issue.code)) continue;
+      seen.add(issue.code);
+      const problem = node("div", "source-issue", issue.explanation);
+      problem.append(node("code", "", issue.code));
+      info.append(problem);
+    }
+    row.append(info, pill(file.status));
+    $("source-files").append(row);
+  }
+}
+function field(label, value) {
+  const item = node("div", "detail-field");
+  item.append(node("small", "", label), node("strong", "", value === null || value === undefined || value === "" ? "—" : value));
+  return item;
+}
+function section(title) {
+  const item = node("section", "detail-section");
+  item.append(node("h3", "", title));
+  return item;
+}
+function locatorText(locator) {
+  return [locator.page ? `第 ${locator.page} 页` : null, locator.sheet ? `工作表 ${locator.sheet}` : null, locator.cells, locator.block, locator.region, locator.section, locator.pointer].filter(Boolean).join(" · ");
+}
+function openDetail(id) {
+  const record = S.result.records.find((r) => r.record_id === id);
+  if (!record) return;
+  S.recordId = id;
+  $("detail-title").textContent = record.charge_details.charge_item || "费用详情";
+  clear("detail-body");
+  const grid = node("div", "detail-grid");
+  grid.append(field("本次操作", operationNames[record.operation]), field("金额 / 币种", `${record.amount_display} ${record.charge_details.currency || "币种待确认"}`), field("原始费用名称", record.charge_details.charge_item_raw), field("单据编号", record.document_info.reference_no), field("签发方", record.transaction_party.issuer), field("接收方", record.transaction_party.recipient), field("付款描述", record.charge_details.payment_term_raw || record.charge_details.payment_term), field("数量 / 单价", `${record.quantity_display} / ${record.unit_price_display}`), field("记账主体", record.financial_attributes.accounting_entity), field("记账方向", {AP: "应付 AP", AR: "应收 AR"}[record.financial_attributes.posting_type] || "待确认"));
+  $("detail-body").append(grid);
+  if (record.issues.length) {
+    const issues = section("需要关注的内容");
+    for (const issue of record.issues) {
+      const item = node("div", "detail-issue", issue.explanation);
+      item.append(node("small", "", `${issue.code}${issue.field ? ` · ${fieldNames[issue.field] || issue.field}` : ""}`));
+      issues.append(item);
+    }
+    $("detail-body").append(issues);
+  }
+  if (record.operation === "PENDING_REVIEW" && record.existing_record_id) {
+    const observations = section("本次观察与旧账单");
+    observations.append(node("p", "", "上方显示保留的旧账单值，本次材料中的观察值如下；待复核修改尚未应用。"));
+    record.observations_display.forEach((o) => observations.append(node("p", "", `材料金额：${o.amount} · ${o.source_id}`)));
+    $("detail-body").append(observations);
+  }
+  const changes = section("本次实际应用的变更");
+  if (!record.changes_display.length) changes.append(node("p", "", "没有已应用的字段变更。"));
+  for (const change of record.changes_display) {
+    const item = node("div", "change-row");
+    item.append(node("small", "", fieldNames[change.path] || change.path), node("span", "change-old", change.old), node("span", "", "→"), node("span", "change-new", change.new));
+    changes.append(item);
+  }
+  $("detail-body").append(changes);
+  const evidence = section("原文依据");
+  let evidenceCount = 0;
+  for (const [path, refs] of Object.entries(record.audit_trail.field_evidence)) {
+    if (!refs.length) continue;
+    for (const ref of refs) {
+      const item = node("div", "evidence-item");
+      item.append(node("strong", "", fieldNames[path] || path), node("small", "", `${ref.source_id} · ${locatorText(ref.locator)}`), node("blockquote", "", ref.quote));
+      evidence.append(item);
+      evidenceCount++;
+    }
+  }
+  if (!evidenceCount) evidence.append(node("p", "", "这条记录没有可定位证据，请对照原始材料核对。"));
+  $("detail-body").append(evidence);
+  const review = S.result.reviews[id] || {};
+  $("review-status").value = review.status || "unreviewed";
+  $("review-note").value = review.note || "";
+  $("detail-dialog").showModal();
+}
+async function downloadResult() {
+  const name = $("download-kind").value;
+  const response = await fetch(`/api/jobs/${S.jobId}/download/${encodeURIComponent(name)}`);
+  if (!response.ok) { toast("下载未能完成，请刷新任务后重试。"); return; }
+  const url = URL.createObjectURL(await response.blob());
+  const link = node("a");
+  link.href = url;
+  link.download = name;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+}
+
+$("nav-new").addEventListener("click", () => view("new"));
+$("nav-history").addEventListener("click", () => view("history"));
+$("show-history").addEventListener("click", () => $("nav-history").click());
+$("history-new").addEventListener("click", () => view("new"));
+$("back-workspace").addEventListener("click", () => view("new"));
+$("nav-help").addEventListener("click", () => $("help-dialog").showModal());
+$("close-help").addEventListener("click", () => $("help-dialog").close());
+$("close-detail").addEventListener("click", () => $("detail-dialog").close());
+$("drop-zone").addEventListener("click", () => $("document-input").click());
+$("drop-zone").addEventListener("keydown", (event) => { if (["Enter", " "].includes(event.key)) { event.preventDefault(); $("document-input").click(); } });
+$("document-input").addEventListener("change", (event) => { addFiles(event.target.files); event.target.value = ""; });
+for (const name of ["dragenter", "dragover"]) $("drop-zone").addEventListener(name, (event) => { event.preventDefault(); $("drop-zone").classList.add("drag-over"); });
+for (const name of ["dragleave", "drop"]) $("drop-zone").addEventListener(name, (event) => { event.preventDefault(); $("drop-zone").classList.remove("drag-over"); });
+$("drop-zone").addEventListener("drop", (event) => addFiles(event.dataTransfer.files));
+$("old-state").addEventListener("change", () => { $("old-state-name").textContent = $("old-state").files[0]?.name || "选择旧账单或账本 JSON"; show("clear-old", Boolean($("old-state").files.length)); });
+$("clear-old").addEventListener("click", () => { $("old-state").value = ""; $("old-state").dispatchEvent(new Event("change")); });
+$("clear-base").addEventListener("click", () => { S.baseJob = null; renderBase(); });
+$("temporary-ocr").addEventListener("change", () => { if ($("temporary-ocr").checked) $("ocr-map").value = ""; });
+$("ocr-map").addEventListener("change", () => { if ($("ocr-map").files.length) $("temporary-ocr").checked = false; });
+$("upload-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (S.submitting) return;
+  formError("");
+  if (!S.files.length) { formError("请先添加至少一个业务文件。"); return; }
+  const form = new FormData();
+  S.files.forEach((file) => form.append("documents", file));
+  form.append("entity", $("entity").value.trim());
+  form.append("temporary_ocr", String($("temporary-ocr").checked));
+  form.append("local_ocr_enabled", String($("local-ocr").checked));
+  if (S.baseJob) form.append("base_job", S.baseJob.id);
+  for (const [input, key] of [["old-state", "old_state"], ["context-file", "context"], ["ocr-map", "ocr_map"]]) {
+    if ($(input).files.length && !$(input).disabled) form.append(key, $(input).files[0]);
+  }
+  busy(true);
+  try {
+    const job = await api("/api/jobs", {method: "POST", body: form});
+    localStorage.setItem("billing-entity", $("entity").value.trim());
+    await openJob(job.id);
+  } catch (error) { formError(error.message); }
+  finally { busy(false); }
+});
+$("demo-button").addEventListener("click", async () => {
+  if (S.submitting) return;
+  busy(true);
+  try { const job = await api("/api/demo", {method: "POST"}); await openJob(job.id); }
+  catch (error) { toast(error.message); }
+  finally { busy(false); }
+});
+$("result-refresh").addEventListener("click", () => { if (S.jobId) { clearTimeout(S.timer); loadJob(S.jobId); } });
+$("continue-button").addEventListener("click", () => {
+  S.baseJob = S.result.job;
+  S.files = [];
+  renderFiles();
+  $("entity").value = S.baseJob.entity;
+  $("clear-old").click();
+  renderBase();
+  formError("");
+  view("new");
+  toast("已接续账本，添加下一批材料即可继续。");
+});
+$("operation-filters").addEventListener("click", (event) => { if (event.target.dataset.operation) { S.operation = event.target.dataset.operation; renderRecords(); } });
+$("record-search").addEventListener("input", () => { S.search = $("record-search").value; renderRecords(); });
+$("download-button").addEventListener("click", () => downloadResult().catch((error) => toast(error.message)));
+$("review-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = event.target.querySelector("button[type=submit]");
+  button.disabled = true;
+  try {
+    const saved = await api(`/api/jobs/${S.jobId}/review`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({record_id: S.recordId, status: $("review-status").value, note: $("review-note").value})});
+    S.result.reviews[S.recordId] = saved;
+    S.result.downloads = [...new Set([...S.result.downloads, "reviews.json"])];
+    renderResult();
+    $("detail-dialog").close();
+    toast("核对记录已保存。");
+  } catch (error) { toast(error.message); }
+  finally { button.disabled = false; }
+});
+
+async function initialize() {
+  busy(true);
+  try {
+    S.config = await api("/api/config");
+    $("model-status").textContent = "";
+    $("model-status").append(node("i"), document.createTextNode(S.config.model_ready ? `模型已配置 · ${S.config.model_name}` : "模型未配置"));
+    $("model-status").classList.toggle("ready", S.config.model_ready);
+    $("ocr-status").textContent = S.config.ocr_ready ? "✓ 临时识别工具已就绪" : "临时识别工具未配置，可在更多选项提供链接映射";
+    $("ocr-status").classList.toggle("unready", !S.config.ocr_ready);
+    $("temporary-ocr").disabled = !S.config.ocr_ready;
+    $("local-ocr").disabled = !S.config.local_ocr_ready;
+    $("local-ocr-status").textContent = S.config.local_ocr_ready ? "✓ 本地辅助识别已就绪" : "未安装；可按交付说明安装 local-ocr 可选依赖";
+    if (!S.config.model_ready) {
+      $("configuration-notice").className = "notice warning";
+      $("configuration-notice").textContent = "尚未配置在线模型。可以先体验示例；处理自己的材料前，请在项目 .env 配置模型后重启工作台。";
+      show("configuration-notice");
+    }
+    $("entity").value = localStorage.getItem("billing-entity") || "";
+    await refreshJobs();
+  } catch (error) {
+    $("configuration-notice").className = "notice error";
+    $("configuration-notice").textContent = `无法连接本地服务：${error.message}`;
+    show("configuration-notice");
+  } finally { busy(false); }
+}
+initialize();

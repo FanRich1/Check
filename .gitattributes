@@ -2,6 +2,7 @@
 *.py text eol=lf
 *.toml text eol=lf
 *.lock text eol=lf
+*.cmd text eol=crlf
 # Frozen fixture hashes refer to the exact authored bytes, including EML line endings.
 tests/fixtures/** -text
 # Evaluation release fingerprints cover exact application bytes; clones/archives must preserve them.
