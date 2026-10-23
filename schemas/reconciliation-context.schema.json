@@ -1,0 +1,690 @@
+{
+  "$defs": {
+    "Adjustment": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "credit",
+            "reversal",
+            "discount"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "original_reference": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Original Reference",
+          "type": "string"
+        },
+        "original_payer": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Original Payer",
+          "type": "string"
+        },
+        "original_payee": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Original Payee",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "original_reference",
+        "original_payer",
+        "original_payee",
+        "evidence"
+      ],
+      "title": "Adjustment",
+      "type": "object"
+    },
+    "DocumentTotals": {
+      "additionalProperties": false,
+      "properties": {
+        "group_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Group Id",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "line_ids": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Line Ids",
+          "type": "array"
+        },
+        "currency": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Currency",
+          "type": "string"
+        },
+        "currency_evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Currency Evidence",
+          "type": "array"
+        },
+        "total": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SupportedFact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "subtotal": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SupportedFact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "tax": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SupportedFact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "discount": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SupportedFact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "paid": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SupportedFact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "balance": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SupportedFact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "group_id",
+        "source_id",
+        "line_ids",
+        "currency",
+        "currency_evidence"
+      ],
+      "title": "DocumentTotals",
+      "type": "object"
+    },
+    "EditIntent": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "pattern": "^/(document_info|transaction_party|charge_details|shipping_info|extensions)/.+",
+          "title": "Path",
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "set",
+            "clear"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "expected_old": {
+          "title": "Expected Old"
+        },
+        "value": {
+          "title": "Value"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "path",
+        "action",
+        "expected_old",
+        "value",
+        "evidence"
+      ],
+      "title": "EditIntent",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "locator": {
+          "$ref": "#/$defs/Locator"
+        },
+        "quote": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Quote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "locator",
+        "quote"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "IdentifierCorrection": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "pattern": "^/(document_info/reference_no|shipping_info/(mbl_no|hbl_no|booking_no|container_nos/\\d+))$",
+          "title": "Path",
+          "type": "string"
+        },
+        "original_value": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Original Value",
+          "type": "string"
+        },
+        "corrected_value": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Corrected Value",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "path",
+        "original_value",
+        "corrected_value",
+        "evidence"
+      ],
+      "title": "IdentifierCorrection",
+      "type": "object"
+    },
+    "LineDirective": {
+      "additionalProperties": false,
+      "properties": {
+        "selector": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordSelector"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "edits": {
+          "items": {
+            "$ref": "#/$defs/EditIntent"
+          },
+          "title": "Edits",
+          "type": "array"
+        }
+      },
+      "title": "LineDirective",
+      "type": "object"
+    },
+    "LinePolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "settlement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SettlementRoles"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "adjustment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Adjustment"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rounding": {
+          "anyOf": [
+            {
+              "enum": [
+                "exact",
+                "HALF_UP",
+                "HALF_EVEN"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rounding"
+        },
+        "payment_scope": {
+          "default": "unknown",
+          "enum": [
+            "line",
+            "document",
+            "freight",
+            "unknown"
+          ],
+          "title": "Payment Scope",
+          "type": "string"
+        },
+        "tax": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SupportedFact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "discount": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SupportedFact"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "corrections": {
+          "items": {
+            "$ref": "#/$defs/IdentifierCorrection"
+          },
+          "title": "Corrections",
+          "type": "array"
+        }
+      },
+      "title": "LinePolicy",
+      "type": "object"
+    },
+    "Locator": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "email_body",
+            "email_header",
+            "pdf_page",
+            "image_region",
+            "sheet_cells",
+            "word_block",
+            "existing_record"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "page": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Page"
+        },
+        "section": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Section"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "sheet": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sheet"
+        },
+        "cells": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cells"
+        },
+        "block": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Block"
+        },
+        "pointer": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pointer"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Locator",
+      "type": "object"
+    },
+    "NormalizationContext": {
+      "additionalProperties": false,
+      "properties": {
+        "accounting_entity": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Accounting Entity"
+        },
+        "party_aliases": {
+          "patternProperties": {
+            "\\S": {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            }
+          },
+          "propertyNames": {
+            "minLength": 1
+          },
+          "title": "Party Aliases",
+          "type": "object"
+        },
+        "charge_aliases": {
+          "patternProperties": {
+            "\\S": {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            }
+          },
+          "propertyNames": {
+            "minLength": 1
+          },
+          "title": "Charge Aliases",
+          "type": "object"
+        },
+        "rounding": {
+          "default": "exact",
+          "enum": [
+            "exact",
+            "HALF_UP",
+            "HALF_EVEN"
+          ],
+          "title": "Rounding",
+          "type": "string"
+        },
+        "lines": {
+          "patternProperties": {
+            "\\S": {
+              "$ref": "#/$defs/LinePolicy"
+            }
+          },
+          "propertyNames": {
+            "minLength": 1
+          },
+          "title": "Lines",
+          "type": "object"
+        },
+        "totals": {
+          "items": {
+            "$ref": "#/$defs/DocumentTotals"
+          },
+          "title": "Totals",
+          "type": "array"
+        },
+        "use_observed_totals": {
+          "default": true,
+          "title": "Use Observed Totals",
+          "type": "boolean"
+        }
+      },
+      "title": "NormalizationContext",
+      "type": "object"
+    },
+    "RecordSelector": {
+      "additionalProperties": false,
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "record_id",
+        "evidence"
+      ],
+      "title": "RecordSelector",
+      "type": "object"
+    },
+    "SettlementRoles": {
+      "additionalProperties": false,
+      "properties": {
+        "payer": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Payer",
+          "type": "string"
+        },
+        "payee": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Payee",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "payer",
+        "payee",
+        "evidence"
+      ],
+      "title": "SettlementRoles",
+      "type": "object"
+    },
+    "SupportedFact": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "number"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "value",
+        "evidence"
+      ],
+      "title": "SupportedFact",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "normalization_context": {
+      "$ref": "#/$defs/NormalizationContext"
+    },
+    "lines": {
+      "patternProperties": {
+        "\\S": {
+          "$ref": "#/$defs/LineDirective"
+        }
+      },
+      "propertyNames": {
+        "minLength": 1
+      },
+      "title": "Lines",
+      "type": "object"
+    }
+  },
+  "title": "ReconciliationContext",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

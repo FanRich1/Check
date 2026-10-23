@@ -2,7 +2,7 @@
 
 基于 Python 和 LangChain，解析航运邮件及附件中的费用信息，匹配已有账单，输出经过校验的结构化 JSON。
 
-当前状态：阶段 5 标准化、金额与 AR/AP 规则已通过组件验收，63/63 个规则案例通过，真实材料 7/7 条费用保留且三份账单的合计核对通过，见 [阶段 5 验收记录](docs/stage5-report.md)。已支持多格式解析、带证据的费用提取、费用/币种/付款标准化、Decimal 校验和基于明确主体的 AR/AP 判断。OCR 风险继续保留；旧账单匹配、去重和最终操作属于后续阶段，`run` 返回未实现。样本基准未经过独立业务人员签核。
+当前状态：阶段 6 旧账单匹配、去重与授权增量更新已通过组件验收，64/64 个业务场景和重传检查通过，见 [阶段 6 验收记录](docs/stage6-report.md)。已支持多格式解析、带证据的费用提取、标准化、Decimal 校验、AR/AP 判断，以及 CREATE / UPDATE / NO_CHANGE / PENDING_REVIEW。真实材料 7/7 条费用保留，缺记账主体时复核；OCR 风险继续保留。下一步为阶段 7 完整工作流，`run` 仍返回未实现。样本基准未经过独立业务人员签核。
 
 ## 项目位置
 
@@ -68,6 +68,12 @@ python -m venv .venv
 .\.venv\Scripts\shipping-billing.exe normalize outputs/candidates.json --accounting-entity "当前记账法人" --output outputs/normalized-real.json
 .\.venv\Scripts\python.exe scripts/stage5_smoke.py --portable --output outputs/stage5/portable
 
+# 阶段 6 离线更新示例：OLD1 金额 40→50，仅修改有原文指令的金额字段
+.\.venv\Scripts\shipping-billing.exe reconcile tests/fixtures/reconciliation/example-normalized.json --extraction tests/fixtures/reconciliation/example-extraction.json --context tests/fixtures/reconciliation/example-context.json --state tests/fixtures/reconciliation/example-old-state.json --output outputs/reconciliation.json --records-output outputs/records.json --state-output outputs/next-state.json
+# 应用新快照后重传应为 NO_CHANGE；输入及输出状态文件必须分开
+.\.venv\Scripts\shipping-billing.exe reconcile tests/fixtures/reconciliation/example-normalized.json --extraction tests/fixtures/reconciliation/example-extraction.json --context tests/fixtures/reconciliation/example-context.json --state outputs/next-state.json --output outputs/reconciliation-repeat.json
+.\.venv\Scripts\python.exe -m scripts.stage6_smoke --portable --output outputs/stage6/portable
+
 # 仅测试提取组件：合成片段直接输入，不代表文件解析/OCR 验收
 .\.venv\Scripts\python.exe scripts/stage4_validation.py --mode live --output outputs/stage4/validation-live
 .\.venv\Scripts\python.exe scripts/stage4_validation.py --mode replay --output outputs/stage4/validation-replay
@@ -107,5 +113,7 @@ python -m venv .venv
 `extract`：0 提取完成且无复核阻塞，1 含复核项，3 有来源提取错误，2 参数/配置错误。成功无费用、复核和调用失败分别登记；失败不会写成成功空数组。候选尚非最终账单。模型输出预算默认 4096 tokens，已有 `.env` 可设置 `BILLING_MODEL_MAX_TOKENS=4096`。超出输入上限或输出截断会明确失败。
 
 `normalize` 不调用模型或 OCR，不需要密钥。0 领域检查完成、1 有复核项、2 输入/策略无效、3 上游来源错误或运行失败；结果始终保留每个来源和原始候选。`ready` 表示领域检查通过，尚不是 CREATE/UPDATE。`--context` 可提供别名、带证据的原账关系、舍入规则及明细范围明确的合计；不能与 `--accounting-entity` 同用。完整策略和边界见 [阶段 5 说明](docs/stage5-report.md)。
+
+`reconcile` 同样离线运行。0 全部完成、1 含复核、2 输入/策略无效、3 上游来源错误或运行失败。必须提供阶段 5 报告及其原始提取报告，context 内的 normalization_context 必须完全一致。首次可用 `--existing-bills` 提供旧账数组，后续应保存并传入完整 `--state`，保留来源去重索引。`--records-output` 是核心结果数组，`--state-output` 是新业务快照及身份/审计，不原地修改旧账。详见 [操作示例](tests/fixtures/reconciliation/README.md)。
 
 错误消息和日志不输出请求正文、API 密钥或 Pydantic 原始输入。完整参数见 `--help`。原始数据、环境文件、虚拟环境和运行报告均被 Git 忽略；仓库只分发合成资料和结构 schema。

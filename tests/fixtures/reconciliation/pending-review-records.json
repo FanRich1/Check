@@ -1,0 +1,312 @@
+[
+  {
+    "record_id": "OLD1",
+    "document_info": {
+      "document_type": "Invoice",
+      "reference_no": "INV-RULE",
+      "document_date": null,
+      "document_date_raw": null,
+      "custom_document_tag": "original"
+    },
+    "transaction_party": {
+      "issuer": "Supplier Ltd",
+      "recipient": "Buyer Ltd"
+    },
+    "charge_details": {
+      "charge_item": "Handling Charge",
+      "amount": 40,
+      "currency": "USD",
+      "payment_term": null,
+      "charge_item_raw": "Handling Fee",
+      "quantity": null,
+      "unit_price": null,
+      "payment_term_raw": null,
+      "currency_raw": "USD",
+      "erp_tax_code": "T0"
+    },
+    "financial_attributes": {
+      "accounting_entity": "Buyer Ltd",
+      "posting_type": "AP"
+    },
+    "extensions": {
+      "reviewed": true,
+      "erp": {
+        "memo": "keep",
+        "status": "open"
+      }
+    },
+    "operation": "PENDING_REVIEW",
+    "existing_record_id": "OLD1",
+    "audit_trail": {
+      "ai_reasoning": [
+        "Rule priority_1: PENDING_REVIEW",
+        "Only explicit supported edits apply; missing values preserve the existing snapshot."
+      ],
+      "sources": [
+        "existing:OLD1"
+      ],
+      "field_evidence": {
+        "/document_info/document_type": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/document_info/document_type"
+            },
+            "quote": "\"Invoice\""
+          }
+        ],
+        "/document_info/reference_no": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/document_info/reference_no"
+            },
+            "quote": "\"INV-RULE\""
+          }
+        ],
+        "/document_info/custom_document_tag": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/document_info/custom_document_tag"
+            },
+            "quote": "\"original\""
+          }
+        ],
+        "/transaction_party/issuer": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/transaction_party/issuer"
+            },
+            "quote": "\"Supplier Ltd\""
+          }
+        ],
+        "/transaction_party/recipient": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/transaction_party/recipient"
+            },
+            "quote": "\"Buyer Ltd\""
+          }
+        ],
+        "/charge_details/charge_item": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/charge_details/charge_item"
+            },
+            "quote": "\"Handling Charge\""
+          }
+        ],
+        "/charge_details/amount": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/charge_details/amount"
+            },
+            "quote": "40"
+          }
+        ],
+        "/charge_details/currency": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/charge_details/currency"
+            },
+            "quote": "\"USD\""
+          }
+        ],
+        "/charge_details/charge_item_raw": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/charge_details/charge_item_raw"
+            },
+            "quote": "\"Handling Fee\""
+          }
+        ],
+        "/charge_details/currency_raw": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/charge_details/currency_raw"
+            },
+            "quote": "\"USD\""
+          }
+        ],
+        "/charge_details/erp_tax_code": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/charge_details/erp_tax_code"
+            },
+            "quote": "\"T0\""
+          }
+        ],
+        "/financial_attributes/accounting_entity": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/financial_attributes/accounting_entity"
+            },
+            "quote": "\"Buyer Ltd\""
+          }
+        ],
+        "/financial_attributes/posting_type": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/financial_attributes/posting_type"
+            },
+            "quote": "\"AP\""
+          }
+        ],
+        "/extensions/reviewed": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/extensions/reviewed"
+            },
+            "quote": "true"
+          }
+        ],
+        "/extensions/erp": [
+          {
+            "source_id": "existing:OLD1",
+            "locator": {
+              "kind": "existing_record",
+              "page": null,
+              "section": null,
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": "/extensions/erp"
+            },
+            "quote": "{\n  \"memo\": \"keep\",\n  \"status\": \"open\"\n}"
+          }
+        ]
+      },
+      "issues": [
+        {
+          "code": "UNAUTHORIZED_CHANGE",
+          "severity": "warning",
+          "blocks_automation": true,
+          "field": "/charge_details/amount",
+          "message": "Domain rule: UNAUTHORIZED_CHANGE"
+        }
+      ],
+      "changes": []
+    },
+    "shipping_info": {},
+    "erp_metadata": {
+      "approved": true,
+      "nested": [
+        1,
+        {
+          "keep": "unchanged"
+        }
+      ]
+    }
+  }
+]

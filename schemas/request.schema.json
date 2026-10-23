@@ -11,16 +11,16 @@
           "type": "string"
         },
         "document_info": {
-          "$ref": "#/$defs/DocumentInfo"
+          "$ref": "#/$defs/SnapshotDocumentInfo"
         },
         "transaction_party": {
-          "$ref": "#/$defs/TransactionParty"
+          "$ref": "#/$defs/SnapshotTransactionParty"
         },
         "charge_details": {
-          "$ref": "#/$defs/ChargeDetails"
+          "$ref": "#/$defs/SnapshotChargeDetails"
         },
         "financial_attributes": {
-          "$ref": "#/$defs/FinancialAttributes"
+          "$ref": "#/$defs/SnapshotFinancialAttributes"
         },
         "extensions": {
           "additionalProperties": true,
@@ -38,8 +38,8 @@
       "title": "BillSnapshot",
       "type": "object"
     },
-    "ChargeDetails": {
-      "additionalProperties": false,
+    "SnapshotChargeDetails": {
+      "additionalProperties": true,
       "properties": {
         "charge_item": {
           "anyOf": [
@@ -159,11 +159,11 @@
         "currency",
         "payment_term"
       ],
-      "title": "ChargeDetails",
+      "title": "SnapshotChargeDetails",
       "type": "object"
     },
-    "DocumentInfo": {
-      "additionalProperties": false,
+    "SnapshotDocumentInfo": {
+      "additionalProperties": true,
       "properties": {
         "document_type": {
           "anyOf": [
@@ -220,11 +220,11 @@
         "reference_no",
         "document_date"
       ],
-      "title": "DocumentInfo",
+      "title": "SnapshotDocumentInfo",
       "type": "object"
     },
-    "FinancialAttributes": {
-      "additionalProperties": false,
+    "SnapshotFinancialAttributes": {
+      "additionalProperties": true,
       "properties": {
         "accounting_entity": {
           "anyOf": [
@@ -259,7 +259,44 @@
         "accounting_entity",
         "posting_type"
       ],
-      "title": "FinancialAttributes",
+      "title": "SnapshotFinancialAttributes",
+      "type": "object"
+    },
+    "SnapshotTransactionParty": {
+      "additionalProperties": true,
+      "properties": {
+        "issuer": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Issuer"
+        },
+        "recipient": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Recipient"
+        }
+      },
+      "required": [
+        "issuer",
+        "recipient"
+      ],
+      "title": "SnapshotTransactionParty",
       "type": "object"
     },
     "SourceDocument": {
@@ -313,43 +350,6 @@
         "source_id"
       ],
       "title": "SourceDocument",
-      "type": "object"
-    },
-    "TransactionParty": {
-      "additionalProperties": false,
-      "properties": {
-        "issuer": {
-          "anyOf": [
-            {
-              "minLength": 1,
-              "pattern": "\\S",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "title": "Issuer"
-        },
-        "recipient": {
-          "anyOf": [
-            {
-              "minLength": 1,
-              "pattern": "\\S",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "title": "Recipient"
-        }
-      },
-      "required": [
-        "issuer",
-        "recipient"
-      ],
-      "title": "TransactionParty",
       "type": "object"
     }
   },

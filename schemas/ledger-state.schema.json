@@ -1,0 +1,362 @@
+{
+  "$defs": {
+    "BillSnapshot": {
+      "additionalProperties": true,
+      "description": "Old snapshots preserve unknown root fields; do not reclassify historical operations.",
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "document_info": {
+          "$ref": "#/$defs/SnapshotDocumentInfo"
+        },
+        "transaction_party": {
+          "$ref": "#/$defs/SnapshotTransactionParty"
+        },
+        "charge_details": {
+          "$ref": "#/$defs/SnapshotChargeDetails"
+        },
+        "financial_attributes": {
+          "$ref": "#/$defs/SnapshotFinancialAttributes"
+        },
+        "extensions": {
+          "additionalProperties": true,
+          "title": "Extensions",
+          "type": "object"
+        }
+      },
+      "required": [
+        "record_id",
+        "document_info",
+        "transaction_party",
+        "charge_details",
+        "financial_attributes"
+      ],
+      "title": "BillSnapshot",
+      "type": "object"
+    },
+    "IdentityEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "occurrence_keys": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Occurrence Keys",
+          "type": "array"
+        }
+      },
+      "required": [
+        "record_id"
+      ],
+      "title": "IdentityEntry",
+      "type": "object"
+    },
+    "SnapshotChargeDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "charge_item": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Charge Item"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Amount"
+        },
+        "currency": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z]{3}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Currency"
+        },
+        "payment_term": {
+          "anyOf": [
+            {
+              "enum": [
+                "PP",
+                "CC"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Payment Term"
+        },
+        "charge_item_raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Charge Item Raw"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quantity"
+        },
+        "unit_price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit Price"
+        },
+        "payment_term_raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Payment Term Raw"
+        },
+        "currency_raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Currency Raw"
+        }
+      },
+      "required": [
+        "charge_item",
+        "amount",
+        "currency",
+        "payment_term"
+      ],
+      "title": "SnapshotChargeDetails",
+      "type": "object"
+    },
+    "SnapshotDocumentInfo": {
+      "additionalProperties": true,
+      "properties": {
+        "document_type": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Document Type"
+        },
+        "reference_no": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reference No"
+        },
+        "document_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Document Date"
+        },
+        "document_date_raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Document Date Raw"
+        }
+      },
+      "required": [
+        "document_type",
+        "reference_no",
+        "document_date"
+      ],
+      "title": "SnapshotDocumentInfo",
+      "type": "object"
+    },
+    "SnapshotFinancialAttributes": {
+      "additionalProperties": true,
+      "properties": {
+        "accounting_entity": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Accounting Entity"
+        },
+        "posting_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "AR",
+                "AP"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Posting Type"
+        }
+      },
+      "required": [
+        "accounting_entity",
+        "posting_type"
+      ],
+      "title": "SnapshotFinancialAttributes",
+      "type": "object"
+    },
+    "SnapshotTransactionParty": {
+      "additionalProperties": true,
+      "properties": {
+        "issuer": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Issuer"
+        },
+        "recipient": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Recipient"
+        }
+      },
+      "required": [
+        "issuer",
+        "recipient"
+      ],
+      "title": "SnapshotTransactionParty",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0",
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "bills": {
+      "items": {
+        "$ref": "#/$defs/BillSnapshot"
+      },
+      "title": "Bills",
+      "type": "array"
+    },
+    "identities": {
+      "items": {
+        "$ref": "#/$defs/IdentityEntry"
+      },
+      "title": "Identities",
+      "type": "array"
+    },
+    "audit_log": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Audit Log",
+      "type": "array"
+    }
+  },
+  "title": "LedgerState",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

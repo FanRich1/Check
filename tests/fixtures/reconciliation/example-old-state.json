@@ -1,0 +1,54 @@
+{
+  "schema_version": "0.1.0",
+  "bills": [
+    {
+      "record_id": "OLD1",
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-RULE",
+        "document_date": null,
+        "document_date_raw": null,
+        "custom_document_tag": "original"
+      },
+      "transaction_party": {
+        "issuer": "Supplier Ltd",
+        "recipient": "Buyer Ltd"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "amount": 40,
+        "currency": "USD",
+        "payment_term": null,
+        "charge_item_raw": "Handling Fee",
+        "quantity": null,
+        "unit_price": null,
+        "payment_term_raw": null,
+        "currency_raw": "USD",
+        "erp_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Buyer Ltd",
+        "posting_type": "AP"
+      },
+      "extensions": {
+        "reviewed": true,
+        "erp": {
+          "memo": "keep",
+          "status": "open"
+        }
+      },
+      "shipping_info": {},
+      "erp_metadata": {
+        "approved": true,
+        "nested": [
+          1,
+          {
+            "keep": "unchanged"
+          }
+        ]
+      }
+    }
+  ],
+  "identities": [],
+  "audit_log": []
+}

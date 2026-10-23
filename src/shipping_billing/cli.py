@@ -15,6 +15,7 @@ from shipping_billing.extraction.contracts import ExtractionReport
 from shipping_billing.io import dumps, load_json, write_json
 from shipping_billing.models import BillingRequest, Candidate, RunManifest
 from shipping_billing.parsers.contracts import ParseReport
+from shipping_billing.reconciliation.contracts import LedgerState, ReconciliationContext, ReconciliationReport
 
 SCHEMAS = {
     "request": TypeAdapter(BillingRequest),
@@ -25,6 +26,9 @@ SCHEMAS = {
     "extraction-report": TypeAdapter(ExtractionReport),
     "normalization-context": TypeAdapter(NormalizationContext),
     "normalization-report": TypeAdapter(NormalizationReport),
+    "ledger-state": TypeAdapter(LedgerState),
+    "reconciliation-context": TypeAdapter(ReconciliationContext),
+    "reconciliation-report": TypeAdapter(ReconciliationReport),
 }
 LOG = logging.getLogger("shipping_billing")
 
@@ -54,6 +58,21 @@ def parser():
     )
     norm.add_argument("--accounting-entity", help="Explicit accounting entity; do not combine with context")
     norm.add_argument("--output", type=Path, required=True)
+    rec = sub.add_parser("reconcile", help="Match normalized fees and preview authorized incremental changes")
+    rec.add_argument("input", type=Path, help="Stage 5 normalization report")
+    rec.add_argument("--extraction", type=Path, required=True, help="Exact stage 4 evidence report")
+    rec.add_argument(
+        "--context", type=Path, help="Normalization context plus evidence-backed edit directives"
+    )
+    old = rec.add_mutually_exclusive_group()
+    old.add_argument("--state", type=Path, help="Persisted ledger state, including deduplication identities")
+    old.add_argument("--existing-bills", type=Path, help="Initial old bill JSON array")
+    rec.add_argument(
+        "--parse-report", type=Path, help="Optional matching parse report for source byte hashes"
+    )
+    rec.add_argument("--output", type=Path, required=True)
+    rec.add_argument("--records-output", type=Path)
+    rec.add_argument("--state-output", type=Path)
     extract = sub.add_parser("extract", help="Extract evidence-checked fee candidates from a parse report")
     extract.add_argument("input", type=Path)
     extract.add_argument("--mode", choices=["live", "replay"], required=True)
@@ -93,7 +112,7 @@ def parser():
     ev.add_argument("--case", type=Path, required=True)
     ev.add_argument("--actual", type=Path, required=True)
     ev.add_argument("--report", type=Path, required=True)
-    sub.add_parser("run", help="Reserved end-to-end entry; matching and final decisions not yet implemented")
+    sub.add_parser("run", help="Reserved stage 7 end-to-end entry; use individual stage commands currently")
     return p
 
 
@@ -118,6 +137,68 @@ def main(argv=None):
         logging.basicConfig(level=settings.log_level, format="%(levelname)s %(name)s %(message)s")
         if args.command == "config-check":
             print(dumps(settings.public_summary()))
+        elif args.command == "reconcile":
+            from shipping_billing.reconciliation.engine import reconcile
+
+            inputs = [args.input, args.extraction] + [
+                p
+                for p in (args.context, args.state, args.existing_bills, args.parse_report, args.env_file)
+                if p
+            ]
+            outputs = [p for p in (args.output, args.records_output, args.state_output) if p]
+            for output in outputs:
+                protect_outputs(output, inputs)
+            if len({p.resolve() for p in outputs}) != len(outputs):
+                raise BillingError(
+                    "OUTPUT_PATH_COLLISION", "Report, records and state need distinct output paths."
+                )
+            context = (
+                ReconciliationContext.model_validate(load_json(args.context))
+                if args.context
+                else ReconciliationContext()
+            )
+            state = LedgerState.model_validate(load_json(args.state)) if args.state else LedgerState()
+            if args.existing_bills:
+                state = LedgerState(bills=load_json(args.existing_bills))
+            result = reconcile(
+                NormalizationReport.model_validate(load_json(args.input)),
+                ExtractionReport.model_validate(load_json(args.extraction)),
+                state=state,
+                context=context,
+                parsed=ParseReport.model_validate(load_json(args.parse_report))
+                if args.parse_report
+                else None,
+            )
+            write_json(args.output, result.model_dump(mode="python"))
+            if args.records_output:
+                write_json(
+                    args.records_output,
+                    [r.model_dump(mode="python", exclude_unset=True) for r in result.records],
+                )
+            if args.state_output:
+                write_json(args.state_output, result.next_state.model_dump(mode="python"))
+            counts = {
+                op: sum(d.operation == op for d in result.decisions)
+                for op in ("CREATE", "UPDATE", "NO_CHANGE", "PENDING_REVIEW")
+            }
+            print(
+                dumps(
+                    {
+                        "lines": len(result.decisions),
+                        "records": len(result.records),
+                        **counts,
+                        "model_invocations": 0,
+                        "billing_pipeline_executed": False,
+                    }
+                )
+            )
+            return (
+                3
+                if any(f.status == "error" for f in result.files)
+                else 1
+                if any(f.status == "pending_review" for f in result.files)
+                else 0
+            )
         elif args.command == "normalize":
             from shipping_billing.domain.engine import normalize
 

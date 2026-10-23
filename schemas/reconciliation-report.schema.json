@@ -1,0 +1,934 @@
+{
+  "$defs": {
+    "AuditTrail": {
+      "additionalProperties": false,
+      "properties": {
+        "ai_reasoning": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Ai Reasoning",
+          "type": "array"
+        },
+        "sources": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "field_evidence": {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/$defs/Evidence"
+            },
+            "type": "array"
+          },
+          "title": "Field Evidence",
+          "type": "object"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/Issue"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "changes": {
+          "items": {
+            "$ref": "#/$defs/Change"
+          },
+          "title": "Changes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "ai_reasoning"
+      ],
+      "title": "AuditTrail",
+      "type": "object"
+    },
+    "BillSnapshot": {
+      "additionalProperties": true,
+      "description": "Old snapshots preserve unknown root fields; do not reclassify historical operations.",
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "document_info": {
+          "$ref": "#/$defs/SnapshotDocumentInfo"
+        },
+        "transaction_party": {
+          "$ref": "#/$defs/SnapshotTransactionParty"
+        },
+        "charge_details": {
+          "$ref": "#/$defs/SnapshotChargeDetails"
+        },
+        "financial_attributes": {
+          "$ref": "#/$defs/SnapshotFinancialAttributes"
+        },
+        "extensions": {
+          "additionalProperties": true,
+          "title": "Extensions",
+          "type": "object"
+        }
+      },
+      "required": [
+        "record_id",
+        "document_info",
+        "transaction_party",
+        "charge_details",
+        "financial_attributes"
+      ],
+      "title": "BillSnapshot",
+      "type": "object"
+    },
+    "BillingRecord": {
+      "additionalProperties": true,
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "document_info": {
+          "$ref": "#/$defs/SnapshotDocumentInfo"
+        },
+        "transaction_party": {
+          "$ref": "#/$defs/SnapshotTransactionParty"
+        },
+        "charge_details": {
+          "$ref": "#/$defs/SnapshotChargeDetails"
+        },
+        "financial_attributes": {
+          "$ref": "#/$defs/SnapshotFinancialAttributes"
+        },
+        "extensions": {
+          "additionalProperties": true,
+          "title": "Extensions",
+          "type": "object"
+        },
+        "operation": {
+          "enum": [
+            "CREATE",
+            "UPDATE",
+            "NO_CHANGE",
+            "PENDING_REVIEW"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "existing_record_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Existing Record Id"
+        },
+        "audit_trail": {
+          "$ref": "#/$defs/AuditTrail"
+        },
+        "shipping_info": {
+          "additionalProperties": true,
+          "title": "Shipping Info",
+          "type": "object"
+        }
+      },
+      "required": [
+        "record_id",
+        "document_info",
+        "transaction_party",
+        "charge_details",
+        "financial_attributes",
+        "operation",
+        "audit_trail"
+      ],
+      "title": "BillingRecord",
+      "type": "object"
+    },
+    "Change": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "pattern": "^/(document_info|transaction_party|charge_details|financial_attributes|shipping_info|extensions)/.+",
+          "title": "Path",
+          "type": "string"
+        },
+        "old": {
+          "title": "Old"
+        },
+        "new": {
+          "title": "New"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "path",
+        "old",
+        "new",
+        "evidence"
+      ],
+      "title": "Change",
+      "type": "object"
+    },
+    "DecisionFile": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "parent_source_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Source Id"
+        },
+        "status": {
+          "enum": [
+            "processed",
+            "no_charge",
+            "pending_review",
+            "error"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/Issue"
+          },
+          "title": "Issues",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_id",
+        "status"
+      ],
+      "title": "DecisionFile",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "locator": {
+          "$ref": "#/$defs/Locator"
+        },
+        "quote": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Quote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "locator",
+        "quote"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "IdentityEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "occurrence_keys": {
+          "items": {
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string"
+          },
+          "title": "Occurrence Keys",
+          "type": "array"
+        }
+      },
+      "required": [
+        "record_id"
+      ],
+      "title": "IdentityEntry",
+      "type": "object"
+    },
+    "Issue": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "warning",
+            "error"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "blocks_automation": {
+          "title": "Blocks Automation",
+          "type": "boolean"
+        },
+        "field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field"
+        },
+        "message": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "blocks_automation",
+        "message"
+      ],
+      "title": "Issue",
+      "type": "object"
+    },
+    "LedgerState": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "0.1.0",
+          "default": "0.1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "bills": {
+          "items": {
+            "$ref": "#/$defs/BillSnapshot"
+          },
+          "title": "Bills",
+          "type": "array"
+        },
+        "identities": {
+          "items": {
+            "$ref": "#/$defs/IdentityEntry"
+          },
+          "title": "Identities",
+          "type": "array"
+        },
+        "audit_log": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Audit Log",
+          "type": "array"
+        }
+      },
+      "title": "LedgerState",
+      "type": "object"
+    },
+    "LineDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "source_line_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Line Id",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "operation": {
+          "enum": [
+            "CREATE",
+            "UPDATE",
+            "NO_CHANGE",
+            "PENDING_REVIEW"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "matched_record_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Matched Record Ids",
+          "type": "array"
+        },
+        "match_rule": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Match Rule"
+        },
+        "duplicate_of": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duplicate Of"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/Issue"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "differences": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Differences",
+          "type": "array"
+        },
+        "proposed_changes": {
+          "items": {
+            "$ref": "#/$defs/Change"
+          },
+          "title": "Proposed Changes",
+          "type": "array"
+        },
+        "observed": {
+          "additionalProperties": true,
+          "title": "Observed",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source_line_id",
+        "source_id",
+        "operation",
+        "record_id"
+      ],
+      "title": "LineDecision",
+      "type": "object"
+    },
+    "Locator": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "email_body",
+            "email_header",
+            "pdf_page",
+            "image_region",
+            "sheet_cells",
+            "word_block",
+            "existing_record"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "page": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Page"
+        },
+        "section": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Section"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "sheet": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sheet"
+        },
+        "cells": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cells"
+        },
+        "block": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Block"
+        },
+        "pointer": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pointer"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Locator",
+      "type": "object"
+    },
+    "SnapshotChargeDetails": {
+      "additionalProperties": true,
+      "properties": {
+        "charge_item": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Charge Item"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Amount"
+        },
+        "currency": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z]{3}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Currency"
+        },
+        "payment_term": {
+          "anyOf": [
+            {
+              "enum": [
+                "PP",
+                "CC"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Payment Term"
+        },
+        "charge_item_raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Charge Item Raw"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quantity"
+        },
+        "unit_price": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit Price"
+        },
+        "payment_term_raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Payment Term Raw"
+        },
+        "currency_raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Currency Raw"
+        }
+      },
+      "required": [
+        "charge_item",
+        "amount",
+        "currency",
+        "payment_term"
+      ],
+      "title": "SnapshotChargeDetails",
+      "type": "object"
+    },
+    "SnapshotDocumentInfo": {
+      "additionalProperties": true,
+      "properties": {
+        "document_type": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Document Type"
+        },
+        "reference_no": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reference No"
+        },
+        "document_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Document Date"
+        },
+        "document_date_raw": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Document Date Raw"
+        }
+      },
+      "required": [
+        "document_type",
+        "reference_no",
+        "document_date"
+      ],
+      "title": "SnapshotDocumentInfo",
+      "type": "object"
+    },
+    "SnapshotFinancialAttributes": {
+      "additionalProperties": true,
+      "properties": {
+        "accounting_entity": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Accounting Entity"
+        },
+        "posting_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "AR",
+                "AP"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Posting Type"
+        }
+      },
+      "required": [
+        "accounting_entity",
+        "posting_type"
+      ],
+      "title": "SnapshotFinancialAttributes",
+      "type": "object"
+    },
+    "SnapshotTransactionParty": {
+      "additionalProperties": true,
+      "properties": {
+        "issuer": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Issuer"
+        },
+        "recipient": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Recipient"
+        }
+      },
+      "required": [
+        "issuer",
+        "recipient"
+      ],
+      "title": "SnapshotTransactionParty",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0",
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "rules_version": {
+      "const": "stage6-reconcile-v1",
+      "default": "stage6-reconcile-v1",
+      "title": "Rules Version",
+      "type": "string"
+    },
+    "input_sha256": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Input Sha256",
+      "type": "string"
+    },
+    "previous_state_sha256": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Previous State Sha256",
+      "type": "string"
+    },
+    "records": {
+      "items": {
+        "$ref": "#/$defs/BillingRecord"
+      },
+      "title": "Records",
+      "type": "array"
+    },
+    "decisions": {
+      "items": {
+        "$ref": "#/$defs/LineDecision"
+      },
+      "title": "Decisions",
+      "type": "array"
+    },
+    "files": {
+      "items": {
+        "$ref": "#/$defs/DecisionFile"
+      },
+      "title": "Files",
+      "type": "array"
+    },
+    "next_state": {
+      "$ref": "#/$defs/LedgerState"
+    },
+    "model_invocations": {
+      "const": 0,
+      "default": 0,
+      "title": "Model Invocations",
+      "type": "integer"
+    },
+    "billing_pipeline_executed": {
+      "const": false,
+      "default": false,
+      "title": "Billing Pipeline Executed",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "input_sha256",
+    "previous_state_sha256",
+    "records",
+    "decisions",
+    "files",
+    "next_state"
+  ],
+  "title": "ReconciliationReport",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

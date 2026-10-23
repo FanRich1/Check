@@ -1,4 +1,4 @@
-"""Versioned contracts; business matching/extraction is intentionally not implemented here."""
+"""Versioned public contracts; processing rules live in dedicated modules."""
 
 import re
 from datetime import date
@@ -83,6 +83,17 @@ class Issue(Contract):
     message: Text
 
 
+def same_json_value(a, b):
+    """JSON booleans are distinct from numbers, including inside custom fields."""
+    if isinstance(a, bool) or isinstance(b, bool):
+        return type(a) is type(b) and a == b
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(same_json_value(a[k], b[k]) for k in a)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(same_json_value(x, y) for x, y in zip(a, b))
+    return a == b
+
+
 class Change(Contract):
     path: Annotated[
         str,
@@ -96,7 +107,7 @@ class Change(Contract):
 
     @model_validator(mode="after")
     def is_change(self):
-        if self.old == self.new:
+        if same_json_value(self.old, self.new):
             raise ValueError("a change must have different values")
         return self
 
@@ -158,15 +169,31 @@ class FinancialAttributes(Contract):
     posting_type: Literal["AR", "AP"] | None
 
 
+class SnapshotDocumentInfo(DocumentInfo):
+    model_config = ConfigDict(extra="allow")
+
+
+class SnapshotTransactionParty(TransactionParty):
+    model_config = ConfigDict(extra="allow")
+
+
+class SnapshotChargeDetails(ChargeDetails):
+    model_config = ConfigDict(extra="allow")
+
+
+class SnapshotFinancialAttributes(FinancialAttributes):
+    model_config = ConfigDict(extra="allow")
+
+
 class BillSnapshot(BaseModel):
     """Old snapshots preserve unknown root fields; do not reclassify historical operations."""
 
     model_config = ConfigDict(extra="allow")
     record_id: Text
-    document_info: DocumentInfo
-    transaction_party: TransactionParty
-    charge_details: ChargeDetails
-    financial_attributes: FinancialAttributes
+    document_info: SnapshotDocumentInfo
+    transaction_party: SnapshotTransactionParty
+    charge_details: SnapshotChargeDetails
+    financial_attributes: SnapshotFinancialAttributes
     extensions: dict[str, Any] = Field(default_factory=dict)
 
 

@@ -1,0 +1,40 @@
+{
+  "normalization_context": {
+    "accounting_entity": "Buyer Ltd",
+    "party_aliases": {},
+    "charge_aliases": {},
+    "rounding": "exact",
+    "lines": {},
+    "totals": [],
+    "use_observed_totals": true
+  },
+  "lines": {
+    "s:L1": {
+      "selector": null,
+      "edits": [
+        {
+          "path": "/charge_details/amount",
+          "action": "set",
+          "expected_old": 40,
+          "value": 50,
+          "evidence": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "extra-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Update /charge_details/amount from 40 to 50."
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

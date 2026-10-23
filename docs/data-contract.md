@@ -108,3 +108,17 @@ PENDING_REVIEW 保留可确定候选值及具体阻断原因，不应用到旧�
 `ready` 是进入阶段 6 的领域检查结果，不代表已匹配、去重、授权更新或自动入账。原始来源的 OCR/提取风险不因标准化而消失。正常 invoice/debit 的已验证签发方收款、被开票接收方付款；若字段证据只证明 shipper/consignee/bank 等角色则复核；其他方向需明确的结算角色。贷项、冲销和负数需可定位原账关系，AR/AP 类别不翻转，仅将金额记为减少余额，正负原值均只处理一次。原关系冲突时保留原金额并复核。
 
 舍入默认 exact；仅显式 HALF_UP/HALF_EVEN 会对计算期望值按该币种小数位舍入，实际打印金额不静默修约。单价可多位小数；最终金额需符合币种精度。不存在全局 0.01 容差。单据税/折扣/已付/余额均是事实，不是费用行；百分比不能当成税额，不同币种不合并。历史币种不自动推测当期精度，进入复核。结构 schema 见 normalization-context.schema.json 与 normalization-report.schema.json。
+
+## 11. 阶段 6 匹配、修改策略与状态
+
+`ReconciliationContext.normalization_context` 必须与生成阶段 5 报告时完全一致；引擎从原始 ExtractionReport 重算并逐值比较规范化结果，拒绝拼接其他输入或伪造 ready。可选 ParseReport 也校验完整输入哈希，之后才能使用原始文件字节哈希去重。
+
+`lines[source_line_id]` 可指定有证据的 selector（明确 record_id）及 edits。每项 edit 包含 path、set/clear、expected_old、value 与原文证据。只允许列举的单据、双方、费用、运输字段及 extensions 叶路径，不能直接修改身份、财务属性、来源或历史审计。空值不会自动清空；clear 必须显式，核心金额/币种/费用名不可清空。非空新旧冲突，没有有效 edit 时复核。expected_old 不一致时阻断，已经等于目标值则为重传已满足。
+
+匹配遵循第 4 节优先级；同名多候选不使用新金额挑选。强键命中但冲突时不降级绕过。原账贷项/冲销与正向单据分开。来源身份由文档哈希、具体行/区域位置和记账主体构成，不使用费用名或金额充当行号。相同文档不同实际行保留；完全重复来源有逐行 decision 和 duplicate_of，主 records 只保存一次。
+
+`LedgerState`：bills、identities、audit_log。bills 必须有唯一稳定 record_id，保留未提供字段的缺省状态及旧账所有自定义根/嵌套字段；identities 是来源指纹到旧记录的绑定；audit_log 只追加已接受的 CREATE/UPDATE。修改在副本上应用，不改变输入。UPDATE 清单之外的业务差异会拒绝，过期快照会拒绝。合并后重新检查金额及财务约束，不能用旧值继承绕过错误。
+
+`ReconciliationReport`：records 是四类核心账单结果，decisions 为每个输入费用行的匹配、差异、拟议变更和问题，files 为来源清单，next_state 为可保存的新快照。PENDING_REVIEW 的拟议变更只存在 decision 中，不作为已应用的 audit changes；其业务快照保持旧值。完整 state 应用于下一次运行，单独核心账单数组不保留来源索引。结构 schema 为 ledger-state、reconciliation-context、reconciliation-report。
+
+本阶段为离线组件，model_invocations=0，billing_pipeline_executed=false；完整原始文档流水线和自动意图提取在阶段 7 集成。

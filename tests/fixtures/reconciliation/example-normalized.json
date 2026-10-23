@@ -1,0 +1,507 @@
+{
+  "schema_version": "0.1.0",
+  "rules_version": "stage5-domain-v1",
+  "currency_snapshot": {
+    "source_url": "https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml",
+    "publication": {
+      "Pblshd": "2026-09-17"
+    },
+    "retrieved_client_date": "2026-10-23",
+    "source_sha256": "33139b438657d1cee116ba737807ea71d19d6de4b90f799a09c56f0cc6a1b0ff",
+    "historical_source": {
+      "source_url": "https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-three.xml",
+      "publication": {
+        "Pblshd": "2026-01-01"
+      },
+      "source_sha256": "98fde2423cdb916dd59dcf5fe96222edad8fa198d865c1c83dbc464b9cc52387"
+    }
+  },
+  "input_sha256": "2a5b194825d3f0c67d62bda771c2a4b56732afd11685267da935854afd38c2cf",
+  "context_sha256": "6cb2c358eb428e3ca61f71c494c6c58572619047d6c4a7d359399008fe075952",
+  "files": [
+    {
+      "source_id": "s",
+      "parent_source_id": null,
+      "status": "ready",
+      "line_ids": [
+        "s:L1"
+      ],
+      "issues": []
+    }
+  ],
+  "lines": [
+    {
+      "source_line_id": "s:L1",
+      "source_id": "s",
+      "original": {
+        "source_line_id": "s:L1",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-RULE",
+          "document_date": null,
+          "document_date_raw": null
+        },
+        "transaction_party": {
+          "issuer": "Supplier Ltd",
+          "recipient": "Buyer Ltd"
+        },
+        "charge_details": {
+          "charge_item": "Handling Fee",
+          "amount": 50,
+          "currency": "USD",
+          "payment_term": null,
+          "charge_item_raw": "Handling Fee",
+          "quantity": null,
+          "unit_price": null,
+          "payment_term_raw": null,
+          "currency_raw": "USD"
+        },
+        "evidence": [
+          {
+            "source_id": "s",
+            "locator": {
+              "kind": "email_body",
+              "page": null,
+              "section": "fee-1",
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": null
+            },
+            "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+          }
+        ],
+        "issues": [],
+        "source_id": "s",
+        "shipping_info": {},
+        "field_evidence": {
+          "/charge_details/charge_item_raw": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/charge_details/amount": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/charge_details/currency_raw": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/document_info/document_type": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/document_info/reference_no": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/transaction_party/issuer": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/transaction_party/recipient": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "source_line_id": "s:L1",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-RULE",
+          "document_date": null,
+          "document_date_raw": null
+        },
+        "transaction_party": {
+          "issuer": "Supplier Ltd",
+          "recipient": "Buyer Ltd"
+        },
+        "charge_details": {
+          "charge_item": "Handling Charge",
+          "amount": 50,
+          "currency": "USD",
+          "payment_term": null,
+          "charge_item_raw": "Handling Fee",
+          "quantity": null,
+          "unit_price": null,
+          "payment_term_raw": null,
+          "currency_raw": "USD"
+        },
+        "evidence": [
+          {
+            "source_id": "s",
+            "locator": {
+              "kind": "email_body",
+              "page": null,
+              "section": "fee-1",
+              "region": null,
+              "sheet": null,
+              "cells": null,
+              "block": null,
+              "pointer": null
+            },
+            "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+          }
+        ],
+        "issues": [],
+        "source_id": "s",
+        "shipping_info": {},
+        "field_evidence": {
+          "/charge_details/charge_item_raw": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/charge_details/amount": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/charge_details/currency_raw": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/document_info/document_type": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/document_info/reference_no": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/transaction_party/issuer": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/transaction_party/recipient": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/charge_details/charge_item": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "/charge_details/currency": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ]
+        }
+      },
+      "financial_attributes": {
+        "accounting_entity": "Buyer Ltd",
+        "posting_type": "AP"
+      },
+      "status": "ready",
+      "balance_effect": "increase",
+      "currency_minor_units": 2,
+      "settlement_condition": null,
+      "issues": [],
+      "events": [
+        {
+          "rule": "charge.exact_alias",
+          "path": "/charge_details/charge_item",
+          "old": "Handling Fee",
+          "new": "Handling Charge",
+          "evidence": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "context_pointer": null
+        },
+        {
+          "rule": "finance.explicit_entity",
+          "path": "/financial_attributes/accounting_entity",
+          "old": null,
+          "new": "Buyer Ltd",
+          "evidence": [],
+          "context_pointer": "/accounting_entity"
+        },
+        {
+          "rule": "finance.billing_relationship",
+          "path": "/financial_attributes/posting_type",
+          "old": null,
+          "new": "AP",
+          "evidence": [
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            },
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            },
+            {
+              "source_id": "s",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "fee-1",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "Type: Invoice; Invoice: INV-RULE; Issuer: Supplier Ltd; Bill to: Buyer Ltd\ncharge_item_raw: Handling Fee; amount: 50; currency_raw: USD"
+            }
+          ],
+          "context_pointer": "/accounting_entity"
+        }
+      ],
+      "checks": [
+        {
+          "code": "AMOUNT_MINOR_UNIT",
+          "status": "passed",
+          "expected": 50.00,
+          "actual": 50,
+          "evidence": [],
+          "message": "Printed amount must fit the currency minor unit; never silently round it."
+        },
+        {
+          "code": "QUANTITY_PRICE",
+          "status": "not_checkable",
+          "expected": null,
+          "actual": null,
+          "evidence": [],
+          "message": "Missing optional quantity or unit price; retain the explicit line amount."
+        }
+      ]
+    }
+  ],
+  "document_checks": [
+    {
+      "code": "TOTAL_NOT_PROVIDED",
+      "status": "not_checkable",
+      "expected": null,
+      "actual": null,
+      "evidence": [],
+      "message": "No document total supplied; explicit line amounts retained."
+    }
+  ],
+  "model_invocations": 0,
+  "billing_pipeline_executed": false
+}
