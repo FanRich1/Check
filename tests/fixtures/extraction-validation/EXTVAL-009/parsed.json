@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "mode": "offline",
+  "sources": [
+    {
+      "source_id": "EXTVAL-009",
+      "parent_source_id": null,
+      "original_name": "synthetic.eml",
+      "declared_mime": null,
+      "detected_format": "eml",
+      "sha256": null,
+      "size_bytes": null,
+      "status": "parsed",
+      "fragments": [
+        {
+          "fragment_id": "EXTVAL-009:f1",
+          "source_id": "EXTVAL-009",
+          "text": "For shipment BQ-909, LON pay OAK: documentation $48.\nCarrier handling free.",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "body",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          },
+          "method": "authored_synthetic_fragment"
+        }
+      ],
+      "tables": [],
+      "issues": [],
+      "metadata": {
+        "synthetic_preparsed": true
+      },
+      "ocr_results": []
+    }
+  ],
+  "billing_pipeline_executed": false
+}

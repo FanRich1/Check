@@ -1,0 +1,157 @@
+{
+  "annotation_source": "authored_synthetic_not_prediction",
+  "expected_records": [
+    {
+      "record_id": "DEV-006-L1",
+      "existing_record_id": null,
+      "operation": "PENDING_REVIEW",
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-006",
+        "document_date": "2026-09-20"
+      },
+      "transaction_party": {
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 55,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null
+      },
+      "financial_attributes": {
+        "accounting_entity": "TEST ORIGIN LOGISTICS",
+        "posting_type": "AP"
+      },
+      "audit_trail": {
+        "ai_reasoning": [
+          "依据明确费用及交易方向；测试预期，不是模型运行结果。"
+        ],
+        "sources": [
+          "DEV-006-source"
+        ],
+        "field_evidence": {
+          "/charge_details/amount": [
+            {
+              "source_id": "DEV-006-source",
+              "locator": {
+                "kind": "email_body",
+                "section": "plain"
+              },
+              "quote": "本邮件为合成测试资料。单据类型 Invoice；单据编号 INV-DEV-006；日期 2026-09-20。\n账单签发方和收款方：TEST DESTINATION AGENCY。账单接收方和付款方：TEST ORIGIN LOGISTICS。\n请把此单的 Handling Charge 改成 USD 55，付款方式 PP；未提供要改哪条费用的行身份。\n"
+            }
+          ]
+        },
+        "issues": [
+          {
+            "code": "MULTIPLE_MATCHES",
+            "severity": "error",
+            "blocks_automation": true,
+            "field": null,
+            "message": "MULTIPLE_MATCHES"
+          }
+        ],
+        "changes": []
+      },
+      "extensions": {
+        "cost_center": "SYNTHETIC-ONLY"
+      }
+    }
+  ],
+  "expected_file_status": "pending_review",
+  "authorized_change_paths": [],
+  "expected_existing_snapshot_after": [
+    {
+      "record_id": "DEV-006-old-a",
+      "existing_record_id": "DEV-006-old-a",
+      "operation": "CREATE",
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-006",
+        "document_date": "2026-09-20"
+      },
+      "transaction_party": {
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 40,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null
+      },
+      "financial_attributes": {
+        "accounting_entity": "TEST ORIGIN LOGISTICS",
+        "posting_type": "AP"
+      },
+      "audit_trail": {
+        "ai_reasoning": [
+          "依据明确费用及交易方向；测试预期，不是模型运行结果。"
+        ],
+        "sources": [
+          "DEV-006-source"
+        ],
+        "field_evidence": {},
+        "issues": [],
+        "changes": []
+      },
+      "extensions": {
+        "cost_center": "SYNTHETIC-ONLY"
+      }
+    },
+    {
+      "record_id": "DEV-006-old-b",
+      "existing_record_id": "DEV-006-old-b",
+      "operation": "CREATE",
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-006",
+        "document_date": "2026-09-20"
+      },
+      "transaction_party": {
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 60,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null
+      },
+      "financial_attributes": {
+        "accounting_entity": "TEST ORIGIN LOGISTICS",
+        "posting_type": "AP"
+      },
+      "audit_trail": {
+        "ai_reasoning": [
+          "依据明确费用及交易方向；测试预期，不是模型运行结果。"
+        ],
+        "sources": [
+          "DEV-006-source"
+        ],
+        "field_evidence": {},
+        "issues": [],
+        "changes": []
+      },
+      "extensions": {
+        "cost_center": "SYNTHETIC-ONLY"
+      }
+    }
+  ],
+  "comparison_ignore_paths": [
+    "/record_id",
+    "/audit_trail/ai_reasoning"
+  ],
+  "can_auto_process": false,
+  "input_sha256": "4945e71758e3de0bef7dc281599a23eb1276a303c1774ae336298ae96be9b7b1"
+}

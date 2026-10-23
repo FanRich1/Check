@@ -1,0 +1,306 @@
+{
+  "version": "extraction-validation-v1",
+  "split": "validation",
+  "scope": "extraction_component_not_parser_or_final_pipeline",
+  "cases": [
+    {
+      "case_id": "EXTVAL-001",
+      "family_id": "extraction-validation-family-001",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-001/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-001",
+          "row_unit": "EXTVAL-001:u4",
+          "name": "Port security",
+          "amount": 17.25,
+          "currency": "USD",
+          "reference_no": "REF-901",
+          "issuer": "Harbor Oak Ltd",
+          "recipient": "Mesa Supply Inc"
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-002",
+      "family_id": "extraction-validation-family-002",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-002/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-002",
+          "row_unit": "EXTVAL-002:u3",
+          "name": "Packing inspection",
+          "amount": 12.5,
+          "currency": "EUR",
+          "reference_no": "REF-902",
+          "issuer": null,
+          "recipient": null
+        },
+        {
+          "source_id": "EXTVAL-002",
+          "row_unit": "EXTVAL-002:u4",
+          "name": "Packing inspection",
+          "amount": 23.75,
+          "currency": "EUR",
+          "reference_no": "REF-902",
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-003",
+      "family_id": "extraction-validation-family-003",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-003/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-003",
+          "row_unit": "EXTVAL-003:u2",
+          "name": "chassis rental",
+          "amount": 83,
+          "currency": "USD",
+          "reference_no": null,
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-004",
+      "family_id": "extraction-validation-family-004",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-004/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-004",
+          "row_unit": "EXTVAL-004:u3",
+          "name": "Gate service",
+          "amount": 36,
+          "currency": "CAD",
+          "reference_no": "REF-904",
+          "issuer": null,
+          "recipient": "River Parts LLC"
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-005",
+      "family_id": "extraction-validation-family-005",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-005/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-005",
+          "row_unit": "EXTVAL-005:u2",
+          "name": "Forklift rental",
+          "amount": 14,
+          "currency": "GBP",
+          "reference_no": null,
+          "issuer": null,
+          "recipient": null
+        },
+        {
+          "source_id": "EXTVAL-005",
+          "row_unit": "EXTVAL-005:u3",
+          "name": "Forklift rental",
+          "amount": 14,
+          "currency": "GBP",
+          "reference_no": null,
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-006",
+      "family_id": "extraction-validation-family-006",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-006/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-006",
+          "row_unit": "EXTVAL-006:u2",
+          "name": "Warehouse check",
+          "amount": 27,
+          "currency": "AUD",
+          "reference_no": "REF-906",
+          "issuer": null,
+          "recipient": null
+        },
+        {
+          "source_id": "EXTVAL-006",
+          "row_unit": "EXTVAL-006:u3",
+          "name": "Transfer service",
+          "amount": 44,
+          "currency": "AUD",
+          "reference_no": "REF-906",
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-007",
+      "family_id": "extraction-validation-family-007",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-007/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-007",
+          "row_unit": "EXTVAL-007:u3",
+          "name": "Seal replacement",
+          "amount": 19,
+          "currency": "NZD",
+          "reference_no": "REF-907",
+          "issuer": "Bay Transit Ltd",
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-008",
+      "family_id": "extraction-validation-family-008",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-008/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-008",
+          "row_unit": "EXTVAL-008:u4",
+          "name": "Service rebate",
+          "amount": -9,
+          "currency": "USD",
+          "reference_no": "REF-908",
+          "issuer": "North Cargo Inc",
+          "recipient": "Pine Labs LLC"
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-009",
+      "family_id": "extraction-validation-family-009",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-009/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-009",
+          "row_unit": "EXTVAL-009:u1",
+          "name": "documentation",
+          "amount": 48,
+          "currency": null,
+          "reference_no": null,
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-010",
+      "family_id": "extraction-validation-family-010",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-010/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-010",
+          "row_unit": "EXTVAL-010:u2",
+          "name": "Storage adjustment",
+          "amount": 24,
+          "currency": "EUR",
+          "reference_no": "REF-910",
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-011",
+      "family_id": "extraction-validation-family-011",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-011/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-011",
+          "row_unit": "EXTVAL-011:u1",
+          "name": "Pier access",
+          "amount": 31,
+          "currency": "USD",
+          "reference_no": null,
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-012",
+      "family_id": "extraction-validation-family-012",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-012/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-012",
+          "row_unit": "EXTVAL-012:u2",
+          "name": "Service fee",
+          "amount": 8,
+          "currency": "USD",
+          "reference_no": null,
+          "issuer": null,
+          "recipient": null
+        },
+        {
+          "source_id": "EXTVAL-012",
+          "row_unit": "EXTVAL-012:u3",
+          "name": "Service fee",
+          "amount": 11,
+          "currency": "EUR",
+          "reference_no": null,
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-013",
+      "family_id": "extraction-validation-family-013",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-013/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-013",
+          "row_unit": "EXTVAL-013:u1",
+          "name": "Terminal service",
+          "amount": 62,
+          "currency": null,
+          "reference_no": null,
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-014",
+      "family_id": "extraction-validation-family-014",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-014/parsed.json",
+      "fees": [
+        {
+          "source_id": "EXTVAL-014",
+          "row_unit": "EXTVAL-014:u2",
+          "name": "Equipment wash",
+          "amount": 29,
+          "currency": "USD",
+          "reference_no": "REF-914",
+          "issuer": null,
+          "recipient": null
+        }
+      ]
+    },
+    {
+      "case_id": "EXTVAL-015",
+      "family_id": "extraction-validation-family-015",
+      "source_kind": "synthetic_preparsed",
+      "input": "EXTVAL-015/parsed.json",
+      "fees": []
+    }
+  ]
+}

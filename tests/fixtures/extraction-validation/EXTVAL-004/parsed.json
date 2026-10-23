@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "mode": "offline",
+  "sources": [
+    {
+      "source_id": "EXTVAL-004",
+      "parent_source_id": null,
+      "original_name": "synthetic.png",
+      "declared_mime": null,
+      "detected_format": "png",
+      "sha256": null,
+      "size_bytes": null,
+      "status": "parsed",
+      "fragments": [
+        {
+          "fragment_id": "EXTVAL-004:f1",
+          "source_id": "EXTVAL-004",
+          "text": "INVOICE REF-904\nBill to: River Parts LLC\nGate service 36 CAD\nTotal CAD 36\nPaid CAD 10\nBalance CAD 26",
+          "locator": {
+            "kind": "image_region",
+            "page": 1,
+            "section": null,
+            "region": "synthetic_text_region",
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          },
+          "method": "authored_synthetic_fragment"
+        }
+      ],
+      "tables": [],
+      "issues": [],
+      "metadata": {
+        "synthetic_preparsed": true
+      },
+      "ocr_results": []
+    }
+  ],
+  "billing_pipeline_executed": false
+}

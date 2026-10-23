@@ -1,0 +1,13 @@
+{
+  "annotation_source": "authored_synthetic_not_prediction",
+  "expected_records": [],
+  "expected_file_status": "no_charge",
+  "authorized_change_paths": [],
+  "expected_existing_snapshot_after": [],
+  "comparison_ignore_paths": [
+    "/record_id",
+    "/audit_trail/ai_reasoning"
+  ],
+  "can_auto_process": false,
+  "input_sha256": "86b4d8c749ee96f225d9714cf11d017ca46debb384d6e57fe1bf7a89601d219c"
+}

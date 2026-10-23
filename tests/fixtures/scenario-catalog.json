@@ -1,0 +1,838 @@
+{
+  "schema_version": "0.1.0",
+  "split_policy": "Source/template families must remain in one split; planned families are provisional until materialization and lineage review.",
+  "holdout_policy": "Only coverage slots are listed; concrete holdout documents and answers are not yet authored and must not be used for prompt tuning.",
+  "cases": [
+    {
+      "case_id": "DEV-001",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "明确新费用",
+      "requirements": [
+        "R10",
+        "R11",
+        "R12",
+        "R14",
+        "R17",
+        "R22",
+        "R28",
+        "R33"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-001/input.eml",
+        "synthetic/DEV-001/request.json",
+        "synthetic/DEV-001/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-002",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "原样账单重传",
+      "requirements": [
+        "R09",
+        "R23"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-002/input.eml",
+        "synthetic/DEV-002/request.json",
+        "synthetic/DEV-002/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-003",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "明确修改金额",
+      "requirements": [
+        "R19",
+        "R20"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-003/input.eml",
+        "synthetic/DEV-003/request.json",
+        "synthetic/DEV-003/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-004",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "缺失字段继承",
+      "requirements": [
+        "R20",
+        "R21"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-004/input.eml",
+        "synthetic/DEV-004/request.json",
+        "synthetic/DEV-004/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-005",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "同单同名两行",
+      "requirements": [
+        "R12",
+        "R18"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-005/input.eml",
+        "synthetic/DEV-005/request.json",
+        "synthetic/DEV-005/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-006",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "旧费用多候选",
+      "requirements": [
+        "R19",
+        "R24"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-006/input.eml",
+        "synthetic/DEV-006/request.json",
+        "synthetic/DEV-006/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-007",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "美元符号币种不明",
+      "requirements": [
+        "R15",
+        "R27"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-007/input.eml",
+        "synthetic/DEV-007/request.json",
+        "synthetic/DEV-007/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-008",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "记账主体缺失",
+      "requirements": [
+        "R22",
+        "R27"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-008/input.eml",
+        "synthetic/DEV-008/request.json",
+        "synthetic/DEV-008/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-009",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "COD 不等于 CC",
+      "requirements": [
+        "R16"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-009/input.eml",
+        "synthetic/DEV-009/request.json",
+        "synthetic/DEV-009/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-010",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "条件条款不计费",
+      "requirements": [
+        "R13",
+        "R18"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-010/input.eml",
+        "synthetic/DEV-010/request.json",
+        "synthetic/DEV-010/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-011",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "明细总额冲突",
+      "requirements": [
+        "R25"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-011/input.eml",
+        "synthetic/DEV-011/request.json",
+        "synthetic/DEV-011/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-012",
+      "family_id": "synthetic-dev-email-seed-v1",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "新值不等于修改授权",
+      "requirements": [
+        "R20",
+        "R24"
+      ],
+      "status": "materialized_not_executed",
+      "files": [
+        "synthetic/DEV-012/input.eml",
+        "synthetic/DEV-012/request.json",
+        "synthetic/DEV-012/expected.json"
+      ]
+    },
+    {
+      "case_id": "DEV-013",
+      "family_id": "synthetic-dev-013",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "显式清空可空字段",
+      "requirements": [
+        "R21"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-014",
+      "family_id": "synthetic-dev-014",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "无效旧账单或重复 ID",
+      "requirements": [
+        "R09"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-015",
+      "family_id": "synthetic-dev-015",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "同业务双方 AR 视角",
+      "requirements": [
+        "R22"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-016",
+      "family_id": "synthetic-dev-016",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "Credit Note 冲销方向",
+      "requirements": [
+        "R22",
+        "R25"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-017",
+      "family_id": "synthetic-dev-017",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "含税折扣费用",
+      "requirements": [
+        "R13",
+        "R25"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-018",
+      "family_id": "synthetic-dev-018",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "多币种不得直接相加",
+      "requirements": [
+        "R15",
+        "R25"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-019",
+      "family_id": "synthetic-dev-019",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "OCR 标识符混淆",
+      "requirements": [
+        "R26"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-020",
+      "family_id": "synthetic-dev-020",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "中文 HTML 邮件编码",
+      "requirements": [
+        "R02"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-021",
+      "family_id": "synthetic-dev-021",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "嵌套邮件和错误 MIME",
+      "requirements": [
+        "R03"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-022",
+      "family_id": "synthetic-dev-022",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "扫描多页 PDF",
+      "requirements": [
+        "R04",
+        "R06"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-023",
+      "family_id": "synthetic-dev-023",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "PNG/JPG/TIFF 图片输入",
+      "requirements": [
+        "R05",
+        "R06"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-024",
+      "family_id": "synthetic-dev-024",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "XLS 费用表",
+      "requirements": [
+        "R07"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-025",
+      "family_id": "synthetic-dev-025",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "XLSX 多表与公式缓存",
+      "requirements": [
+        "R07"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-026",
+      "family_id": "synthetic-dev-026",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "DOC 正文表格",
+      "requirements": [
+        "R08"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-027",
+      "family_id": "synthetic-dev-027",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "DOCX 表格和段落",
+      "requirements": [
+        "R08"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-028",
+      "family_id": "synthetic-dev-028",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "原文定位和严格序列化",
+      "requirements": [
+        "R28",
+        "R29"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-029",
+      "family_id": "synthetic-dev-029",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "在线超时与模型畸形返回",
+      "requirements": [
+        "R01",
+        "R06",
+        "R30"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "DEV-030",
+      "family_id": "synthetic-dev-030",
+      "split": "development",
+      "source_kind": "synthetic",
+      "title": "打包安装及补充思考检查",
+      "requirements": [
+        "R31",
+        "R32"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-001",
+      "family_id": "synthetic-val-001",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "新布局多费用邮件",
+      "requirements": [
+        "R02",
+        "R12",
+        "R17"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-002",
+      "family_id": "synthetic-val-002",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "独立提单附件链",
+      "requirements": [
+        "R03",
+        "R29"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-003",
+      "family_id": "synthetic-val-003",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "独立扫描通知与条件条款",
+      "requirements": [
+        "R04",
+        "R13"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-004",
+      "family_id": "synthetic-val-004",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "独立图片费用单",
+      "requirements": [
+        "R05",
+        "R06"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-005",
+      "family_id": "synthetic-val-005",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "独立 XLS 费用布局",
+      "requirements": [
+        "R07"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-006",
+      "family_id": "synthetic-val-006",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "独立 XLSX 费用布局",
+      "requirements": [
+        "R07"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-007",
+      "family_id": "synthetic-val-007",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "独立 DOC 模板",
+      "requirements": [
+        "R08"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-008",
+      "family_id": "synthetic-val-008",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "独立 DOCX 模板",
+      "requirements": [
+        "R08"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-009",
+      "family_id": "synthetic-val-009",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "明确更新与扩展字段保留",
+      "requirements": [
+        "R20",
+        "R21"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-010",
+      "family_id": "synthetic-val-010",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "多键匹配与候选冲突",
+      "requirements": [
+        "R19",
+        "R24"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-011",
+      "family_id": "synthetic-val-011",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "重传及跨来源重复",
+      "requirements": [
+        "R18",
+        "R23"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-012",
+      "family_id": "synthetic-val-012",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "独立贷项与财务视角",
+      "requirements": [
+        "R22",
+        "R25"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-013",
+      "family_id": "synthetic-val-013",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "币种付款范围与日期未知",
+      "requirements": [
+        "R10",
+        "R15",
+        "R16",
+        "R27"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-014",
+      "family_id": "synthetic-val-014",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "OCR/模型故障和指令干扰",
+      "requirements": [
+        "R26",
+        "R30"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "VAL-015",
+      "family_id": "synthetic-val-015",
+      "split": "validation",
+      "source_kind": "synthetic",
+      "title": "干净配置完整批次",
+      "requirements": [
+        "R01",
+        "R28",
+        "R29",
+        "R32",
+        "R33"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-001",
+      "family_id": "synthetic-hold-001",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出邮件正文费用",
+      "requirements": [
+        "R02",
+        "R12",
+        "R17"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-002",
+      "family_id": "synthetic-hold-002",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出附件格式识别",
+      "requirements": [
+        "R03"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-003",
+      "family_id": "synthetic-hold-003",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出多页 PDF 账单",
+      "requirements": [
+        "R04",
+        "R06"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-004",
+      "family_id": "synthetic-hold-004",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出图片版式",
+      "requirements": [
+        "R05",
+        "R06"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-005",
+      "family_id": "synthetic-hold-005",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出旧版 Excel",
+      "requirements": [
+        "R07"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-006",
+      "family_id": "synthetic-hold-006",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出新版 Excel",
+      "requirements": [
+        "R07"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-007",
+      "family_id": "synthetic-hold-007",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出旧版 Word",
+      "requirements": [
+        "R08"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-008",
+      "family_id": "synthetic-hold-008",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出新版 Word",
+      "requirements": [
+        "R08"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-009",
+      "family_id": "synthetic-hold-009",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出明确字段更新",
+      "requirements": [
+        "R19",
+        "R20",
+        "R21"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-010",
+      "family_id": "synthetic-hold-010",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出重传与费用行身份",
+      "requirements": [
+        "R18",
+        "R23"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-011",
+      "family_id": "synthetic-hold-011",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出多候选与证据冲突",
+      "requirements": [
+        "R24",
+        "R27"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-012",
+      "family_id": "synthetic-hold-012",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出双方记账及贷项",
+      "requirements": [
+        "R22"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-013",
+      "family_id": "synthetic-hold-013",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出财务精度和付款范围",
+      "requirements": [
+        "R13",
+        "R14",
+        "R15",
+        "R16",
+        "R25"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-014",
+      "family_id": "synthetic-hold-014",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出故障和 OCR 混淆",
+      "requirements": [
+        "R26",
+        "R30"
+      ],
+      "status": "planned",
+      "files": []
+    },
+    {
+      "case_id": "HOLD-015",
+      "family_id": "synthetic-hold-015",
+      "split": "holdout",
+      "source_kind": "synthetic",
+      "title": "留出完整运行与合法结果",
+      "requirements": [
+        "R01",
+        "R09",
+        "R10",
+        "R11",
+        "R28",
+        "R29",
+        "R31",
+        "R32",
+        "R33"
+      ],
+      "status": "planned",
+      "files": []
+    }
+  ]
+}

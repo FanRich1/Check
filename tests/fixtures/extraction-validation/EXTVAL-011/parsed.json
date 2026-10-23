@@ -1,0 +1,73 @@
+{
+  "schema_version": "0.1.0",
+  "mode": "offline",
+  "sources": [
+    {
+      "source_id": "EXTVAL-011",
+      "parent_source_id": null,
+      "original_name": "synthetic.eml",
+      "declared_mime": null,
+      "detected_format": "eml",
+      "sha256": null,
+      "size_bytes": null,
+      "status": "parsed",
+      "fragments": [
+        {
+          "fragment_id": "EXTVAL-011:f1",
+          "source_id": "EXTVAL-011",
+          "text": "Shipment BQ-911 has actual fee: Pier access 31 USD\nMBL: OCEAN911\nSee attached transport confirmation.",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "body",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          },
+          "method": "authored_synthetic_fragment"
+        }
+      ],
+      "tables": [],
+      "issues": [],
+      "metadata": {
+        "synthetic_preparsed": true
+      },
+      "ocr_results": []
+    },
+    {
+      "source_id": "EXTVAL-011/attachment",
+      "parent_source_id": "EXTVAL-011",
+      "original_name": "transport.pdf",
+      "declared_mime": null,
+      "detected_format": "pdf",
+      "sha256": null,
+      "size_bytes": null,
+      "status": "parsed",
+      "fragments": [
+        {
+          "fragment_id": "EXTVAL-011/attachment:f1",
+          "source_id": "EXTVAL-011/attachment",
+          "text": "Transport confirmation\nMBL: OCEAN911\nVessel: SILVER HARBOR\nNo charges shown.",
+          "locator": {
+            "kind": "pdf_page",
+            "page": 1,
+            "section": null,
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          },
+          "method": "authored_synthetic_fragment"
+        }
+      ],
+      "tables": [],
+      "issues": [],
+      "metadata": {},
+      "ocr_results": []
+    }
+  ],
+  "billing_pipeline_executed": false
+}

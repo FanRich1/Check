@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "mode": "offline",
+  "sources": [
+    {
+      "source_id": "EXTVAL-008",
+      "parent_source_id": null,
+      "original_name": "synthetic.docx",
+      "declared_mime": null,
+      "detected_format": "docx",
+      "sha256": null,
+      "size_bytes": null,
+      "status": "parsed",
+      "fragments": [
+        {
+          "fragment_id": "EXTVAL-008:f1",
+          "source_id": "EXTVAL-008",
+          "text": "CREDIT NOTE REF-908\nIssuer: North Cargo Inc\nBill to: Pine Labs LLC\nService rebate -9 USD\nTOTAL -9 USD",
+          "locator": {
+            "kind": "word_block",
+            "page": null,
+            "section": null,
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": "body",
+            "pointer": null
+          },
+          "method": "authored_synthetic_fragment"
+        }
+      ],
+      "tables": [],
+      "issues": [],
+      "metadata": {
+        "synthetic_preparsed": true
+      },
+      "ocr_results": []
+    }
+  ],
+  "billing_pipeline_executed": false
+}

@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+build/
+dist/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Local source documents, OCR responses, and generated outputs
+/data/local/*
+!/data/local/.gitkeep
+/outputs/*
+!/outputs/.gitkeep
+
+# Editor and OS files
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
+*.log

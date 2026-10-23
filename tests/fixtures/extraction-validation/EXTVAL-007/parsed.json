@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "mode": "offline",
+  "sources": [
+    {
+      "source_id": "EXTVAL-007",
+      "parent_source_id": null,
+      "original_name": "synthetic.doc",
+      "declared_mime": null,
+      "detected_format": "doc",
+      "sha256": null,
+      "size_bytes": null,
+      "status": "parsed",
+      "fragments": [
+        {
+          "fragment_id": "EXTVAL-007:f1",
+          "source_id": "EXTVAL-007",
+          "text": "DEBIT NOTE REF-907\nIssuer: Bay Transit Ltd\nSeal replacement 19 NZD\nPayment due on receipt",
+          "locator": {
+            "kind": "word_block",
+            "page": null,
+            "section": null,
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": "body",
+            "pointer": null
+          },
+          "method": "authored_synthetic_fragment"
+        }
+      ],
+      "tables": [],
+      "issues": [],
+      "metadata": {
+        "synthetic_preparsed": true
+      },
+      "ocr_results": []
+    }
+  ],
+  "billing_pipeline_executed": false
+}

@@ -1,0 +1,137 @@
+{
+  "annotation_source": "authored_synthetic_not_prediction",
+  "expected_records": [
+    {
+      "record_id": "DEV-004-old",
+      "existing_record_id": "DEV-004-old",
+      "operation": "UPDATE",
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-004",
+        "document_date": "2026-09-20"
+      },
+      "transaction_party": {
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 55,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null
+      },
+      "financial_attributes": {
+        "accounting_entity": "TEST ORIGIN LOGISTICS",
+        "posting_type": "AP"
+      },
+      "audit_trail": {
+        "ai_reasoning": [
+          "依据明确费用及交易方向；测试预期，不是模型运行结果。"
+        ],
+        "sources": [
+          "DEV-004-source",
+          "existing:DEV-004-old"
+        ],
+        "field_evidence": {
+          "/charge_details/amount": [
+            {
+              "source_id": "DEV-004-source",
+              "locator": {
+                "kind": "email_body",
+                "section": "plain"
+              },
+              "quote": "本邮件为合成测试资料。单据类型 Invoice；单据编号 INV-DEV-004；日期 2026-09-20。\n账单签发方和收款方：TEST DESTINATION AGENCY。账单接收方和付款方：TEST ORIGIN LOGISTICS。\n现明确请求仅将已有费用行 L1 的金额由 40 改为 55，其他字段包括币种、付款方式均保持原值。\n费用名称 Handling Charge。\n"
+            }
+          ],
+          "/charge_details/currency": [
+            {
+              "source_id": "existing:DEV-004-old",
+              "locator": {
+                "kind": "existing_record",
+                "pointer": "/charge_details/currency"
+              },
+              "quote": "USD"
+            }
+          ]
+        },
+        "issues": [],
+        "changes": [
+          {
+            "path": "/charge_details/amount",
+            "old": 40,
+            "new": 55,
+            "evidence": [
+              {
+                "source_id": "DEV-004-source",
+                "locator": {
+                  "kind": "email_body",
+                  "section": "plain"
+                },
+                "quote": "本邮件为合成测试资料。单据类型 Invoice；单据编号 INV-DEV-004；日期 2026-09-20。\n账单签发方和收款方：TEST DESTINATION AGENCY。账单接收方和付款方：TEST ORIGIN LOGISTICS。\n现明确请求仅将已有费用行 L1 的金额由 40 改为 55，其他字段包括币种、付款方式均保持原值。\n费用名称 Handling Charge。\n"
+              }
+            ]
+          }
+        ]
+      },
+      "extensions": {
+        "cost_center": "SYNTHETIC-ONLY"
+      }
+    }
+  ],
+  "expected_file_status": "processed",
+  "authorized_change_paths": [
+    "/charge_details/amount"
+  ],
+  "expected_existing_snapshot_after": [
+    {
+      "record_id": "DEV-004-old",
+      "existing_record_id": "DEV-004-old",
+      "operation": "CREATE",
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-004",
+        "document_date": "2026-09-20"
+      },
+      "transaction_party": {
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 55,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null
+      },
+      "financial_attributes": {
+        "accounting_entity": "TEST ORIGIN LOGISTICS",
+        "posting_type": "AP"
+      },
+      "audit_trail": {
+        "ai_reasoning": [
+          "依据明确费用及交易方向；测试预期，不是模型运行结果。"
+        ],
+        "sources": [
+          "DEV-004-source"
+        ],
+        "field_evidence": {},
+        "issues": [],
+        "changes": []
+      },
+      "extensions": {
+        "cost_center": "SYNTHETIC-ONLY"
+      }
+    }
+  ],
+  "comparison_ignore_paths": [
+    "/record_id",
+    "/audit_trail/ai_reasoning"
+  ],
+  "can_auto_process": true,
+  "input_sha256": "4b22a48f4e1b5a63c8d782b6ddaf0fde0587dfc7762dcf0c4e658e0f5846b73e"
+}

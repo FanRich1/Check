@@ -1,0 +1,66 @@
+{
+  "annotation_source": "authored_synthetic_not_prediction",
+  "expected_records": [
+    {
+      "record_id": "DEV-001-L1",
+      "existing_record_id": null,
+      "operation": "CREATE",
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-001",
+        "document_date": "2026-09-20"
+      },
+      "transaction_party": {
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 40,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null
+      },
+      "financial_attributes": {
+        "accounting_entity": "TEST ORIGIN LOGISTICS",
+        "posting_type": "AP"
+      },
+      "audit_trail": {
+        "ai_reasoning": [
+          "依据明确费用及交易方向；测试预期，不是模型运行结果。"
+        ],
+        "sources": [
+          "DEV-001-source"
+        ],
+        "field_evidence": {
+          "/charge_details/amount": [
+            {
+              "source_id": "DEV-001-source",
+              "locator": {
+                "kind": "email_body",
+                "section": "plain"
+              },
+              "quote": "本邮件为合成测试资料。单据类型 Invoice；单据编号 INV-DEV-001；日期 2026-09-20。\n账单签发方和收款方：TEST DESTINATION AGENCY。账单接收方和付款方：TEST ORIGIN LOGISTICS。\n费用行 L1：Handling Fee，金额 USD 40，付款方式 PP。请建立此新费用。\n"
+            }
+          ]
+        },
+        "issues": [],
+        "changes": []
+      },
+      "extensions": {
+        "cost_center": "SYNTHETIC-ONLY"
+      }
+    }
+  ],
+  "expected_file_status": "processed",
+  "authorized_change_paths": [],
+  "expected_existing_snapshot_after": [],
+  "comparison_ignore_paths": [
+    "/record_id",
+    "/audit_trail/ai_reasoning"
+  ],
+  "can_auto_process": true,
+  "input_sha256": "b124aeb8fd982480f3d92e1ba5b940b7415f34b710f6f036e578656fe29b7de5"
+}

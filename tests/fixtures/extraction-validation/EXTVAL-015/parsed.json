@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "mode": "offline",
+  "sources": [
+    {
+      "source_id": "EXTVAL-015",
+      "parent_source_id": null,
+      "original_name": "synthetic.jpg",
+      "declared_mime": null,
+      "detected_format": "jpg",
+      "sha256": null,
+      "size_bytes": null,
+      "status": "parsed",
+      "fragments": [
+        {
+          "fragment_id": "EXTVAL-015:f1",
+          "source_id": "EXTVAL-015",
+          "text": "Discover our tracking platform\nNo charges stated.\nIf you later order a demo, a hypothetical price is USD 99.",
+          "locator": {
+            "kind": "image_region",
+            "page": 1,
+            "section": null,
+            "region": "synthetic_text_region",
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          },
+          "method": "authored_synthetic_fragment"
+        }
+      ],
+      "tables": [],
+      "issues": [],
+      "metadata": {
+        "synthetic_preparsed": true
+      },
+      "ocr_results": []
+    }
+  ],
+  "billing_pipeline_executed": false
+}

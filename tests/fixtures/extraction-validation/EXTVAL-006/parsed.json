@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "mode": "offline",
+  "sources": [
+    {
+      "source_id": "EXTVAL-006",
+      "parent_source_id": null,
+      "original_name": "synthetic.xlsx",
+      "declared_mime": null,
+      "detected_format": "xlsx",
+      "sha256": null,
+      "size_bytes": null,
+      "status": "parsed",
+      "fragments": [
+        {
+          "fragment_id": "EXTVAL-006:f1",
+          "source_id": "EXTVAL-006",
+          "text": "INVOICE REF-906\nWarehouse check\t27\tAUD\nTransfer service\t44\tAUD\nTOTAL\t71\tAUD",
+          "locator": {
+            "kind": "sheet_cells",
+            "page": null,
+            "section": null,
+            "region": null,
+            "sheet": "Fees",
+            "cells": "A1:D10",
+            "block": null,
+            "pointer": null
+          },
+          "method": "authored_synthetic_fragment"
+        }
+      ],
+      "tables": [],
+      "issues": [],
+      "metadata": {
+        "synthetic_preparsed": true
+      },
+      "ocr_results": []
+    }
+  ],
+  "billing_pipeline_executed": false
+}

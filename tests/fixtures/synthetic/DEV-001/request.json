@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1.0",
+  "documents": [
+    {
+      "source_id": "DEV-001-source",
+      "path": "input.eml",
+      "role": "business_document"
+    }
+  ],
+  "accounting_entity": "TEST ORIGIN LOGISTICS",
+  "existing_bills": [],
+  "party_aliases": {}
+}

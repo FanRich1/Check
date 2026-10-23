@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1.0",
+  "documents": [
+    {
+      "source_id": "DEV-002-source",
+      "path": "input.eml",
+      "role": "business_document"
+    }
+  ],
+  "accounting_entity": "TEST ORIGIN LOGISTICS",
+  "existing_bills": [
+    {
+      "record_id": "DEV-002-old",
+      "existing_record_id": "DEV-002-old",
+      "operation": "CREATE",
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-002",
+        "document_date": "2026-09-20"
+      },
+      "transaction_party": {
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 40,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null
+      },
+      "financial_attributes": {
+        "accounting_entity": "TEST ORIGIN LOGISTICS",
+        "posting_type": "AP"
+      },
+      "audit_trail": {
+        "ai_reasoning": [
+          "依据明确费用及交易方向；测试预期，不是模型运行结果。"
+        ],
+        "sources": [
+          "DEV-002-source"
+        ],
+        "field_evidence": {},
+        "issues": [],
+        "changes": []
+      },
+      "extensions": {
+        "cost_center": "SYNTHETIC-ONLY"
+      }
+    }
+  ],
+  "party_aliases": {}
+}

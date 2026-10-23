@@ -1,0 +1,6 @@
+* text=auto
+*.py text eol=lf
+*.toml text eol=lf
+*.lock text eol=lf
+# Frozen fixture hashes refer to the exact authored bytes, including EML line endings.
+tests/fixtures/** -text

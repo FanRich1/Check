@@ -1,0 +1,71 @@
+{
+  "version": "extraction-validation-v1",
+  "split": "validation_component",
+  "source_kind": "synthetic_preparsed",
+  "files": [
+    {
+      "path": "EXTVAL-001/parsed.json",
+      "sha256": "4708f9f336c6768743039b4ed96bf70fd99570f45309f5642279df368bb1331e"
+    },
+    {
+      "path": "EXTVAL-002/parsed.json",
+      "sha256": "3a5620cc7c1312dac0f4ce73581f03d249f607ce5dbde2bb64e70697eadd6b0d"
+    },
+    {
+      "path": "EXTVAL-003/parsed.json",
+      "sha256": "d4c4b0ee46a3565cb949be5ce1e3d896ba6299f86c10cf45cbf43dfb4ec65e9f"
+    },
+    {
+      "path": "EXTVAL-004/parsed.json",
+      "sha256": "05993613204215bd2d1d2556cefdd43d546d26dd361906d465a7ee647760f54a"
+    },
+    {
+      "path": "EXTVAL-005/parsed.json",
+      "sha256": "c04f77685412069b5f03455aeea8aeaeac595cc7b855ba3e36264c11d4b56464"
+    },
+    {
+      "path": "EXTVAL-006/parsed.json",
+      "sha256": "afd9834da2af8811f843b377c6eb143996937a1afd0c4d79b21ecb08058ec053"
+    },
+    {
+      "path": "EXTVAL-007/parsed.json",
+      "sha256": "3347a09948b21bb33df2c9881d3693d914471cd4ebd5b1f5c510b9ac84bf3072"
+    },
+    {
+      "path": "EXTVAL-008/parsed.json",
+      "sha256": "37be6bae248dd8a6bfc5dc4ef6d9285ad88d998ab4cd530c050bf8582624422e"
+    },
+    {
+      "path": "EXTVAL-009/parsed.json",
+      "sha256": "76909ccb98fbaa4e3c842a37102de0c61ce691a853acea786c31044f73c9c662"
+    },
+    {
+      "path": "EXTVAL-010/parsed.json",
+      "sha256": "6975b7a4f7e68888dbe4ebbea28f512143a4cea35b11aac9776965ee692cd8ff"
+    },
+    {
+      "path": "EXTVAL-011/parsed.json",
+      "sha256": "ce3c930ac3c95653bd8324637a5d1d2557d7ecc3e623250b7eca1e902bb20d32"
+    },
+    {
+      "path": "EXTVAL-012/parsed.json",
+      "sha256": "4837253cd1a5504193d2d5e62beb4707b0907c19634932ed5fae294a3fb807c5"
+    },
+    {
+      "path": "EXTVAL-013/parsed.json",
+      "sha256": "64e50e985ecd5b1e0cd0d6ead392b6726184e504808beebbf72e576abaa637f4"
+    },
+    {
+      "path": "EXTVAL-014/parsed.json",
+      "sha256": "db024a6d734be59fde3b9a5d7a8d30b79c7877feec3a142a7b781f108aa2db51"
+    },
+    {
+      "path": "EXTVAL-015/parsed.json",
+      "sha256": "3d40f4937561c9f0a1f252a16ba45ac8ad5439cf92edf068a76f5a0852fa4202"
+    },
+    {
+      "path": "expected.json",
+      "sha256": "791fe472db82875e18efd73d6069e42fa90323994b40c0e1bc8f6fe2b5d18a83"
+    }
+  ]
+}

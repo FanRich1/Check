@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "mode": "offline",
+  "sources": [
+    {
+      "source_id": "EXTVAL-010",
+      "parent_source_id": null,
+      "original_name": "synthetic.pdf",
+      "declared_mime": null,
+      "detected_format": "pdf",
+      "sha256": null,
+      "size_bytes": null,
+      "status": "parsed",
+      "fragments": [
+        {
+          "fragment_id": "EXTVAL-010:f1",
+          "source_id": "EXTVAL-010",
+          "text": "Invoice REF-910\nStorage adjustment 24 EUR\nBank beneficiary: Third Bank Ltd\nShipper: Atlas Goods\nConsignee: Vista Parts",
+          "locator": {
+            "kind": "pdf_page",
+            "page": 1,
+            "section": null,
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          },
+          "method": "authored_synthetic_fragment"
+        }
+      ],
+      "tables": [],
+      "issues": [],
+      "metadata": {
+        "synthetic_preparsed": true
+      },
+      "ocr_results": []
+    }
+  ],
+  "billing_pipeline_executed": false
+}

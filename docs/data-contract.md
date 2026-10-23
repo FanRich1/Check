@@ -1,0 +1,100 @@
+# 数据契约 v0.1.0
+
+阶段 0 冻结业务语义和示例；阶段 1 已实现运行模型、结构 schema、校验 CLI 和最小离线比较，详见 [阶段 1 交付记录](stage1-report.md)。实际业务流程仍在后续阶段实现。版本变化需记录兼容性影响。
+
+## 1. 请求
+
+请求对象包含 `schema_version`、`documents`、`accounting_entity`、`existing_bills`、`party_aliases`。文档以 `source_id` 和本地 `path` 或可访问 `url` 引用，并标注角色：业务文件或附属材料。
+
+- `accounting_entity`：当前记账法人名称，可为 null。缺失时仍解析，但不能自动输出 CREATE/UPDATE；有实际费用则 PENDING_REVIEW，posting_type 为 null。不能自动取邮件发件人作记账主体。
+- `existing_bills`：旧记录数组，默认空。每条旧记录有唯一 `record_id`。输入格式错误或 ID 重复是请求级错误，不视为“没有旧账单”。
+- `party_aliases`：显式提供的别名到法人映射，默认空。无配置时不能认定 SHA/TAR、域名和品牌对应哪个法人。
+- 后续运行配置另含 OCR、模型、文件 URL 适配器和日期区域；密钥不进入请求示例、结果或日志。
+
+解析本地 PDF/图片前必须通过 URL 映射或上传适配器获得指定 OCR 可访问的地址。本地文本提取只服务人工检查和离线调试，不替代 OCR 实际接入。
+
+## 2. 输出与内部候选分离
+
+主输出是 JSON 数组，每个实际费用一条。候选提取保留缺失/冲突状态；业务决策之后生成最终记录。文件级解析失败、无费用通知和签名图片进入独立运行清单，不伪造空费用行。
+
+核心分组保持题目约定：
+
+| 字段 | 类型与规则 |
+|---|---|
+| operation | CREATE / UPDATE / NO_CHANGE / PENDING_REVIEW |
+| document_info | document_type、reference_no、document_date；未知值 null |
+| transaction_party | issuer、recipient；不能用 shipper/consignee 或邮件收发人替代 |
+| charge_details | charge_item、amount、currency、payment_term |
+| financial_attributes | accounting_entity、posting_type，后者 AR/AP/null |
+| audit_trail | ai_reasoning：简短结论和证据依据；补充 sources、field_evidence、issues、changes |
+
+允许补充 `record_id`、`existing_record_id`、`shipping_info`、`extensions`；费用分组补充 `charge_item_raw`、`quantity`、`unit_price`、`payment_term_raw` 和 `currency_raw`；单据分组补充 `document_date_raw`。这些信息不能通过补充字段覆盖核心业务语义。
+
+无已知对应旧记录时 `existing_record_id=null`。新行身份采用来源内容身份、局部行身份与记账实体关联；不得只拼接单据编号和费用名称。同名同额也不代表重复。旧记录的 record_id 必须保留。
+
+字段证据以 JSON Pointer 指向字段，例如 `/charge_details/amount`。每条证据保存 source_id、locator 和 quote。locator 的种类为 email_body、email_header、pdf_page、image_region、sheet_cells、word_block 或 existing_record，明确页/行/表格或旧记录字段位置；不能只有“来自 OCR”的泛泛描述。继承字段使用 `existing:<record_id>` 作为可定位的旧记录来源。
+
+## 3. 操作决策
+
+| 情况 | 决策 |
+|---|---|
+| 有有效实际费用、无旧匹配、关键字段充分且校验通过 | CREATE |
+| 唯一可靠匹配，材料明确请求修改，差异在授权集合内且校验通过 | UPDATE |
+| 已有同一费用，内容相同；或应用更新后的同材料再次输入 | NO_CHANGE |
+| 多候选、关键字段未知、缺主体、未授权冲突或校验失败 | PENDING_REVIEW |
+
+自动 CREATE/UPDATE 至少要求可确定金额、规范币种、记账主体、收费方向及明确的实际费用身份。单据编号本来不存在时允许 null，不虚构编号。缺少非关键数量/单价，不阻止一笔有明确总金额的费用。
+
+PENDING_REVIEW 保留可确定候选值及具体阻断原因，不应用到旧账单。NO_CHANGE 是相同业务事实的重现，缺失主体且无法确定记录归属时仍复核。
+
+## 4. 匹配和更新
+
+按优先级生成候选：①单据编号+标准费用名；②提单号+费用名+币种；③订舱号+费用名+币种；④箱号+交易双方+日期+金额。缺少组合中的字段时不能用 null==null 凑匹配。
+
+优先级不是无条件信任：每一级还检查记账主体、币种和已知硬冲突；多个候选或与明确事实冲突时复核。同单据同名多行必须用行身份等证据消歧，不能任取第一条，也不能靠新金额反推应更新哪条。
+
+变更清单为 `{path, old, new, evidence}`。只改材料明确要求的字段；“发现和旧值不同”本身不是修改授权。冲突但无授权返回复核，不静默 UPDATE 或 NO_CHANGE。
+
+缺失字段与显式清空不同。提取不到的 null 不覆盖旧值；只有明确指出字段及清空意图，且该字段可空时才允许清空。金额、币种、主体等必要字段被请求清空时复核。旧记录未知扩展字段完整继承。审计追加不算业务字段修改。
+
+## 5. 标准化、金额与财务方向
+
+- 题目六类名称映射作为初始词表；H/C 在明确费用语境可映射 Handling Charge，不能把 40HC 箱型变成费用。其他未知名称先保留原文。
+- 币种必须为有效三字码，单独 `$` 无额外证据时 currency=null。金额原文本保留，输出 amount 使用数字，不是字符串。
+- PP/CC 只在适用范围内映射。FREIGHT PREPAID 明确运费预付，不自动决定邮件中所有杂费；COD 放入原始付款描述/结算条件，不能等同 CC。
+- 内部 Decimal；按币种和标签预先指定的舍入规则比较，不用浮点相等或全币种统一 0.01 容差；禁止 NaN/Infinity。
+- 小计、税、总计、已付和未付为单据级事实，不额外生成费用行。未标明税额时为 null，不默认为 0。不同币种不能无汇率直接相加。
+- 正常正向收费：记账主体为明确付款方则 AP，为明确收款方则 AR。仅为货主/通知人或与双方无关时不能推断。
+- 贷项/冲销保留原关系所对应的 AR/AP 类别，用有证据的贷方/冲销符号减少相应余额；金额只翻转一次。贷项标题、负数与原账单关系不一致或无法对应时复核。
+- 日期有歧义时 document_date=null，并保留原文。明确配置地区或材料中有无歧义日期依据后才规范化。文档日期在未来不自动改成今天。
+
+## 6. 运行清单与风险编码
+
+每个输入及附件有 source_id、父来源、内容哈希、类型和 processed / no_charge / pending_review / error 状态。正常含复核项的批次不等同程序崩溃；退出码和错误模型在阶段 1/7 实现。
+
+初始风险编码：MISSING_ACCOUNTING_ENTITY、AMBIGUOUS_CURRENCY、AMBIGUOUS_DATE、UNKNOWN_PARTY_ROLE、PAYMENT_SCOPE_UNCLEAR、MULTIPLE_MATCHES、UNAUTHORIZED_CHANGE、TOTAL_MISMATCH、INVALID_CURRENCY、OCR_UNCERTAIN_IDENTIFIER、SOURCE_ROLE_CONFLICT。每项有 severity、blocks_automation、field 和 message。
+
+只要某项阻断风险成立，就不能凭模型自报的高置信度自动入账。未知的非关键字段不一律阻断，是否阻断依据场景标签和上述规则明确决定。
+
+## 7. 当前待配置但不阻塞阶段 0 的项目
+
+- 实际记账法人及别名：运行时显式输入；真实样本基准默认未提供。
+- 大模型提供方、模型、密钥、OCR 文件 URL 的提供方式：阶段 2 验证，不虚构已可用。
+- DOC/XLS：阶段 3 已验证 Windows Word 转换 DOC；XLS 使用 xlrd 直接读取，详见 [阶段 3 记录](stage3-report.md)。
+- 真实样本发布日期及邮件签名日期不能作为版本时间自动改写。邮件日期、正文落款、装船日期和账单日期分字段保存。
+
+## 8. 阶段 3 解析报告
+
+`ParseReport` 是独立的来源证据输出，结构 schema 见 [parse-report.schema.json](../schemas/parse-report.schema.json)。它不包含已接受账单决策，`billing_pipeline_executed` 固定为 false。
+
+`sources` 保留来源 ID、父 ID、哈希、类型、原始名称与声明 MIME；无法读取的文件哈希为 null。`fragments` 包含文本、位置和提取方法，`tables` 保留原始行与位置，`ocr_results` 单独存放供应方输出。`metadata.page_inventory/ocr_page_status` 分别保存页/帧登记与 OCR 结果状态。
+
+原生 PDF/Office 文本、指定 OCR 文本、本地辅助 OCR 文本使用不同方法标记。供应方结构化字段不改写成原文引用；未知页码不猜测，逐页输入明确对应原文件页号。解析状态 parsed/pending_review/error 与最终 CREATE/UPDATE/NO_CHANGE/PENDING_REVIEW 分属不同阶段。
+
+## 9. 阶段 4 候选提取报告
+
+`ExtractionReport` 记录模式 live/replay/test_injected、提示词与证据规则版本、输入哈希、证据单元及每来源的 extracted/no_charge/pending_review/error。每来源保留候选、观察项、问题和模型尝试记录。`model_invocations` 计当次模型调用；回放为 0，尝试记录内的元数据是历史事实。结构契约见 [extraction-report.schema.json](../schemas/extraction-report.schema.json)。
+
+`ExtractedCandidate` 扩展基础 `Candidate`，补充 source_id、shipping_info、逐字段 JSON Pointer 形式的 field_evidence。日期和付款规则暂存原文，`document_date` 与 `payment_term` 不在阶段 4 强行标准化。打印的三字币种只按字面复制，ISO 有效性在阶段 5 校验；单独 `$` 保留为 currency_raw，currency 为 null。
+
+证据单元由解析层逐行生成；空间 OCR 行保留组合框和原始识别框，组合后的引文并非重新识别的供应方原文。每条引用都验证原文子串、定位和字段值支持。物理费用行身份避免仅凭同名合并；跨来源费用去重和最终账单身份留待阶段 6。`billing_pipeline_executed=false` 表示尚未执行完整账单决策，不表示没有执行模型。
