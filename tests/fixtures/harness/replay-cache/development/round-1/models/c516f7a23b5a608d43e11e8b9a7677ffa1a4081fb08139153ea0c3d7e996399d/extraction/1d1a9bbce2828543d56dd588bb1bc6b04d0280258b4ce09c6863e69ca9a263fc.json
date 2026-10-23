@@ -1,0 +1,110 @@
+{
+  "fingerprint": "1d1a9bbce2828543d56dd588bb1bc6b04d0280258b4ce09c6863e69ca9a263fc",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-DEV-015\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Dover Testing Logistics\",\"recipient\":\"Cedar Development Buyer\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-DEV-015:u6\",\"quote\":\"Document type: Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-DEV-015:u7\",\"quote\":\"Invoice number: INV-DEV-015\"}],\"document_date_raw\":[{\"unit_id\":\"case-DEV-015:u10\",\"quote\":\"Document date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-DEV-015:u8\",\"quote\":\"Issuer: Dover Testing Logistics\"}],\"recipient\":[{\"unit_id\":\"case-DEV-015:u9\",\"quote\":\"Bill to: Cedar Development Buyer\"}]},\"fees\":[{\"charge_item_raw\":\"Handling Fee\",\"amount\":40,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-DEV-015:u11\",\"quote\":\"Handling Fee\"}],\"amount\":[{\"unit_id\":\"case-DEV-015:u11\",\"quote\":\"USD 40\"}],\"currency_raw\":[{\"unit_id\":\"case-DEV-015:u11\",\"quote\":\"USD 40\"}],\"payment_term_raw\":[{\"unit_id\":\"case-DEV-015:u11\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3534,
+          "output_tokens": 330,
+          "total_tokens": 3864,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-015",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Dover Testing Logistics",
+        "recipient": "Cedar Development Buyer",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-DEV-015:u6",
+              "quote": "Document type: Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-DEV-015:u7",
+              "quote": "Invoice number: INV-DEV-015"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-DEV-015:u10",
+              "quote": "Document date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-DEV-015:u8",
+              "quote": "Issuer: Dover Testing Logistics"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-DEV-015:u9",
+              "quote": "Bill to: Cedar Development Buyer"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Handling Fee",
+            "amount": 40,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-DEV-015:u11",
+                  "quote": "Handling Fee"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-DEV-015:u11",
+                  "quote": "USD 40"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-DEV-015:u11",
+                  "quote": "USD 40"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-DEV-015:u11",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

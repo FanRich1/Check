@@ -1,0 +1,122 @@
+{
+  "fingerprint": "8471bff1ba9379e21fa96c8b59984560e540e164da438d851933f7f47a4447dc",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-DEV-017\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Dover Testing Logistics\",\"recipient\":\"Cedar Development Buyer\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-DEV-017:u6\",\"quote\":\"Document type: Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-DEV-017:u7\",\"quote\":\"Invoice number: INV-DEV-017\"}],\"document_date_raw\":[{\"unit_id\":\"case-DEV-017:u10\",\"quote\":\"Document date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-DEV-017:u8\",\"quote\":\"Issuer: Dover Testing Logistics\"}],\"recipient\":[{\"unit_id\":\"case-DEV-017:u9\",\"quote\":\"Bill to: Cedar Development Buyer\"}]},\"fees\":[{\"charge_item_raw\":\"Survey service\",\"amount\":11,\"currency_raw\":\"USD\",\"quantity\":2,\"unit_price\":5,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-DEV-017:u11\",\"quote\":\"Fee row DEV-017-R1: Survey service | USD 11; payment PP; quantity 2; unit price 5\"}],\"amount\":[{\"unit_id\":\"case-DEV-017:u11\",\"quote\":\"USD 11\"}],\"currency_raw\":[{\"unit_id\":\"case-DEV-017:u11\",\"quote\":\"USD 11\"}],\"quantity\":[{\"unit_id\":\"case-DEV-017:u11\",\"quote\":\"quantity 2\"}],\"unit_price\":[{\"unit_id\":\"case-DEV-017:u11\",\"quote\":\"unit price 5\"}],\"payment_term_raw\":[{\"unit_id\":\"case-DEV-017:u11\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3639,
+          "output_tokens": 398,
+          "total_tokens": 4037,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-017",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Dover Testing Logistics",
+        "recipient": "Cedar Development Buyer",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-DEV-017:u6",
+              "quote": "Document type: Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-DEV-017:u7",
+              "quote": "Invoice number: INV-DEV-017"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-DEV-017:u10",
+              "quote": "Document date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-DEV-017:u8",
+              "quote": "Issuer: Dover Testing Logistics"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-DEV-017:u9",
+              "quote": "Bill to: Cedar Development Buyer"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Survey service",
+            "amount": 11,
+            "currency_raw": "USD",
+            "quantity": 2,
+            "unit_price": 5,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-DEV-017:u11",
+                  "quote": "Fee row DEV-017-R1: Survey service | USD 11; payment PP; quantity 2; unit price 5"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-DEV-017:u11",
+                  "quote": "USD 11"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-DEV-017:u11",
+                  "quote": "USD 11"
+                }
+              ],
+              "quantity": [
+                {
+                  "unit_id": "case-DEV-017:u11",
+                  "quote": "quantity 2"
+                }
+              ],
+              "unit_price": [
+                {
+                  "unit_id": "case-DEV-017:u11",
+                  "quote": "unit price 5"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-DEV-017:u11",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

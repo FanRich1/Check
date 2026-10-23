@@ -1,5 +1,7 @@
 """Build small, stable evidence units without dropping pages or truncating input."""
 
+import re
+
 from shipping_billing.extraction.contracts import EvidenceUnit
 from shipping_billing.io import dumps
 
@@ -32,6 +34,26 @@ def build_units(report):
             for index, line in enumerate(frag.text.splitlines(), 1):
                 loc = frag.locator.model_copy(update={"section": f"{frag.fragment_id}:line-{index}"})
                 add(line, loc, frag.method)
+            # A named correction may put the amount and the fee name on adjacent lines.
+            # Preserve their original contiguous paragraph, never concatenate separate fees.
+            if frag.method in ("email_plain", "email_html"):
+                lines = frag.text.splitlines()
+                for index, line in enumerate(lines):
+                    if not re.search(r"修改|改为|更改|\b(update|correct|change)\b", line, re.I):
+                        continue
+                    if index + 1 >= len(lines) or not re.match(
+                        r"\s*(?:费用名称|fee name)\s*[:： ]", lines[index + 1], re.I
+                    ):
+                        continue
+                    end = index + 2
+                    if end < len(lines) and re.match(r"\s*(?:币种|currency)\b|\s*币种", lines[end], re.I):
+                        end += 1
+                    paragraph = "\n".join(lines[index:end])
+                    if len(paragraph) <= 1500:
+                        loc = frag.locator.model_copy(
+                            update={"section": f"{frag.fragment_id}:edit-paragraph-{index + 1}"}
+                        )
+                        add(paragraph, loc, frag.method, {"original_contiguous_lines": [index + 1, end]})
         for page in source.metadata.get("local_ocr_pages", []):
             groups = []
             for box in sorted(page["boxes"], key=lambda b: sum(p[1] for p in b["polygon"]) / 4):

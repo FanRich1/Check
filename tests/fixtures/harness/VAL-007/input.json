@@ -1,0 +1,15 @@
+{
+  "inputs": [
+    "input.doc"
+  ],
+  "source_id": "case-VAL-007",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Maple Parts Corporation"
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

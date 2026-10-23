@@ -1,0 +1,41 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "case-HOLD-012",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Seaport Meridian Logistics",
+      "lines": {
+        "case-HOLD-012:line-faeccc25d141432802d0": {
+          "adjustment": {
+            "kind": "credit",
+            "original_reference": "ORIG-HOLD-012",
+            "original_payer": "Pinecrest Equipment Limited",
+            "original_payee": "Seaport Meridian Logistics",
+            "evidence": [
+              {
+                "source_id": "case-HOLD-012",
+                "locator": {
+                  "kind": "email_body",
+                  "page": null,
+                  "section": "case-HOLD-012:f6:line-8",
+                  "region": null,
+                  "sheet": null,
+                  "cells": null,
+                  "block": null,
+                  "pointer": null
+                },
+                "quote": "Credit original reference ORIG-HOLD-012. Original payer: Pinecrest Equipment Limited; Original payee: Seaport Meridian Logistics"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

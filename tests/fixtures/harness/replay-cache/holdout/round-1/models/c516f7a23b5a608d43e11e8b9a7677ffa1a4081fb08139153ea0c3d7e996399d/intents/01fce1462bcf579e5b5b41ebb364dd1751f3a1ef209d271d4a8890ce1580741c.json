@@ -1,0 +1,52 @@
+{
+  "fingerprint": "01fce1462bcf579e5b5b41ebb364dd1751f3a1ef209d271d4a8890ce1580741c",
+  "prompt_version": "stage7-intents-v1",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"directives\":[{\"source_line_id\":\"case-H2-012:line-07719b613b81e0c47b43\",\"record_id\":null,\"selector_citations\":[],\"edits\":[{\"path\":\"/charge_details/amount\",\"action\":\"set\",\"expected_old_stated\":true,\"expected_old\":49,\"value\":58,\"citations\":[{\"unit_id\":\"case-H2-012:u13\",\"quote\":\"Please update amount from 49 to 58 for Correction attendance.\"}]}]}]}",
+      "status": "success",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3015,
+          "output_tokens": 110,
+          "total_tokens": 3125,
+          "input_token_details": {
+            "cache_read": 896
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage7-intents-v1",
+        "mode": "live",
+        "reasoning_content_saved": false
+      }
+    }
+  ],
+  "draft": {
+    "directives": [
+      {
+        "source_line_id": "case-H2-012:line-07719b613b81e0c47b43",
+        "record_id": null,
+        "selector_citations": [],
+        "edits": [
+          {
+            "path": "/charge_details/amount",
+            "action": "set",
+            "expected_old_stated": true,
+            "expected_old": 49,
+            "value": 58,
+            "citations": [
+              {
+                "unit_id": "case-H2-012:u13",
+                "quote": "Please update amount from 49 to 58 for Correction attendance."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

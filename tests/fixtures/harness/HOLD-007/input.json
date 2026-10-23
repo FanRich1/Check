@@ -1,0 +1,15 @@
+{
+  "inputs": [
+    "input.doc"
+  ],
+  "source_id": "case-HOLD-007",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Pinecrest Equipment Limited"
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

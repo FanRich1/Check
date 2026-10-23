@@ -1,0 +1,112 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "H2-008:1",
+      "anchors": [
+        {
+          "source_id": "case-H2-008",
+          "locator": {
+            "kind": "sheet_cells",
+            "page": null,
+            "section": "case-H2-008:f7:line-1",
+            "region": null,
+            "sheet": "Sheet",
+            "cells": "A7:A7",
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-H2-008",
+          "document_date": "2026-10-22"
+        },
+        "transaction_party": {
+          "issuer": "Atlas Wharf Services",
+          "recipient": "Birchwood Components Ltd"
+        },
+        "charge_details": {
+          "charge_item": "Transit escort",
+          "charge_item_raw": "Transit escort",
+          "amount": 48,
+          "currency": "CHF",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "CHF",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Birchwood Components Ltd",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    },
+    {
+      "row_id": "H2-008:2",
+      "anchors": [
+        {
+          "source_id": "case-H2-008",
+          "locator": {
+            "kind": "sheet_cells",
+            "page": null,
+            "section": "case-H2-008:f8:line-1",
+            "region": null,
+            "sheet": "Sheet",
+            "cells": "A8:A8",
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-H2-008",
+          "document_date": "2026-10-22"
+        },
+        "transaction_party": {
+          "issuer": "Atlas Wharf Services",
+          "recipient": "Birchwood Components Ltd"
+        },
+        "charge_details": {
+          "charge_item": "Transit escort",
+          "charge_item_raw": "Transit escort",
+          "amount": 52,
+          "currency": "CHF",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "CHF",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Birchwood Components Ltd",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    }
+  ],
+  "expected_exit": 0,
+  "risk_codes": [],
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 1
+}

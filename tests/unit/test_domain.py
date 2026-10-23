@@ -11,6 +11,90 @@ from shipping_billing.errors import BillingError
 CASES = scenarios()
 
 
+@pytest.mark.parametrize(
+    "title,posting,ready",
+    [
+        ("Invoice / ACCOUNT STATEMENT", "AP", True),
+        ("ACCOUNT STATEMENT | Invoice", "AP", True),
+        ("Invoice / Credit Note", None, False),
+        ("Invoice / Unknown Memo", None, False),
+        ("ACCOUNT STATEMENT", None, False),
+    ],
+)
+def test_compound_document_type_keeps_raw_title_and_requires_unambiguous_role(title, posting, ready):
+    source, context = make_input(doc_type=title)
+    line = normalize(source, context).lines[0]
+    assert line.original.document_info.document_type == title
+    assert line.candidate.document_info.document_type == ("Invoice" if ready else title)
+    if ready:
+        assert any(e.rule == "document.explicit_title" and e.old == title for e in line.events)
+    assert line.financial_attributes.posting_type == posting
+    assert (line.status == "ready") is ready
+
+
+@pytest.mark.parametrize(
+    "raw,normalized,blocked",
+    [
+        ("2026-10-20", "2026-10-20", False),
+        ("2026-02-30", None, True),
+        ("03/04/2026", None, False),
+    ],
+)
+def test_explicit_iso_date_only(raw, normalized, blocked):
+    source, context = make_input()
+    candidate = source.files[0].candidates[0]
+    candidate.document_info.document_date_raw = raw
+    candidate.field_evidence["/document_info/document_date_raw"] = [
+        add_evidence(source, "Invoice date: " + raw)
+    ]
+    line = normalize(source, context).lines[0]
+    assert line.candidate.document_info.document_date == normalized
+    assert any(i.code == "INVALID_DOCUMENT_DATE" for i in line.issues) is blocked
+
+
+def test_short_payment_quote_requires_own_physical_row():
+    source, context = make_input(payment_raw="PP")
+    candidate = source.files[0].candidates[0]
+    ref = candidate.field_evidence["/charge_details/payment_term_raw"][0].model_copy(deep=True)
+    ref.quote = "PP"
+    candidate.field_evidence["/charge_details/payment_term_raw"] = [ref]
+    assert normalize(source, context).lines[0].candidate.charge_details.payment_term == "PP"
+    # A real PP header is not a payment instruction for every fee below it.
+    candidate.field_evidence["/charge_details/payment_term_raw"] = [add_evidence(source, "PP")]
+    assert normalize(source, context).lines[0].candidate.charge_details.payment_term is None
+
+
+@pytest.mark.parametrize(
+    "raw,expected",
+    [
+        ("Item ROW-12: Handling Fee", "Handling Charge"),
+        ("Item 9: Repeated service", "Repeated service"),
+        ("Item Cargo: Handling Fee", "Item Cargo: Handling Fee"),
+        ("Cargo ROW-12: Handling Fee", "Cargo ROW-12: Handling Fee"),
+    ],
+)
+def test_explicit_numbered_row_label_is_not_fee_name(raw, expected):
+    source, context = make_input(name=raw)
+    line = normalize(source, context).lines[0]
+    assert line.candidate.charge_details.charge_item_raw == raw
+    assert line.candidate.charge_details.charge_item == expected
+
+
+@pytest.mark.parametrize("raw", ["CODE-18 / Handling Fee", "CODE-18 / Handling Fee / line total"])
+def test_slash_row_layout_needs_verified_description_and_matching_amount(raw):
+    source, context = make_input(name=raw, amount=40, raw_currency="USD")
+    candidate = source.files[0].candidates[0]
+    ref = add_evidence(source, "CODE-18 / Handling Fee / line total USD 40; payment PP")
+    candidate.field_evidence["/charge_details/charge_item_raw"] = [ref]
+    line = normalize(source, context).lines[0]
+    assert line.candidate.charge_details.charge_item_raw == raw
+    assert line.candidate.charge_details.charge_item == "Handling Charge"
+    assert any(e.rule == "charge.explicit_row_label" and e.old == raw for e in line.events)
+    source.evidence_units[-1].text = "CODE-18 / Handling Fee / line total USD 99; payment PP"
+    candidate.field_evidence["/charge_details/charge_item_raw"][0].quote = source.evidence_units[-1].text
+    assert normalize(source, context).lines[0].candidate.charge_details.charge_item == raw
+
+
 @pytest.mark.parametrize("case", CASES, ids=[c[0] for c in CASES])
 def test_authored_stage5_rule_case(case):
     _, source, context, expected = deepcopy(case)

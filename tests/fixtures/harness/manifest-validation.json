@@ -1,0 +1,433 @@
+{
+  "schema_version": "stage8-dataset-v1",
+  "split": "validation",
+  "annotation_review": "assistant_authored_not_independently_signed",
+  "leakage_policy": "all source/template/format variants remain within one declared split family",
+  "cases": [
+    {
+      "case_id": "VAL-001",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-001",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-002",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-002",
+      "formats": [
+        "eml",
+        "pdf"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "VAL-003",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-003",
+      "formats": [
+        "pdf"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "VAL-004",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-004",
+      "formats": [
+        "jpg"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "VAL-005",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-005",
+      "formats": [
+        "xls"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-006",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-006",
+      "formats": [
+        "xlsx"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-007",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-007",
+      "formats": [
+        "doc"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-008",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-008",
+      "formats": [
+        "docx"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-009",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-009",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-010",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-010",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-011",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-011",
+      "formats": [
+        "eml",
+        "xlsx"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-012",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-012",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-013",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-013",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-014",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-014",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "VAL-015",
+      "split": "validation",
+      "family_id": "stage8-validation-template-v1",
+      "source_kind": "synthetic",
+      "path": "VAL-015",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    }
+  ],
+  "files": [
+    {
+      "path": "VAL-001/expected.json",
+      "sha256": "efa5a4cc854e70dacb5de71b1211d21ad752622a0eac714445c8b308079f2bf9"
+    },
+    {
+      "path": "VAL-001/input.eml",
+      "sha256": "033f09b26903fd750b7a3c70ae2064da24e6e5b798f780bb33763d4570980000"
+    },
+    {
+      "path": "VAL-001/input.json",
+      "sha256": "0eec288f94c1aa37197e2b089eb80be0c762f24ba32e6b7e06bae270c6ceb7c8"
+    },
+    {
+      "path": "VAL-001/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-002/expected.json",
+      "sha256": "9bada1ead4ba923d4cd4d7965bafa274f9cdf8950aaa2339b2720ef962ee8747"
+    },
+    {
+      "path": "VAL-002/fees.pdf",
+      "sha256": "1ea45dddbd16e7714c9a416b954ac75de6b466ae90f296e6363cbeda1c1499da"
+    },
+    {
+      "path": "VAL-002/input.eml",
+      "sha256": "538727e339740bf5c6ebdd1c125424c5caa637705cfcfb9e72f803bafe9c17fe"
+    },
+    {
+      "path": "VAL-002/input.json",
+      "sha256": "a3cd34e65dcfcf7756bda53e7b9fd8a0d9926163d919427eb0279f459b558511"
+    },
+    {
+      "path": "VAL-002/ocr.json",
+      "sha256": "98dd6a09f2e9bed046a85cb05b4850e5c72fe144d48f86178a5179e09564f1c3"
+    },
+    {
+      "path": "VAL-003/expected.json",
+      "sha256": "59c04b6c02da82733bb03e29de7094bfa46be7442653b8ad81b61cef6243f216"
+    },
+    {
+      "path": "VAL-003/input.json",
+      "sha256": "4d08663db185a32072593cf7af738be31b9fde70ead196b2601b49b97e458292"
+    },
+    {
+      "path": "VAL-003/input.pdf",
+      "sha256": "cab404514c8c2d136cdf3cf521be79ae658a783c0f85631f174ccd516bd9e2f2"
+    },
+    {
+      "path": "VAL-003/ocr.json",
+      "sha256": "b0febc2e158f3b91c32c1c1eecc271eb2a6e6f4028cc21a67a90d314fa8d0c90"
+    },
+    {
+      "path": "VAL-004/expected.json",
+      "sha256": "1b5b7943d952db9c3f0694b23e00eda80127f291b331a2dae723657615e1806a"
+    },
+    {
+      "path": "VAL-004/input.jpg",
+      "sha256": "500999ee49b9096838c2991ecd2e529897160ea9d206f1a56b5f2efacd44a4b6"
+    },
+    {
+      "path": "VAL-004/input.json",
+      "sha256": "4df0eba02637c0acc794fd86577f83ed46dc9535efd85dcd7f4e7214fb2f3051"
+    },
+    {
+      "path": "VAL-004/ocr.json",
+      "sha256": "ad08bb8750497e6430b608461d187facc46451e8c35360a1074f0f40c903eae2"
+    },
+    {
+      "path": "VAL-005/expected.json",
+      "sha256": "a31cfff248bd97695e5f0a079da713adcd9c3a061f8667f7fbda106632d928af"
+    },
+    {
+      "path": "VAL-005/input.json",
+      "sha256": "b1c2e9e24645c6d7a7d4f0dec6a5ee7d59d8091c3f394b4b38cc58a3f126c983"
+    },
+    {
+      "path": "VAL-005/input.xls",
+      "sha256": "755ff0cec06cbbd7a68e0858b20ca70c4e05823719d1e9b50ff209bd05937cc1"
+    },
+    {
+      "path": "VAL-005/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-006/expected.json",
+      "sha256": "892be3a9437e8f9749af8a079defe06d60fa6f33f9bf3eec303bb51c9c455979"
+    },
+    {
+      "path": "VAL-006/input.json",
+      "sha256": "d8e0147d0906988ec33549a41edc016d06d20d5ba889bf93bfd1eff0c9379171"
+    },
+    {
+      "path": "VAL-006/input.xlsx",
+      "sha256": "9c11bcb9c82ad2acada11cc278f740d26ada6ad6d7b8234aa3cb818ddf127f76"
+    },
+    {
+      "path": "VAL-006/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-007/expected.json",
+      "sha256": "dcecf814e2913e97aa2ddf24e3a3aa1d8a0d80ff35ead39b5fc263aca764a2b9"
+    },
+    {
+      "path": "VAL-007/input.doc",
+      "sha256": "a91854727efa0349bd34ad460b794a81ab53f5e5ba4363a07e6817b2168c49f3"
+    },
+    {
+      "path": "VAL-007/input.json",
+      "sha256": "1f3691b6f0ab7b815bf6f4dd83d420c231451b5b920ac862c151ce899888c035"
+    },
+    {
+      "path": "VAL-007/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-008/expected.json",
+      "sha256": "5cd27c731aa9b46536d6fd0e61cc30e159b9a3776c8ac73302e1959121c3cc7d"
+    },
+    {
+      "path": "VAL-008/input.docx",
+      "sha256": "88dbfd848f3d6859fbf775e215c8f74c608827dd96139220df8fecdc4b4793d1"
+    },
+    {
+      "path": "VAL-008/input.json",
+      "sha256": "7defd41b82f51a9c707ba8f40f350c3a835880f5b60d4e5274efb0f5ca165f95"
+    },
+    {
+      "path": "VAL-008/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-009/expected.json",
+      "sha256": "76856fc6fae09f37f5ff52a9dfb9f1e3cb2d183027b96e1afad1e5717528ed33"
+    },
+    {
+      "path": "VAL-009/input.eml",
+      "sha256": "e5557e6cc9194108785ada3079dade5ce4d34922fab611d0385001a3facc8e5b"
+    },
+    {
+      "path": "VAL-009/input.json",
+      "sha256": "3050b370b0bb572c1045845ef4776f1e7b5e5ee97b9358f5573a5d0491d36ffd"
+    },
+    {
+      "path": "VAL-009/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-010/expected.json",
+      "sha256": "cc44f7abaee5a2085e30c0e5b7c07864ef2018393753f26e369cb5557c7775dc"
+    },
+    {
+      "path": "VAL-010/input.eml",
+      "sha256": "8638a319d6589fb58e37fc59694f500e7d7b2adfddcc9cb9065d770c84b5c13d"
+    },
+    {
+      "path": "VAL-010/input.json",
+      "sha256": "61045dbaa10869a94c57ae4784df85259a8ca62c079b1c4887e9524cc91a65d9"
+    },
+    {
+      "path": "VAL-010/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-011/expected.json",
+      "sha256": "73aa4ab97996baf1ea7f83c501335bab96b1136095e50b3b985e8d17de20833d"
+    },
+    {
+      "path": "VAL-011/fees.xlsx",
+      "sha256": "fa735761d050c2744b1d08785c62f89f6df16dcd1e56b9bd8c87ea166fe67916"
+    },
+    {
+      "path": "VAL-011/input.eml",
+      "sha256": "37de86053a456d4bff29411040e4c6fd7cca9f0aa32806033209712afcc0ce46"
+    },
+    {
+      "path": "VAL-011/input.json",
+      "sha256": "5428f3397e6a274756f53a99c01ecfd0fbd2d462650ed29c29c4e53af5745c22"
+    },
+    {
+      "path": "VAL-011/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-012/expected.json",
+      "sha256": "6d4003dfd5a2b59c34c77b31f970fb8f0072df34072b7ef3ebc17133e449d027"
+    },
+    {
+      "path": "VAL-012/input.eml",
+      "sha256": "48f84774cb3078d74fcae570c05b499ea7018b9714b416a52435136d932e4f6d"
+    },
+    {
+      "path": "VAL-012/input.json",
+      "sha256": "1a41ecb6247927740b331c64cf5fe964454f133e2a0c9519ee521b0479aa5be5"
+    },
+    {
+      "path": "VAL-012/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-013/expected.json",
+      "sha256": "6396a96526d982c4d6e86185562e6e640bdf292e808d117c7ee552bb0c8d54c7"
+    },
+    {
+      "path": "VAL-013/input.eml",
+      "sha256": "8bf762aa1132183c8668c465825468c8583d7d43d0211876178b73eaf321f9d7"
+    },
+    {
+      "path": "VAL-013/input.json",
+      "sha256": "899914502d67c29d0fc5ff9ea88e8e4bcdf98857c489c8fcb83b389024bfa66f"
+    },
+    {
+      "path": "VAL-013/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-014/expected.json",
+      "sha256": "23e254c9ac246a1cdf19ea7b05516a87ba6904bb10ad530192e39bdeed27d3b6"
+    },
+    {
+      "path": "VAL-014/input.eml",
+      "sha256": "340e34c75b9d9b15132f2530768af998c58f0dee7d8c4619808ae1dad3c270f1"
+    },
+    {
+      "path": "VAL-014/input.json",
+      "sha256": "af53536c7b49cd0b18fa7d189899f49a8d461cd4d5adadb477fc3fe186ebd0f0"
+    },
+    {
+      "path": "VAL-014/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "VAL-015/batch-1.eml",
+      "sha256": "72e2aa28873269ab5e93569250ad9789c3da32d431118dd8e17ca8eeb6d9a9ff"
+    },
+    {
+      "path": "VAL-015/batch-2.eml",
+      "sha256": "971e26cd8f69b5cd3f65e5304f8e4ec84a8c901549b0762d43c2085b19d936a9"
+    },
+    {
+      "path": "VAL-015/batch-3.eml",
+      "sha256": "6e928e7480e9c8b0ac80998dfee5ec70af62e94065342f6c7e937fe6e7ddcae0"
+    },
+    {
+      "path": "VAL-015/expected.json",
+      "sha256": "d87c75592ce005aa2fe89d8537b068f0ad75c58dc93eefc7f550d9b77a36eb4f"
+    },
+    {
+      "path": "VAL-015/input.json",
+      "sha256": "9c2ad1c788c0301c0266e7e3b3b25e8fee1246ab35be6f463382a5a0f1479d69"
+    },
+    {
+      "path": "VAL-015/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    }
+  ]
+}

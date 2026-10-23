@@ -1,0 +1,33 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "140966fa1e854420a02a3d498ec1d21fefdee161ed0803ec37ca8144c25ff441": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Invoice",
+        "Supplier / issuer: Atlas Wharf Services",
+        "Customer / bill to: Birchwood Components Ltd",
+        "Invoice No: INV-H2-006 | Invoice date: 2026-10-22",
+        "REGISTER OF COMPLETED SERVICES",
+        "Each entry below represents a separate service delivered.",
+        "Description: Delivery check | Amount: 26 USD | Terms: PP | Entry: ENTRY-01"
+      ],
+      "documents": []
+    },
+    "68b90cdaf53f46f7263f54931d1c50458930fd7233fcadb98af85009060794c7": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Invoice",
+        "Supplier / issuer: Atlas Wharf Services",
+        "Customer / bill to: Birchwood Components Ltd",
+        "Invoice No: INV-H2-006 | Invoice date: 2026-10-22",
+        "REGISTER OF COMPLETED SERVICES",
+        "Each entry below represents a separate service delivered.",
+        "Description: Cargo photography | Amount: 28 USD | Terms: PP | Entry: ENTRY-02"
+      ],
+      "documents": []
+    }
+  }
+}

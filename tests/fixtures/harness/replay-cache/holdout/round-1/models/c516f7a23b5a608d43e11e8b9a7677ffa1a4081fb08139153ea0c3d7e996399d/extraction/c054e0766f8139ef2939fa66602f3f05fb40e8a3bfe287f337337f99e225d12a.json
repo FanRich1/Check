@@ -1,0 +1,144 @@
+{
+  "fingerprint": "c054e0766f8139ef2939fa66602f3f05fb40e8a3bfe287f337337f99e225d12a",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-002\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-002:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-002:u4\",\"quote\":\"Invoice No: INV-H2-002\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-002:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-002:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-002:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Terminal survey\",\"amount\":46,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-002:u7\",\"quote\":\"Description: Terminal survey\"}],\"amount\":[{\"unit_id\":\"case-H2-002:u7\",\"quote\":\"Amount: 46 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-002:u7\",\"quote\":\"Amount: 46 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-002:u7\",\"quote\":\"Terms: PP\"}]}},{\"charge_item_raw\":\"THC\",\"amount\":34,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-002:u19\",\"quote\":\"Description: THC\"}],\"amount\":[{\"unit_id\":\"case-H2-002:u19\",\"quote\":\"Amount: 34 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-002:u19\",\"quote\":\"Amount: 34 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-002:u19\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 4974,
+          "output_tokens": 472,
+          "total_tokens": 5446,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-002",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-002:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-002:u4",
+              "quote": "Invoice No: INV-H2-002"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-002:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-002:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-002:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Terminal survey",
+            "amount": 46,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-002:u7",
+                  "quote": "Description: Terminal survey"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-002:u7",
+                  "quote": "Amount: 46 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-002:u7",
+                  "quote": "Amount: 46 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-002:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "THC",
+            "amount": 34,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-002:u19",
+                  "quote": "Description: THC"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-002:u19",
+                  "quote": "Amount: 34 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-002:u19",
+                  "quote": "Amount: 34 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-002:u19",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

@@ -6,6 +6,14 @@ from shipping_billing.domain.normalization import key, resolve
 
 
 def document_kind(raw):
+    parts = re.split(r"\s*[/|]\s*", raw or "")
+    if len(parts) > 1:
+        # A neutral heading can qualify an explicit type, but cannot override a conflict.
+        substantive = [
+            p for p in parts if re.sub(r"[\s_-]+", "", p.upper()) not in ("STATEMENT", "ACCOUNTSTATEMENT")
+        ]
+        kinds = {document_kind(p) for p in substantive}
+        return next(iter(kinds)) if len(kinds) == 1 and "unknown" not in kinds else "unknown"
     token = re.sub(r"[\s_-]+", "", (raw or "").upper())
     if token in ("CREDITNOTE", "CREDITINVOICE", "CREDITMEMO", "贷项通知单", "贷项"):
         return "credit"
@@ -14,6 +22,17 @@ def document_kind(raw):
     if token in ("INVOICE", "DEBITINVOICE", "DEBITNOTE", "DEBITMEMO", "账单", "借项通知单"):
         return "normal"
     return "unknown"
+
+
+def explicit_document_title(raw):
+    """Drop only a neutral companion heading; original titles remain in normalization audit."""
+    parts = re.split(r"\s*[/|]\s*", raw or "")
+    substantive = [
+        p.strip() for p in parts if re.sub(r"[\s_-]+", "", p.upper()) not in ("STATEMENT", "ACCOUNTSTATEMENT")
+    ]
+    if len(parts) > 1 and len(substantive) == 1 and document_kind(substantive[0]) != "unknown":
+        return substantive[0]
+    return raw
 
 
 def role_supported(roles, refs, index, source_id):

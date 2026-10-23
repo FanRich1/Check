@@ -1,0 +1,110 @@
+{
+  "fingerprint": "a7be56cd0a577829d8d284b6ebf6d353574abad5ed45ed086a182822226b8c1c",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-004\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-004:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-004:u4\",\"quote\":\"Invoice No: INV-H2-004\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-004:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-004:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-004:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Gate attendance\",\"amount\":31,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-004:u7\",\"quote\":\"Description: Gate attendance\"}],\"amount\":[{\"unit_id\":\"case-H2-004:u7\",\"quote\":\"Amount: 31 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-004:u7\",\"quote\":\"Amount: 31 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-004:u7\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3342,
+          "output_tokens": 339,
+          "total_tokens": 3681,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-004",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-004:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-004:u4",
+              "quote": "Invoice No: INV-H2-004"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-004:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-004:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-004:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Gate attendance",
+            "amount": 31,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-004:u7",
+                  "quote": "Description: Gate attendance"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-004:u7",
+                  "quote": "Amount: 31 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-004:u7",
+                  "quote": "Amount: 31 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-004:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

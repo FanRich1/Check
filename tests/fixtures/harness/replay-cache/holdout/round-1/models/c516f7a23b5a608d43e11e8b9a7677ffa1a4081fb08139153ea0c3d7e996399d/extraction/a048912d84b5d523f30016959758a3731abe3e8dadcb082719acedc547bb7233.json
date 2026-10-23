@@ -1,0 +1,144 @@
+{
+  "fingerprint": "a048912d84b5d523f30016959758a3731abe3e8dadcb082719acedc547bb7233",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-003\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-003/part-1.2:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-003/part-1.2:u4\",\"quote\":\"Invoice No: INV-H2-003\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-003/part-1.2:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-003/part-1.2:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-003/part-1.2:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Rail appointment\",\"amount\":23,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-003/part-1.2:u7\",\"quote\":\"Description: Rail appointment\"}],\"amount\":[{\"unit_id\":\"case-H2-003/part-1.2:u7\",\"quote\":\"Amount: 23 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-003/part-1.2:u7\",\"quote\":\"Amount: 23 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-003/part-1.2:u7\",\"quote\":\"Terms: PP\"}]}},{\"charge_item_raw\":\"Truck waiting\",\"amount\":14,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-003/part-1.2:u8\",\"quote\":\"Description: Truck waiting\"}],\"amount\":[{\"unit_id\":\"case-H2-003/part-1.2:u8\",\"quote\":\"Amount: 14 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-003/part-1.2:u8\",\"quote\":\"Amount: 14 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-003/part-1.2:u8\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 4048,
+          "output_tokens": 551,
+          "total_tokens": 4599,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-003",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-003/part-1.2:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-003/part-1.2:u4",
+              "quote": "Invoice No: INV-H2-003"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-003/part-1.2:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-003/part-1.2:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-003/part-1.2:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Rail appointment",
+            "amount": 23,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-003/part-1.2:u7",
+                  "quote": "Description: Rail appointment"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-003/part-1.2:u7",
+                  "quote": "Amount: 23 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-003/part-1.2:u7",
+                  "quote": "Amount: 23 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-003/part-1.2:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Truck waiting",
+            "amount": 14,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-003/part-1.2:u8",
+                  "quote": "Description: Truck waiting"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-003/part-1.2:u8",
+                  "quote": "Amount: 14 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-003/part-1.2:u8",
+                  "quote": "Amount: 14 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-003/part-1.2:u8",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

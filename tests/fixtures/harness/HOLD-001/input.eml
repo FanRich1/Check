@@ -1,0 +1,17 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <hold-001@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+INVOICE
+Document reference = INV-HOLD-001
+Issuer = Seaport Meridian Logistics
+Recipient (billed customer) = Pinecrest Equipment Limited
+Document date = 2026-10-20
+ACTUAL SHIPMENT CHARGES
+HOLD-001-R1 / Weighbridge service / line total USD 31.40; payment PP
+HOLD-001-R2 / Cargo securing / line total USD 18; payment PP

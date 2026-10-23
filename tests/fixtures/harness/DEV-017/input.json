@@ -1,0 +1,57 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "case-DEV-017",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Cedar Development Buyer",
+      "lines": {
+        "case-DEV-017:line-04aa2daac4067089bdc0": {
+          "tax": {
+            "value": 2,
+            "evidence": [
+              {
+                "source_id": "case-DEV-017",
+                "locator": {
+                  "kind": "email_body",
+                  "page": null,
+                  "section": "case-DEV-017:f6:line-7",
+                  "region": null,
+                  "sheet": null,
+                  "cells": null,
+                  "block": null,
+                  "pointer": null
+                },
+                "quote": "Line TAX 2; Line DISCOUNT 1"
+              }
+            ]
+          },
+          "discount": {
+            "value": 1,
+            "evidence": [
+              {
+                "source_id": "case-DEV-017",
+                "locator": {
+                  "kind": "email_body",
+                  "page": null,
+                  "section": "case-DEV-017:f6:line-7",
+                  "region": null,
+                  "sheet": null,
+                  "cells": null,
+                  "block": null,
+                  "pointer": null
+                },
+                "quote": "Line TAX 2; Line DISCOUNT 1"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

@@ -1,0 +1,178 @@
+{
+  "fingerprint": "d8935592cdf938e01cd1903e610bb3c03e0dfaa5298c2d7b0531c72238732f76",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice / ACCOUNT STATEMENT\",\"reference_no\":\"INV-VAL-001\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Bluewater Shipping Services\",\"recipient\":\"Maple Parts Corporation\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-VAL-001:u6\",\"quote\":\"Invoice / ACCOUNT STATEMENT\"}],\"reference_no\":[{\"unit_id\":\"case-VAL-001:u7\",\"quote\":\"Reference: INV-VAL-001\"}],\"document_date_raw\":[{\"unit_id\":\"case-VAL-001:u10\",\"quote\":\"Invoice date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-VAL-001:u8\",\"quote\":\"Issued by: Bluewater Shipping Services\"}],\"recipient\":[{\"unit_id\":\"case-VAL-001:u9\",\"quote\":\"Bill to: Maple Parts Corporation\"}]},\"fees\":[{\"charge_item_raw\":\"Cargo securing\",\"amount\":17,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-001:u11\",\"quote\":\"Item VAL-001-R1: Cargo securing; line amount 17; currency USD; payment PP\"}],\"amount\":[{\"unit_id\":\"case-VAL-001:u11\",\"quote\":\"Item VAL-001-R1: Cargo securing; line amount 17; currency USD; payment PP\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-001:u11\",\"quote\":\"Item VAL-001-R1: Cargo securing; line amount 17; currency USD; payment PP\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-001:u11\",\"quote\":\"Item VAL-001-R1: Cargo securing; line amount 17; currency USD; payment PP\"}]}},{\"charge_item_raw\":\"THC\",\"amount\":22,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-001:u12\",\"quote\":\"Item VAL-001-R2: THC; line amount 22; currency USD; payment PP\"}],\"amount\":[{\"unit_id\":\"case-VAL-001:u12\",\"quote\":\"Item VAL-001-R2: THC; line amount 22; currency USD; payment PP\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-001:u12\",\"quote\":\"Item VAL-001-R2: THC; line amount 22; currency USD; payment PP\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-001:u12\",\"quote\":\"Item VAL-001-R2: THC; line amount 22; currency USD; payment PP\"}]}},{\"charge_item_raw\":\"Doc Fee\",\"amount\":13,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-001:u13\",\"quote\":\"Item VAL-001-R3: Doc Fee; line amount 13; currency USD; payment PP\"}],\"amount\":[{\"unit_id\":\"case-VAL-001:u13\",\"quote\":\"Item VAL-001-R3: Doc Fee; line amount 13; currency USD; payment PP\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-001:u13\",\"quote\":\"Item VAL-001-R3: Doc Fee; line amount 13; currency USD; payment PP\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-001:u13\",\"quote\":\"Item VAL-001-R3: Doc Fee; line amount 13; currency USD; payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3738,
+          "output_tokens": 797,
+          "total_tokens": 4535,
+          "input_token_details": {
+            "cache_read": 3584
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice / ACCOUNT STATEMENT",
+        "reference_no": "INV-VAL-001",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-VAL-001:u6",
+              "quote": "Invoice / ACCOUNT STATEMENT"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-VAL-001:u7",
+              "quote": "Reference: INV-VAL-001"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-VAL-001:u10",
+              "quote": "Invoice date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-VAL-001:u8",
+              "quote": "Issued by: Bluewater Shipping Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-VAL-001:u9",
+              "quote": "Bill to: Maple Parts Corporation"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Cargo securing",
+            "amount": 17,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-001:u11",
+                  "quote": "Item VAL-001-R1: Cargo securing; line amount 17; currency USD; payment PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-001:u11",
+                  "quote": "Item VAL-001-R1: Cargo securing; line amount 17; currency USD; payment PP"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-001:u11",
+                  "quote": "Item VAL-001-R1: Cargo securing; line amount 17; currency USD; payment PP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-001:u11",
+                  "quote": "Item VAL-001-R1: Cargo securing; line amount 17; currency USD; payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "THC",
+            "amount": 22,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-001:u12",
+                  "quote": "Item VAL-001-R2: THC; line amount 22; currency USD; payment PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-001:u12",
+                  "quote": "Item VAL-001-R2: THC; line amount 22; currency USD; payment PP"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-001:u12",
+                  "quote": "Item VAL-001-R2: THC; line amount 22; currency USD; payment PP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-001:u12",
+                  "quote": "Item VAL-001-R2: THC; line amount 22; currency USD; payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Doc Fee",
+            "amount": 13,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-001:u13",
+                  "quote": "Item VAL-001-R3: Doc Fee; line amount 13; currency USD; payment PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-001:u13",
+                  "quote": "Item VAL-001-R3: Doc Fee; line amount 13; currency USD; payment PP"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-001:u13",
+                  "quote": "Item VAL-001-R3: Doc Fee; line amount 13; currency USD; payment PP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-001:u13",
+                  "quote": "Item VAL-001-R3: Doc Fee; line amount 13; currency USD; payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

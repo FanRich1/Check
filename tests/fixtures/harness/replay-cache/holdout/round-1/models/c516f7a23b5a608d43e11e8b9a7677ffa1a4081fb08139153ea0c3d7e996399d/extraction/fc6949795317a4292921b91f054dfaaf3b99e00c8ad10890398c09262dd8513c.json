@@ -1,0 +1,110 @@
+{
+  "fingerprint": "fc6949795317a4292921b91f054dfaaf3b99e00c8ad10890398c09262dd8513c",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-013\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-013:u6\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-013:u9\",\"quote\":\"Invoice No: INV-H2-013\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-013:u9\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-013:u7\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-013:u8\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Unassigned service\",\"amount\":33,\"currency_raw\":\"$\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"COD\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-013:u12\",\"quote\":\"Description: Unassigned service\"}],\"amount\":[{\"unit_id\":\"case-H2-013:u12\",\"quote\":\"Amount: 33 $\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-013:u12\",\"quote\":\"Amount: 33 $\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-013:u12\",\"quote\":\"Terms: COD\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3644,
+          "output_tokens": 343,
+          "total_tokens": 3987,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-013",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-013:u6",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-013:u9",
+              "quote": "Invoice No: INV-H2-013"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-013:u9",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-013:u7",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-013:u8",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Unassigned service",
+            "amount": 33,
+            "currency_raw": "$",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "COD",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-013:u12",
+                  "quote": "Description: Unassigned service"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-013:u12",
+                  "quote": "Amount: 33 $"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-013:u12",
+                  "quote": "Amount: 33 $"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-013:u12",
+                  "quote": "Terms: COD"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

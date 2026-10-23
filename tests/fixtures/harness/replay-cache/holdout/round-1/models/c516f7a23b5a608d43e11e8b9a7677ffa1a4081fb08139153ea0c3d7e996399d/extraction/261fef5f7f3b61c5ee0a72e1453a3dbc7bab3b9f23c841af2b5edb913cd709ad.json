@@ -1,0 +1,110 @@
+{
+  "fingerprint": "261fef5f7f3b61c5ee0a72e1453a3dbc7bab3b9f23c841af2b5edb913cd709ad",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Credit Note\",\"reference_no\":\"INV-H2-014\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-014:u6\",\"quote\":\"Credit Note\"}],\"reference_no\":[{\"unit_id\":\"case-H2-014:u9\",\"quote\":\"Invoice No: INV-H2-014\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-014:u9\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-014:u7\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-014:u8\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Service allowance\",\"amount\":12.8,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-014:u12\",\"quote\":\"Description: Service allowance\"}],\"amount\":[{\"unit_id\":\"case-H2-014:u12\",\"quote\":\"Amount: 12.80 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-014:u12\",\"quote\":\"Amount: 12.80 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-014:u12\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3751,
+          "output_tokens": 347,
+          "total_tokens": 4098,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Credit Note",
+        "reference_no": "INV-H2-014",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-014:u6",
+              "quote": "Credit Note"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-014:u9",
+              "quote": "Invoice No: INV-H2-014"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-014:u9",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-014:u7",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-014:u8",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Service allowance",
+            "amount": 12.8,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-014:u12",
+                  "quote": "Description: Service allowance"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-014:u12",
+                  "quote": "Amount: 12.80 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-014:u12",
+                  "quote": "Amount: 12.80 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-014:u12",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

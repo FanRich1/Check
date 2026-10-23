@@ -1,0 +1,15 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <val-001@example.invalid>
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<html><body><p>Invoice / ACCOUNT STATEMENT</p><p>Reference: INV-VAL-001</p><p=
+>Issued by: Bluewater Shipping Services</p><p>Bill to: Maple Parts Corporatio=
+n</p><p>Invoice date: 2026-10-20</p><p>Item VAL-001-R1: Cargo securing; line =
+amount 17; currency USD; payment PP</p><p>Item VAL-001-R2: THC; line amount 2=
+2; currency USD; payment PP</p><p>Item VAL-001-R3: Doc Fee; line amount 13; c=
+urrency USD; payment PP</p></body></html>

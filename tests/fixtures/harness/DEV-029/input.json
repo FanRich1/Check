@@ -1,0 +1,17 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "case-DEV-029",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Cedar Development Buyer"
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {
+    "model": "MODEL_INVALID_STRUCTURE"
+  }
+}

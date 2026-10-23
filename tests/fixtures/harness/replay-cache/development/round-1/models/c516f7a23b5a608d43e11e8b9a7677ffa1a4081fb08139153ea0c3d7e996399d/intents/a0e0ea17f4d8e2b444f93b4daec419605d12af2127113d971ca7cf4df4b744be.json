@@ -1,0 +1,61 @@
+{
+  "fingerprint": "a0e0ea17f4d8e2b444f93b4daec419605d12af2127113d971ca7cf4df4b744be",
+  "prompt_version": "stage7-intents-v1",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"directives\":[{\"source_line_id\":\"DEV-003-source:line-9bc8fabd18f42ee6909c\",\"record_id\":null,\"selector_citations\":[{\"unit_id\":\"DEV-003-source:u8\",\"quote\":\"现明确请求仅将已有费用行 L1 的金额由 40 改为 55\"},{\"unit_id\":\"DEV-003-source:u9\",\"quote\":\"费用名称 Handling Charge。\"}],\"edits\":[{\"path\":\"/charge_details/amount\",\"action\":\"set\",\"expected_old_stated\":true,\"expected_old\":40,\"value\":55,\"citations\":[{\"unit_id\":\"DEV-003-source:u8\",\"quote\":\"现明确请求仅将已有费用行 L1 的金额由 40 改为 55\"}]}]}]}",
+      "status": "success",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 2842,
+          "output_tokens": 170,
+          "total_tokens": 3012,
+          "input_token_details": {
+            "cache_read": 896
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage7-intents-v1",
+        "mode": "live",
+        "reasoning_content_saved": false
+      }
+    }
+  ],
+  "draft": {
+    "directives": [
+      {
+        "source_line_id": "DEV-003-source:line-9bc8fabd18f42ee6909c",
+        "record_id": null,
+        "selector_citations": [
+          {
+            "unit_id": "DEV-003-source:u8",
+            "quote": "现明确请求仅将已有费用行 L1 的金额由 40 改为 55"
+          },
+          {
+            "unit_id": "DEV-003-source:u9",
+            "quote": "费用名称 Handling Charge。"
+          }
+        ],
+        "edits": [
+          {
+            "path": "/charge_details/amount",
+            "action": "set",
+            "expected_old_stated": true,
+            "expected_old": 40,
+            "value": 55,
+            "citations": [
+              {
+                "unit_id": "DEV-003-source:u8",
+                "quote": "现明确请求仅将已有费用行 L1 的金额由 40 改为 55"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

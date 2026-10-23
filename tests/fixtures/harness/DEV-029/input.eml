@@ -1,0 +1,15 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <dev-029@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Document type: Invoice
+Invoice number: INV-DEV-029
+Issuer: Dover Testing Logistics
+Bill to: Cedar Development Buyer
+Document date: 2026-10-20
+Fee row DEV-029-R1: Handling Fee | USD 40; payment PP

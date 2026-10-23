@@ -1,0 +1,20 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "b0624b57e5143c1826616b80f0a6dccd99a8474e39cbbdaee27fe3445dfdd359": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Invoice",
+        "Supplier / issuer: Atlas Wharf Services",
+        "Customer / bill to: Birchwood Components Ltd",
+        "Invoice No: INV-H2-005 | Invoice date: 2026-10-22",
+        "REGISTER OF COMPLETED SERVICES",
+        "Each entry below represents a separate service delivered.",
+        "Description: Container inspection | Amount: 22 USD | Terms: PP | Entry: ENTRY-01",
+        "Description: Seal survey | Amount: 18 USD | Terms: PP | Entry: ENTRY-02"
+      ],
+      "documents": []
+    }
+  }
+}

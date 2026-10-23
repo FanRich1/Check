@@ -1,0 +1,104 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [],
+  "expected_exit": 2,
+  "risk_codes": [
+    "INVALID_OLD_STATE"
+  ],
+  "old_snapshot_after": [
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-014",
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Dover Testing Logistics",
+        "recipient": "Cedar Development Buyer"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 40,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "USD",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Cedar Development Buyer",
+        "posting_type": "AP"
+      },
+      "record_id": "DUPLICATE",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {}
+    },
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-014",
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Dover Testing Logistics",
+        "recipient": "Cedar Development Buyer"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 40,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "USD",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Cedar Development Buyer",
+        "posting_type": "AP"
+      },
+      "record_id": "DUPLICATE",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {}
+    }
+  ],
+  "request_rejection": true,
+  "fault_expected": false,
+  "idempotence": false,
+  "expected_document_count": 1
+}

@@ -1,0 +1,11 @@
+{
+  "annotation_source": "authored_synthetic_not_prediction",
+  "rows": [],
+  "expected_exit": 0,
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "risk_codes": [],
+  "expected_document_count": 1
+}

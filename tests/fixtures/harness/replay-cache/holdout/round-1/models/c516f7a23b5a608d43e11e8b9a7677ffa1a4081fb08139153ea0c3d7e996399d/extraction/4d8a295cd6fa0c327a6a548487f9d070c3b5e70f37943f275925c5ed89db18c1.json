@@ -1,0 +1,144 @@
+{
+  "fingerprint": "4d8a295cd6fa0c327a6a548487f9d070c3b5e70f37943f275925c5ed89db18c1",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-009\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-009:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-009:u4\",\"quote\":\"Invoice No: INV-H2-009\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-009:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-009:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-009:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Loading supervision\",\"amount\":35,\"currency_raw\":\"GBP\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-009:u7\",\"quote\":\"Description: Loading supervision\"}],\"amount\":[{\"unit_id\":\"case-H2-009:u7\",\"quote\":\"Amount: 35 GBP\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-009:u7\",\"quote\":\"Amount: 35 GBP\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-009:u7\",\"quote\":\"Terms: PP\"}]}},{\"charge_item_raw\":\"Crating\",\"amount\":16,\"currency_raw\":\"GBP\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-009:u8\",\"quote\":\"Description: Crating\"}],\"amount\":[{\"unit_id\":\"case-H2-009:u8\",\"quote\":\"Amount: 16 GBP\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-009:u8\",\"quote\":\"Amount: 16 GBP\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-009:u8\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3386,
+          "output_tokens": 474,
+          "total_tokens": 3860,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-009",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-009:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-009:u4",
+              "quote": "Invoice No: INV-H2-009"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-009:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-009:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-009:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Loading supervision",
+            "amount": 35,
+            "currency_raw": "GBP",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-009:u7",
+                  "quote": "Description: Loading supervision"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-009:u7",
+                  "quote": "Amount: 35 GBP"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-009:u7",
+                  "quote": "Amount: 35 GBP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-009:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Crating",
+            "amount": 16,
+            "currency_raw": "GBP",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-009:u8",
+                  "quote": "Description: Crating"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-009:u8",
+                  "quote": "Amount: 16 GBP"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-009:u8",
+                  "quote": "Amount: 16 GBP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-009:u8",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

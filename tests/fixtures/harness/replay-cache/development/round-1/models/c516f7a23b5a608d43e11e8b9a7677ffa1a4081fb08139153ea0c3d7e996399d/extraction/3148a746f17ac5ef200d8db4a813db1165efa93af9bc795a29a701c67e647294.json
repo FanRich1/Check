@@ -1,0 +1,154 @@
+{
+  "fingerprint": "3148a746f17ac5ef200d8db4a813db1165efa93af9bc795a29a701c67e647294",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-DEV-018\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Dover Testing Logistics\",\"recipient\":\"Cedar Development Buyer\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-DEV-018:u6\",\"quote\":\"Document type: Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-DEV-018:u7\",\"quote\":\"Invoice number: INV-DEV-018\"}],\"document_date_raw\":[{\"unit_id\":\"case-DEV-018:u10\",\"quote\":\"Document date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-DEV-018:u8\",\"quote\":\"Issuer: Dover Testing Logistics\"}],\"recipient\":[{\"unit_id\":\"case-DEV-018:u9\",\"quote\":\"Bill to: Cedar Development Buyer\"}]},\"fees\":[{\"charge_item_raw\":\"Port charge\",\"amount\":40,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-DEV-018:u11\",\"quote\":\"Port charge\"}],\"amount\":[{\"unit_id\":\"case-DEV-018:u11\",\"quote\":\"USD 40\"}],\"currency_raw\":[{\"unit_id\":\"case-DEV-018:u11\",\"quote\":\"USD 40\"}],\"payment_term_raw\":[{\"unit_id\":\"case-DEV-018:u11\",\"quote\":\"payment PP\"}]}},{\"charge_item_raw\":\"Warehouse service\",\"amount\":30,\"currency_raw\":\"EUR\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-DEV-018:u12\",\"quote\":\"Warehouse service\"}],\"amount\":[{\"unit_id\":\"case-DEV-018:u12\",\"quote\":\"EUR 30\"}],\"currency_raw\":[{\"unit_id\":\"case-DEV-018:u12\",\"quote\":\"EUR 30\"}],\"payment_term_raw\":[{\"unit_id\":\"case-DEV-018:u12\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[{\"kind\":\"total\",\"citations\":[{\"unit_id\":\"case-DEV-018:u13\",\"quote\":\"TOTAL USD 70\"}]}]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3726,
+          "output_tokens": 486,
+          "total_tokens": 4212,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-018",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Dover Testing Logistics",
+        "recipient": "Cedar Development Buyer",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-DEV-018:u6",
+              "quote": "Document type: Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-DEV-018:u7",
+              "quote": "Invoice number: INV-DEV-018"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-DEV-018:u10",
+              "quote": "Document date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-DEV-018:u8",
+              "quote": "Issuer: Dover Testing Logistics"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-DEV-018:u9",
+              "quote": "Bill to: Cedar Development Buyer"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Port charge",
+            "amount": 40,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-DEV-018:u11",
+                  "quote": "Port charge"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-DEV-018:u11",
+                  "quote": "USD 40"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-DEV-018:u11",
+                  "quote": "USD 40"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-DEV-018:u11",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Warehouse service",
+            "amount": 30,
+            "currency_raw": "EUR",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-DEV-018:u12",
+                  "quote": "Warehouse service"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-DEV-018:u12",
+                  "quote": "EUR 30"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-DEV-018:u12",
+                  "quote": "EUR 30"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-DEV-018:u12",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": [
+      {
+        "kind": "total",
+        "citations": [
+          {
+            "unit_id": "case-DEV-018:u13",
+            "quote": "TOTAL USD 70"
+          }
+        ]
+      }
+    ]
+  }
+}

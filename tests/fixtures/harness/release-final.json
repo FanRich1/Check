@@ -1,0 +1,10 @@
+{
+  "code_sha256": "88251d84b0a4b798b41e93d4b908488a88ff106c1d72eb5ae484f6aa19d714c4",
+  "datasets": {
+    "development": "58c30189d7413df80f049659604a07ce81e8b195c257a8126ef11cb34e5f60d3",
+    "validation": "79b55b4325a728687a0da2a6bcd273b038cc10bfefb89547b1a7f3b96a4e2944",
+    "holdout": "46339995db10c7d38090bcdc88aa5462b853f0a7d79d4d497d943894895816f7"
+  },
+  "annotation_review": "assistant_authored_not_independently_business_signed",
+  "policy": "Holdout is evaluated after application/scorer freeze; feedback consumes that holdout."
+}

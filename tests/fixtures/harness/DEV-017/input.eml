@@ -1,0 +1,17 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <dev-017@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Document type: Invoice
+Invoice number: INV-DEV-017
+Issuer: Dover Testing Logistics
+Bill to: Cedar Development Buyer
+Document date: 2026-10-20
+Fee row DEV-017-R1: Survey service | USD 11; payment PP; quantity 2; unit pri=
+ce 5
+Line TAX 2; Line DISCOUNT 1

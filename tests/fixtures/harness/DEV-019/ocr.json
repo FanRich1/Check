@@ -1,0 +1,23 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "9661f5ce8405871af1d150d5c3566569aa7fe2440941a85785e27520b2579528": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Document type: Invoice",
+        "Invoice number: INV-DEV-019",
+        "Issuer: Dover Testing Logistics",
+        "Bill to: Cedar Development Buyer",
+        "Document date: 2026-10-20"
+      ],
+      "documents": [
+        {
+          "vendor_facts": {
+            "mblNumber": "BILL-O0-CONFLICT"
+          }
+        }
+      ]
+    }
+  }
+}

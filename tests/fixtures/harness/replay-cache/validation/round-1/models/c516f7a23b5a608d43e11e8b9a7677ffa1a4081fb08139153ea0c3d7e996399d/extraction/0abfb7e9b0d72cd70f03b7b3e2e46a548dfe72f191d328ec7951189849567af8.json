@@ -1,0 +1,110 @@
+{
+  "fingerprint": "0abfb7e9b0d72cd70f03b7b3e2e46a548dfe72f191d328ec7951189849567af8",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice / ACCOUNT STATEMENT\",\"reference_no\":\"INV-VAL-009\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Bluewater Shipping Services\",\"recipient\":\"Maple Parts Corporation\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-VAL-009:u6\",\"quote\":\"Invoice / ACCOUNT STATEMENT\"}],\"reference_no\":[{\"unit_id\":\"case-VAL-009:u7\",\"quote\":\"Reference: INV-VAL-009\"}],\"document_date_raw\":[{\"unit_id\":\"case-VAL-009:u10\",\"quote\":\"Invoice date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-VAL-009:u8\",\"quote\":\"Issued by: Bluewater Shipping Services\"}],\"recipient\":[{\"unit_id\":\"case-VAL-009:u9\",\"quote\":\"Bill to: Maple Parts Corporation\"}]},\"fees\":[{\"charge_item_raw\":\"Correction service\",\"amount\":41.25,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-009:u11\",\"quote\":\"Item VAL-009-R1: Correction service; line amount 41.25; currency USD; payment PP\"}],\"amount\":[{\"unit_id\":\"case-VAL-009:u11\",\"quote\":\"line amount 41.25\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-009:u11\",\"quote\":\"currency USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-009:u11\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3636,
+          "output_tokens": 359,
+          "total_tokens": 3995,
+          "input_token_details": {
+            "cache_read": 3456
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice / ACCOUNT STATEMENT",
+        "reference_no": "INV-VAL-009",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-VAL-009:u6",
+              "quote": "Invoice / ACCOUNT STATEMENT"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-VAL-009:u7",
+              "quote": "Reference: INV-VAL-009"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-VAL-009:u10",
+              "quote": "Invoice date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-VAL-009:u8",
+              "quote": "Issued by: Bluewater Shipping Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-VAL-009:u9",
+              "quote": "Bill to: Maple Parts Corporation"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Correction service",
+            "amount": 41.25,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-009:u11",
+                  "quote": "Item VAL-009-R1: Correction service; line amount 41.25; currency USD; payment PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-009:u11",
+                  "quote": "line amount 41.25"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-009:u11",
+                  "quote": "currency USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-009:u11",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

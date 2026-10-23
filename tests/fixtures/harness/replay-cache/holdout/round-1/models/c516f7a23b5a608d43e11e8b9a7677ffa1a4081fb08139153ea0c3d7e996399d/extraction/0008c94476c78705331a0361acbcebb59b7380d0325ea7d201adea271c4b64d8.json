@@ -1,0 +1,110 @@
+{
+  "fingerprint": "0008c94476c78705331a0361acbcebb59b7380d0325ea7d201adea271c4b64d8",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-011\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-011/part-1.2:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-011/part-1.2:u4\",\"quote\":\"Invoice No: INV-H2-011\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-011/part-1.2:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-011/part-1.2:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-011/part-1.2:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Booking administration\",\"amount\":39,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-011/part-1.2:u7\",\"quote\":\"Description: Booking administration\"}],\"amount\":[{\"unit_id\":\"case-H2-011/part-1.2:u7\",\"quote\":\"Amount: 39 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-011/part-1.2:u7\",\"quote\":\"Amount: 39 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-011/part-1.2:u7\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 4309,
+          "output_tokens": 393,
+          "total_tokens": 4702,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-011",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-011/part-1.2:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-011/part-1.2:u4",
+              "quote": "Invoice No: INV-H2-011"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-011/part-1.2:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-011/part-1.2:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-011/part-1.2:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Booking administration",
+            "amount": 39,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-011/part-1.2:u7",
+                  "quote": "Description: Booking administration"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-011/part-1.2:u7",
+                  "quote": "Amount: 39 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-011/part-1.2:u7",
+                  "quote": "Amount: 39 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-011/part-1.2:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

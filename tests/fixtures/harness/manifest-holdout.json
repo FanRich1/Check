@@ -1,0 +1,426 @@
+{
+  "schema_version": "stage8-dataset-v1",
+  "split": "holdout",
+  "annotation_review": "assistant_authored_not_independently_signed",
+  "cases": [
+    {
+      "case_id": "H2-001",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-001",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "H2-002",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-002",
+      "formats": [
+        "pdf"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "H2-003",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-003",
+      "formats": [
+        "docx",
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "H2-004",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-004",
+      "formats": [
+        "jpg"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "H2-005",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-005",
+      "formats": [
+        "png"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "H2-006",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-006",
+      "formats": [
+        "tiff"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "H2-007",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-007",
+      "formats": [
+        "xls"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "H2-008",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-008",
+      "formats": [
+        "xlsx"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "H2-009",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-009",
+      "formats": [
+        "doc"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "H2-010",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-010",
+      "formats": [
+        "docx"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "H2-011",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-011",
+      "formats": [
+        "eml",
+        "pdf"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "H2-012",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-012",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "H2-013",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-013",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "H2-014",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-014",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "H2-015",
+      "split": "holdout",
+      "family_id": "stage8-replacement-invoice-panels-v2",
+      "source_kind": "synthetic",
+      "path": "H2-015",
+      "formats": [
+        "pdf"
+      ],
+      "ocr_origin": "authored_fixture"
+    }
+  ],
+  "files": [
+    {
+      "path": "H2-001/expected.json",
+      "sha256": "e9d01a970d82d459cd5145e429f6db382cecaab6b1e03419b56326137983c839"
+    },
+    {
+      "path": "H2-001/input.eml",
+      "sha256": "65b02f0cd90d7616296d623d7b713c50e1e034ed813191eab756eb40787444fe"
+    },
+    {
+      "path": "H2-001/input.json",
+      "sha256": "8f0d593b9066157b522ac3e65642cd1156b6234db60935cf7da70f5f945b1f08"
+    },
+    {
+      "path": "H2-001/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "H2-002/expected.json",
+      "sha256": "a867df2a5b17de831986718bc53a1bcd0ab0eb9be7d216398902f842463790ac"
+    },
+    {
+      "path": "H2-002/input.json",
+      "sha256": "41478a49a681552a3bc125004056f8d5b0cef2e3acaf6b36fc526eac175ede64"
+    },
+    {
+      "path": "H2-002/input.pdf",
+      "sha256": "6cec3d9f7a97059f39289006dd638ef6957a16a533040d21a45a3978f403503f"
+    },
+    {
+      "path": "H2-002/ocr.json",
+      "sha256": "ad340f79e4d088b573f805fc18a3a41c5fe79b2348d7deefbc52d5254573c813"
+    },
+    {
+      "path": "H2-003/expected.json",
+      "sha256": "41a2ac322e6ad140b68deaae80be7703c08225475200ceaedfed3e51e1b530f7"
+    },
+    {
+      "path": "H2-003/fees.docx",
+      "sha256": "9f5f392b1267b9212d914dbf501fd855852d552d107c6fdfa146d8d03019df8b"
+    },
+    {
+      "path": "H2-003/input.eml",
+      "sha256": "80dda86f4cf78fe365afba830ffed3cbd25bf9bb0a207970ab11db6c6b710315"
+    },
+    {
+      "path": "H2-003/input.json",
+      "sha256": "d9f3843935fb4481490d889fc9d33be270af7f4b7816efd24a441ac1b8595c4e"
+    },
+    {
+      "path": "H2-003/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "H2-004/expected.json",
+      "sha256": "76fd7f94524abe5de918670c11660a2c25e5328ff2584b21240186b5f76f0cf6"
+    },
+    {
+      "path": "H2-004/input.jpg",
+      "sha256": "8e3ee2232c89af1eb598d642abf3f38e9d62c2ddb5e77f6584336412ebe1ee5e"
+    },
+    {
+      "path": "H2-004/input.json",
+      "sha256": "24e88edf834ac239d4d1f767778a35e846ec0fc9a44be728210dc43b0e4217c8"
+    },
+    {
+      "path": "H2-004/ocr.json",
+      "sha256": "ec668ad51303f74535a3cc3ab025b2fb5af932e904cd8043a2e4e4fcec13003c"
+    },
+    {
+      "path": "H2-005/expected.json",
+      "sha256": "b82f9232e9e9f000636ec2ec377b7fda303cf24c9fb2809acc8c9edd7b40d149"
+    },
+    {
+      "path": "H2-005/input.json",
+      "sha256": "c19988c8096cf1d89c3d7fa38ceb926f6fe5c7c7f57d31e995f0ab49c0e1f441"
+    },
+    {
+      "path": "H2-005/input.png",
+      "sha256": "b0624b57e5143c1826616b80f0a6dccd99a8474e39cbbdaee27fe3445dfdd359"
+    },
+    {
+      "path": "H2-005/ocr.json",
+      "sha256": "ee227f42c6d056add324a2a79cc363eba1c22c07b293e5c60730dbd33183a967"
+    },
+    {
+      "path": "H2-006/expected.json",
+      "sha256": "e592cc86b1c7fc53743f540db8cd01b5e31cd4396302d533ece19b1209d73cda"
+    },
+    {
+      "path": "H2-006/input.json",
+      "sha256": "df579727e6dea729e004ec00d01eaa257932960dbad65b475bbeafd2322960a1"
+    },
+    {
+      "path": "H2-006/input.tiff",
+      "sha256": "c6bc9bce7e05796b4f5ca27fd81787ea845a0e84a2f7c7549241af19a011355c"
+    },
+    {
+      "path": "H2-006/ocr.json",
+      "sha256": "26b43546ce34dd67646ce0a667caa07b27a9d397f59acfade899531ee86240fc"
+    },
+    {
+      "path": "H2-007/expected.json",
+      "sha256": "8d5ee4bcdc0cf37d2b2173d169e5999dcd25bb0099a8315af9bede8c43d967a9"
+    },
+    {
+      "path": "H2-007/input.json",
+      "sha256": "c270693f33f113ef05cd95dcce176712be5baaece6850fafe42510082b6e7902"
+    },
+    {
+      "path": "H2-007/input.xls",
+      "sha256": "4d8caa2f75260a8fd64a161bcc2bdd90d883777a5b25dedfd3115a7c7774f9d6"
+    },
+    {
+      "path": "H2-007/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "H2-008/expected.json",
+      "sha256": "feaa9477ee8d2aa5c7220b31177233fd004ac436a80a77dea6300849abd71b51"
+    },
+    {
+      "path": "H2-008/input.json",
+      "sha256": "13dbd909b7612a39e4ef766cb7c46349d28b43a20802053d8a463dc53aa76716"
+    },
+    {
+      "path": "H2-008/input.xlsx",
+      "sha256": "451f323dc24c4193773e60dc9aff320c55d14c5798383048c4f4057b60a8b4f8"
+    },
+    {
+      "path": "H2-008/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "H2-009/expected.json",
+      "sha256": "2828f86cc59c0aff4c9d2b0980dded6fc1587546c33b4d5bb55567a1d53e49ee"
+    },
+    {
+      "path": "H2-009/input.doc",
+      "sha256": "805b9a9a4478b4924fc88353a3c42ebb6fbca8004116a9b079f93d82db20e123"
+    },
+    {
+      "path": "H2-009/input.json",
+      "sha256": "dea404d533c1da4c0801435ee902ca992c73fa61276a3753351c147458879f6f"
+    },
+    {
+      "path": "H2-009/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "H2-010/expected.json",
+      "sha256": "b71ce9a3a6f58ae723fc87bf460bcc1a3785366d04b92f1403ae3d2dc0e75292"
+    },
+    {
+      "path": "H2-010/input.docx",
+      "sha256": "0f4873f968569cdcf9dfddd9466730b3d4c090cfa1baef9b4638be4601092523"
+    },
+    {
+      "path": "H2-010/input.json",
+      "sha256": "bf95db673a11edcec879e9f8d24954ebd6a741191c8702bba283c21ee5c39231"
+    },
+    {
+      "path": "H2-010/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "H2-011/expected.json",
+      "sha256": "2f9558d1d68151865ca5051c7470109d277bcfdaa788ea4e622a6b8e0230247a"
+    },
+    {
+      "path": "H2-011/fees.pdf",
+      "sha256": "a453d077ad17681d83577ee57b3248493567bb5d128e98b099a71227bc0de0dc"
+    },
+    {
+      "path": "H2-011/input.eml",
+      "sha256": "4fecaa0c61b6937227d9b1347179ec808a3f501b5c7a7fc257e23af656b99563"
+    },
+    {
+      "path": "H2-011/input.json",
+      "sha256": "64f6f9396842d963554122808442f6bada5864c10fd61f63399e57bb8e7be4fc"
+    },
+    {
+      "path": "H2-011/ocr.json",
+      "sha256": "986f0bc9d0fbe182e7edb0744abf51d8d180f2eff76be7a5c00a603c3d234b6a"
+    },
+    {
+      "path": "H2-012/expected.json",
+      "sha256": "b66e1348867728c25394ffeb77f5cc6a17702d0dc037cafdceb7d80711c1f0c3"
+    },
+    {
+      "path": "H2-012/input.eml",
+      "sha256": "0853ebd6c45e9dd7c8937cb00bbcb6f920b6c1741c806f99f082869d60bafeff"
+    },
+    {
+      "path": "H2-012/input.json",
+      "sha256": "63658408ae7afcd0946ca1ed5f933fd31d9d770154341ec74faee0bad1e7ae54"
+    },
+    {
+      "path": "H2-012/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "H2-013/expected.json",
+      "sha256": "8f7734ba26104694c99472156964ace1fe36859630cdb41edf2bbe634b9c4ec3"
+    },
+    {
+      "path": "H2-013/input.eml",
+      "sha256": "9bfd559d30d32bf8dd9931acdac183f84de4d8e337c9564c642433dceb120fc0"
+    },
+    {
+      "path": "H2-013/input.json",
+      "sha256": "9f1b2a0b0d006302d9bdfe5fee0de22dc4ccafc4f5d0e28c2f53b59ddb2db159"
+    },
+    {
+      "path": "H2-013/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "H2-014/expected.json",
+      "sha256": "47ad381b2fb977d4d52b01e48f8c220ece12e08871b46b1af9d8ef2cbf59d5d5"
+    },
+    {
+      "path": "H2-014/input.eml",
+      "sha256": "91217009d347377f7573a45f0e9b40934ed424eca07689cfa1e43d36768ad5bc"
+    },
+    {
+      "path": "H2-014/input.json",
+      "sha256": "40992f456f71262f1245681bb8350a8b4ac151e0dc258c7baee6438111d5b8ef"
+    },
+    {
+      "path": "H2-014/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "H2-015/expected.json",
+      "sha256": "c211d91cf5aae9636b289ebbecb2b4f686f44c378aa30522fcc3c9380ea37667"
+    },
+    {
+      "path": "H2-015/input.json",
+      "sha256": "c1f67b942416a817b1addaafcdb795e59ab13d98e65d6674c492c5e8f513eb6a"
+    },
+    {
+      "path": "H2-015/input.pdf",
+      "sha256": "cfbc19601e86420824f6e9ee1f1dec04ffcfddeec4e2cfce5e72f3a59e7d30de"
+    },
+    {
+      "path": "H2-015/ocr.json",
+      "sha256": "8b75e39759f28c6c9bc962e05f0fade5c98b484cbfd2bb5f89239f4621071c74"
+    }
+  ],
+  "leakage_policy": "Replacement description-first panel family stays wholly in holdout.",
+  "replaces_consumed_manifest": "consumed-manifest-holdout-v1.json"
+}

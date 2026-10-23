@@ -1,0 +1,144 @@
+{
+  "fingerprint": "5a7a5d96fe51ddf26ca0339b03d1aa4c19eb326c75ac581d11f0849df0ef6d8c",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-005\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-005:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-005:u4\",\"quote\":\"Invoice No: INV-H2-005\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-005:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-005:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-005:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Container inspection\",\"amount\":22,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-005:u7\",\"quote\":\"Description: Container inspection\"}],\"amount\":[{\"unit_id\":\"case-H2-005:u7\",\"quote\":\"Amount: 22 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-005:u7\",\"quote\":\"Amount: 22 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-005:u7\",\"quote\":\"Terms: PP\"}]}},{\"charge_item_raw\":\"Seal survey\",\"amount\":18,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-005:u8\",\"quote\":\"Description: Seal survey\"}],\"amount\":[{\"unit_id\":\"case-H2-005:u8\",\"quote\":\"Amount: 18 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-005:u8\",\"quote\":\"Amount: 18 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-005:u8\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3467,
+          "output_tokens": 473,
+          "total_tokens": 3940,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-005",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-005:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-005:u4",
+              "quote": "Invoice No: INV-H2-005"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-005:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-005:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-005:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Container inspection",
+            "amount": 22,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-005:u7",
+                  "quote": "Description: Container inspection"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-005:u7",
+                  "quote": "Amount: 22 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-005:u7",
+                  "quote": "Amount: 22 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-005:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Seal survey",
+            "amount": 18,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-005:u8",
+                  "quote": "Description: Seal survey"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-005:u8",
+                  "quote": "Amount: 18 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-005:u8",
+                  "quote": "Amount: 18 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-005:u8",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "500999ee49b9096838c2991ecd2e529897160ea9d206f1a56b5f2efacd44a4b6": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Invoice / ACCOUNT STATEMENT",
+        "Reference: INV-VAL-004",
+        "Issued by: Bluewater Shipping Services",
+        "Bill to: Maple Parts Corporation",
+        "Invoice date: 2026-10-20",
+        "Item VAL-004-R1: Image service A; line amount 29; currency USD; payment PP",
+        "Item VAL-004-R2: Image service B; line amount 38; currency USD; payment PP"
+      ],
+      "documents": []
+    }
+  }
+}

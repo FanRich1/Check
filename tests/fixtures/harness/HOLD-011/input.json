@@ -1,0 +1,106 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "case-HOLD-011",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Pinecrest Equipment Limited"
+    },
+    "lines": {}
+  },
+  "existing_bills": [
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-HOLD-011",
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Seaport Meridian Logistics",
+        "recipient": "Pinecrest Equipment Limited"
+      },
+      "charge_details": {
+        "charge_item": "Unresolved handling",
+        "charge_item_raw": "Unresolved handling",
+        "amount": 21,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "USD",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Pinecrest Equipment Limited",
+        "posting_type": "AP"
+      },
+      "record_id": "OLD-HOLD-011-1",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {}
+    },
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-HOLD-011",
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Seaport Meridian Logistics",
+        "recipient": "Pinecrest Equipment Limited"
+      },
+      "charge_details": {
+        "charge_item": "Unresolved handling",
+        "charge_item_raw": "Unresolved handling",
+        "amount": 32,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "USD",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Pinecrest Equipment Limited",
+        "posting_type": "AP"
+      },
+      "record_id": "OLD-HOLD-011-2",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {}
+    }
+  ],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

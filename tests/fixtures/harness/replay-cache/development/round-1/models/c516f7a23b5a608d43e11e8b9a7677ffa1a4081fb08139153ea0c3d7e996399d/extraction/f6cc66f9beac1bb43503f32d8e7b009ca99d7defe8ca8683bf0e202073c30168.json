@@ -1,0 +1,110 @@
+{
+  "fingerprint": "f6cc66f9beac1bb43503f32d8e7b009ca99d7defe8ca8683bf0e202073c30168",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Credit Note\",\"reference_no\":\"INV-DEV-016\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Dover Testing Logistics\",\"recipient\":\"Cedar Development Buyer\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-DEV-016:u6\",\"quote\":\"Document type: Credit Note\"}],\"reference_no\":[{\"unit_id\":\"case-DEV-016:u7\",\"quote\":\"Invoice number: INV-DEV-016\"}],\"document_date_raw\":[{\"unit_id\":\"case-DEV-016:u10\",\"quote\":\"Document date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-DEV-016:u8\",\"quote\":\"Issuer: Dover Testing Logistics\"}],\"recipient\":[{\"unit_id\":\"case-DEV-016:u9\",\"quote\":\"Bill to: Cedar Development Buyer\"}]},\"fees\":[{\"charge_item_raw\":\"Service rebate\",\"amount\":25,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-DEV-016:u11\",\"quote\":\"Service rebate\"}],\"amount\":[{\"unit_id\":\"case-DEV-016:u11\",\"quote\":\"USD 25\"}],\"currency_raw\":[{\"unit_id\":\"case-DEV-016:u11\",\"quote\":\"USD 25\"}],\"payment_term_raw\":[{\"unit_id\":\"case-DEV-016:u11\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3652,
+          "output_tokens": 332,
+          "total_tokens": 3984,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Credit Note",
+        "reference_no": "INV-DEV-016",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Dover Testing Logistics",
+        "recipient": "Cedar Development Buyer",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-DEV-016:u6",
+              "quote": "Document type: Credit Note"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-DEV-016:u7",
+              "quote": "Invoice number: INV-DEV-016"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-DEV-016:u10",
+              "quote": "Document date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-DEV-016:u8",
+              "quote": "Issuer: Dover Testing Logistics"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-DEV-016:u9",
+              "quote": "Bill to: Cedar Development Buyer"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Service rebate",
+            "amount": 25,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-DEV-016:u11",
+                  "quote": "Service rebate"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-DEV-016:u11",
+                  "quote": "USD 25"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-DEV-016:u11",
+                  "quote": "USD 25"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-DEV-016:u11",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

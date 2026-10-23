@@ -1,0 +1,64 @@
+{
+  "annotation_source": "authored_synthetic_not_prediction",
+  "rows": [
+    {
+      "row_id": "DEV-008:1",
+      "anchors": [
+        {
+          "source_id": "DEV-008-source",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "DEV-008-source:f6:line-3",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "PENDING_REVIEW",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-DEV-008",
+          "document_date": "2026-09-20"
+        },
+        "transaction_party": {
+          "issuer": "TEST DESTINATION AGENCY",
+          "recipient": "TEST ORIGIN LOGISTICS"
+        },
+        "charge_details": {
+          "charge_item": "Handling Charge",
+          "charge_item_raw": "Handling Fee",
+          "amount": 40,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null
+        },
+        "financial_attributes": {
+          "accounting_entity": null,
+          "posting_type": null
+        }
+      },
+      "automatic": false,
+      "expected_record_id": null,
+      "changes": [],
+      "risk_codes": [
+        "MISSING_ACCOUNTING_ENTITY"
+      ],
+      "assert_values": {}
+    }
+  ],
+  "expected_exit": 1,
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "risk_codes": [
+    "MISSING_ACCOUNTING_ENTITY"
+  ],
+  "expected_document_count": 1
+}

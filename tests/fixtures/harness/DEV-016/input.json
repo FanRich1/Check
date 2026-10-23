@@ -1,0 +1,41 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "case-DEV-016",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Cedar Development Buyer",
+      "lines": {
+        "case-DEV-016:line-0ee74e6e269f750ea255": {
+          "adjustment": {
+            "kind": "credit",
+            "original_reference": "ORIG-DEV-016",
+            "original_payer": "Cedar Development Buyer",
+            "original_payee": "Dover Testing Logistics",
+            "evidence": [
+              {
+                "source_id": "case-DEV-016",
+                "locator": {
+                  "kind": "email_body",
+                  "page": null,
+                  "section": "case-DEV-016:f6:line-7",
+                  "region": null,
+                  "sheet": null,
+                  "cells": null,
+                  "block": null,
+                  "pointer": null
+                },
+                "quote": "Credit original reference ORIG-DEV-016. Original payer: Cedar Development Buyer; Original payee: Dover Testing Logistics"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

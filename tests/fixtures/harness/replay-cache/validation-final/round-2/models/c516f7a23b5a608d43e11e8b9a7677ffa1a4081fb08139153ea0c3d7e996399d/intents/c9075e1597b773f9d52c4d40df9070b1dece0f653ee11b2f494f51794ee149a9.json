@@ -1,0 +1,56 @@
+{
+  "fingerprint": "c9075e1597b773f9d52c4d40df9070b1dece0f653ee11b2f494f51794ee149a9",
+  "prompt_version": "stage7-intents-v1",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"directives\":[{\"source_line_id\":\"case-VAL-009:line-8481ed3ba3aa410423d8\",\"record_id\":null,\"selector_citations\":[],\"edits\":[{\"path\":\"/charge_details/amount\",\"action\":\"set\",\"expected_old_stated\":true,\"expected_old\":38.10,\"value\":41.25,\"citations\":[{\"unit_id\":\"case-VAL-009:u11\",\"quote\":\"Item VAL-009-R1: Correction service; line amount 41.25; currency USD; payment PP\"},{\"unit_id\":\"case-VAL-009:u12\",\"quote\":\"Please correct amount from 38.10 to 41.25.\"}]}]}]}",
+      "status": "success",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 2878,
+          "output_tokens": 152,
+          "total_tokens": 3030,
+          "input_token_details": {
+            "cache_read": 2688
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage7-intents-v1",
+        "mode": "live",
+        "reasoning_content_saved": false
+      }
+    }
+  ],
+  "draft": {
+    "directives": [
+      {
+        "source_line_id": "case-VAL-009:line-8481ed3ba3aa410423d8",
+        "record_id": null,
+        "selector_citations": [],
+        "edits": [
+          {
+            "path": "/charge_details/amount",
+            "action": "set",
+            "expected_old_stated": true,
+            "expected_old": 38.10,
+            "value": 41.25,
+            "citations": [
+              {
+                "unit_id": "case-VAL-009:u11",
+                "quote": "Item VAL-009-R1: Correction service; line amount 41.25; currency USD; payment PP"
+              },
+              {
+                "unit_id": "case-VAL-009:u12",
+                "quote": "Please correct amount from 38.10 to 41.25."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

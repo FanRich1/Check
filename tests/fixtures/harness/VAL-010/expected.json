@@ -1,0 +1,161 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "VAL-010:1",
+      "anchors": [
+        {
+          "source_id": "case-VAL-010",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "case-VAL-010:f6:line-7",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "PENDING_REVIEW",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": null,
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Booking service",
+          "charge_item_raw": "Booking service",
+          "amount": 25,
+          "currency": "EUR",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "EUR",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": false,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": [
+        "MULTIPLE_MATCHES"
+      ]
+    }
+  ],
+  "expected_exit": 1,
+  "risk_codes": [
+    "MULTIPLE_MATCHES"
+  ],
+  "old_snapshot_after": [
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": null,
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation"
+      },
+      "charge_details": {
+        "charge_item": "Booking service",
+        "charge_item_raw": "Booking service",
+        "amount": 20,
+        "currency": "EUR",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "EUR",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Maple Parts Corporation",
+        "posting_type": "AP"
+      },
+      "record_id": "OLD-VAL-010-1",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {
+        "booking_no": "BOOK-VAL-010"
+      }
+    },
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": null,
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation"
+      },
+      "charge_details": {
+        "charge_item": "Booking service",
+        "charge_item_raw": "Booking service",
+        "amount": 30,
+        "currency": "EUR",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "EUR",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Maple Parts Corporation",
+        "posting_type": "AP"
+      },
+      "record_id": "OLD-VAL-010-2",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {
+        "booking_no": "BOOK-VAL-010"
+      }
+    }
+  ],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 1
+}

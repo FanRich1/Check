@@ -1,0 +1,41 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "case-VAL-012",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Bluewater Shipping Services",
+      "lines": {
+        "case-VAL-012:line-fb711ddd10a32e4d7f22": {
+          "adjustment": {
+            "kind": "credit",
+            "original_reference": "ORIG-VAL-012",
+            "original_payer": "Maple Parts Corporation",
+            "original_payee": "Bluewater Shipping Services",
+            "evidence": [
+              {
+                "source_id": "case-VAL-012",
+                "locator": {
+                  "kind": "email_body",
+                  "page": null,
+                  "section": "case-VAL-012:f6:line-7",
+                  "region": null,
+                  "sheet": null,
+                  "cells": null,
+                  "block": null,
+                  "pointer": null
+                },
+                "quote": "Credit original reference ORIG-VAL-012. Original payer: Maple Parts Corporation; Original payee: Bluewater Shipping Services"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

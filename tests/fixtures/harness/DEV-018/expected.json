@@ -1,0 +1,118 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "DEV-018:1",
+      "anchors": [
+        {
+          "source_id": "case-DEV-018",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "case-DEV-018:f6:line-6",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "PENDING_REVIEW",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-DEV-018",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Dover Testing Logistics",
+          "recipient": "Cedar Development Buyer"
+        },
+        "charge_details": {
+          "charge_item": "Port charge",
+          "charge_item_raw": "Port charge",
+          "amount": 40,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Cedar Development Buyer",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": false,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": [
+        "MIXED_CURRENCY_TOTAL"
+      ]
+    },
+    {
+      "row_id": "DEV-018:2",
+      "anchors": [
+        {
+          "source_id": "case-DEV-018",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "case-DEV-018:f6:line-7",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "PENDING_REVIEW",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-DEV-018",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Dover Testing Logistics",
+          "recipient": "Cedar Development Buyer"
+        },
+        "charge_details": {
+          "charge_item": "Warehouse service",
+          "charge_item_raw": "Warehouse service",
+          "amount": 30,
+          "currency": "EUR",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "EUR",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Cedar Development Buyer",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": false,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": [
+        "MIXED_CURRENCY_TOTAL"
+      ]
+    }
+  ],
+  "expected_exit": 1,
+  "risk_codes": [
+    "MIXED_CURRENCY_TOTAL"
+  ],
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 1
+}

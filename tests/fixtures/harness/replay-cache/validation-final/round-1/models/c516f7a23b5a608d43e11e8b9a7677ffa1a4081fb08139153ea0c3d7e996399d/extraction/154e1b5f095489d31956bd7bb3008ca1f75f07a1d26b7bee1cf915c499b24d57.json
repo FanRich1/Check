@@ -1,0 +1,110 @@
+{
+  "fingerprint": "154e1b5f095489d31956bd7bb3008ca1f75f07a1d26b7bee1cf915c499b24d57",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice / ACCOUNT STATEMENT\",\"reference_no\":\"INV-VAL-011\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Bluewater Shipping Services\",\"recipient\":\"Maple Parts Corporation\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-VAL-011:u6\",\"quote\":\"Invoice / ACCOUNT STATEMENT\"}],\"reference_no\":[{\"unit_id\":\"case-VAL-011:u7\",\"quote\":\"Reference: INV-VAL-011\"}],\"document_date_raw\":[{\"unit_id\":\"case-VAL-011:u10\",\"quote\":\"Invoice date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-VAL-011:u8\",\"quote\":\"Issued by: Bluewater Shipping Services\"}],\"recipient\":[{\"unit_id\":\"case-VAL-011:u9\",\"quote\":\"Bill to: Maple Parts Corporation\"}]},\"fees\":[{\"charge_item_raw\":\"Repeated service\",\"amount\":24,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-011:u11\",\"quote\":\"Item VAL-011-R1: Repeated service; line amount 24; currency USD; payment PP\"}],\"amount\":[{\"unit_id\":\"case-VAL-011:u11\",\"quote\":\"Item VAL-011-R1: Repeated service; line amount 24; currency USD; payment PP\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-011:u11\",\"quote\":\"Item VAL-011-R1: Repeated service; line amount 24; currency USD; payment PP\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-011:u11\",\"quote\":\"Item VAL-011-R1: Repeated service; line amount 24; currency USD; payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3632,
+          "output_tokens": 405,
+          "total_tokens": 4037,
+          "input_token_details": {
+            "cache_read": 3456
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice / ACCOUNT STATEMENT",
+        "reference_no": "INV-VAL-011",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-VAL-011:u6",
+              "quote": "Invoice / ACCOUNT STATEMENT"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-VAL-011:u7",
+              "quote": "Reference: INV-VAL-011"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-VAL-011:u10",
+              "quote": "Invoice date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-VAL-011:u8",
+              "quote": "Issued by: Bluewater Shipping Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-VAL-011:u9",
+              "quote": "Bill to: Maple Parts Corporation"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Repeated service",
+            "amount": 24,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-011:u11",
+                  "quote": "Item VAL-011-R1: Repeated service; line amount 24; currency USD; payment PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-011:u11",
+                  "quote": "Item VAL-011-R1: Repeated service; line amount 24; currency USD; payment PP"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-011:u11",
+                  "quote": "Item VAL-011-R1: Repeated service; line amount 24; currency USD; payment PP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-011:u11",
+                  "quote": "Item VAL-011-R1: Repeated service; line amount 24; currency USD; payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

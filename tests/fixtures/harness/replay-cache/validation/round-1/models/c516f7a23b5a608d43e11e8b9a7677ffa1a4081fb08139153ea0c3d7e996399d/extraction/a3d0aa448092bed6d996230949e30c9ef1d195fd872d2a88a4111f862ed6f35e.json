@@ -1,0 +1,144 @@
+{
+  "fingerprint": "a3d0aa448092bed6d996230949e30c9ef1d195fd872d2a88a4111f862ed6f35e",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice / ACCOUNT STATEMENT\",\"reference_no\":\"INV-VAL-002\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Bluewater Shipping Services\",\"recipient\":\"Maple Parts Corporation\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-VAL-002/part-1.2:u1\",\"quote\":\"Invoice / ACCOUNT STATEMENT\"}],\"reference_no\":[{\"unit_id\":\"case-VAL-002/part-1.2:u2\",\"quote\":\"Reference: INV-VAL-002\"}],\"document_date_raw\":[{\"unit_id\":\"case-VAL-002/part-1.2:u5\",\"quote\":\"Invoice date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-VAL-002/part-1.2:u3\",\"quote\":\"Issued by: Bluewater Shipping Services\"}],\"recipient\":[{\"unit_id\":\"case-VAL-002/part-1.2:u4\",\"quote\":\"Bill to: Maple Parts Corporation\"}]},\"fees\":[{\"charge_item_raw\":\"Inspection A\",\"amount\":12,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-002/part-1.2:u6\",\"quote\":\"Item VAL-002-R1: Inspection A; line amount 12; currency USD; payment PP\"}],\"amount\":[{\"unit_id\":\"case-VAL-002/part-1.2:u6\",\"quote\":\"line amount 12\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-002/part-1.2:u6\",\"quote\":\"currency USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-002/part-1.2:u6\",\"quote\":\"payment PP\"}]}},{\"charge_item_raw\":\"Inspection B\",\"amount\":21,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-002/part-1.2:u7\",\"quote\":\"Item VAL-002-R2: Inspection B; line amount 21; currency USD; payment PP\"}],\"amount\":[{\"unit_id\":\"case-VAL-002/part-1.2:u7\",\"quote\":\"line amount 21\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-002/part-1.2:u7\",\"quote\":\"currency USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-002/part-1.2:u7\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 4315,
+          "output_tokens": 576,
+          "total_tokens": 4891,
+          "input_token_details": {
+            "cache_read": 4096
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice / ACCOUNT STATEMENT",
+        "reference_no": "INV-VAL-002",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-VAL-002/part-1.2:u1",
+              "quote": "Invoice / ACCOUNT STATEMENT"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-VAL-002/part-1.2:u2",
+              "quote": "Reference: INV-VAL-002"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-VAL-002/part-1.2:u5",
+              "quote": "Invoice date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-VAL-002/part-1.2:u3",
+              "quote": "Issued by: Bluewater Shipping Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-VAL-002/part-1.2:u4",
+              "quote": "Bill to: Maple Parts Corporation"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Inspection A",
+            "amount": 12,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-002/part-1.2:u6",
+                  "quote": "Item VAL-002-R1: Inspection A; line amount 12; currency USD; payment PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-002/part-1.2:u6",
+                  "quote": "line amount 12"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-002/part-1.2:u6",
+                  "quote": "currency USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-002/part-1.2:u6",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Inspection B",
+            "amount": 21,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-002/part-1.2:u7",
+                  "quote": "Item VAL-002-R2: Inspection B; line amount 21; currency USD; payment PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-002/part-1.2:u7",
+                  "quote": "line amount 21"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-002/part-1.2:u7",
+                  "quote": "currency USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-002/part-1.2:u7",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

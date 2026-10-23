@@ -1,0 +1,15 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <val-014@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Invoice / ACCOUNT STATEMENT
+Reference: INV-VAL-014
+Issued by: Bluewater Shipping Services
+Bill to: Maple Parts Corporation
+Invoice date: 2026-10-20
+Item VAL-014-R1: Fault probe; line amount 31; currency USD; payment PP

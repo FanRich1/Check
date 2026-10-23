@@ -1,0 +1,138 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "H2-010:1",
+      "anchors": [
+        {
+          "source_id": "case-H2-010",
+          "locator": {
+            "kind": "word_block",
+            "page": null,
+            "section": "case-H2-010:f7:line-1",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": "body/block-6/R2C1/block-1",
+            "pointer": null
+          }
+        },
+        {
+          "source_id": "case-H2-010",
+          "locator": {
+            "kind": "word_block",
+            "page": null,
+            "section": "case-H2-010:body/block-6:row-2",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": "body/block-6",
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-H2-010",
+          "document_date": "2026-10-22"
+        },
+        "transaction_party": {
+          "issuer": "Atlas Wharf Services",
+          "recipient": "Birchwood Components Ltd"
+        },
+        "charge_details": {
+          "charge_item": "Terminal visit",
+          "charge_item_raw": "Terminal visit",
+          "amount": 47,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Birchwood Components Ltd",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    },
+    {
+      "row_id": "H2-010:2",
+      "anchors": [
+        {
+          "source_id": "case-H2-010",
+          "locator": {
+            "kind": "word_block",
+            "page": null,
+            "section": "case-H2-010:f8:line-1",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": "body/block-6/R3C1/block-1",
+            "pointer": null
+          }
+        },
+        {
+          "source_id": "case-H2-010",
+          "locator": {
+            "kind": "word_block",
+            "page": null,
+            "section": "case-H2-010:body/block-6:row-3",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": "body/block-6",
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-H2-010",
+          "document_date": "2026-10-22"
+        },
+        "transaction_party": {
+          "issuer": "Atlas Wharf Services",
+          "recipient": "Birchwood Components Ltd"
+        },
+        "charge_details": {
+          "charge_item": "Terminal visit",
+          "charge_item_raw": "Terminal visit",
+          "amount": 47,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Birchwood Components Ltd",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    }
+  ],
+  "expected_exit": 0,
+  "risk_codes": [],
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 1
+}

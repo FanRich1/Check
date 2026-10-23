@@ -1,0 +1,115 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "VAL-006:1",
+      "anchors": [
+        {
+          "source_id": "case-VAL-006",
+          "locator": {
+            "kind": "sheet_cells",
+            "page": null,
+            "section": "case-VAL-006:f6:line-1",
+            "region": null,
+            "sheet": "Sheet",
+            "cells": "A6:A6",
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-VAL-006",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Equipment wash",
+          "charge_item_raw": "Equipment wash",
+          "amount": 15,
+          "currency": "JPY",
+          "payment_term": "PP",
+          "quantity": 3,
+          "unit_price": 5,
+          "currency_raw": "JPY",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {
+        "/charge_details/quantity": 3,
+        "/charge_details/unit_price": 5
+      },
+      "risk_codes": []
+    },
+    {
+      "row_id": "VAL-006:2",
+      "anchors": [
+        {
+          "source_id": "case-VAL-006",
+          "locator": {
+            "kind": "sheet_cells",
+            "page": null,
+            "section": "case-VAL-006:f7:line-1",
+            "region": null,
+            "sheet": "Sheet",
+            "cells": "A7:A7",
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-VAL-006",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Crate rental",
+          "charge_item_raw": "Crate rental",
+          "amount": 25,
+          "currency": "JPY",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "JPY",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    }
+  ],
+  "expected_exit": 0,
+  "risk_codes": [],
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 1
+}

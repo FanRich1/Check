@@ -1,0 +1,56 @@
+{
+  "fingerprint": "47b7e5dadb89d59788daaf370606d379c2b02dd0bf54263a98f328fb2712f7dc",
+  "prompt_version": "stage7-intents-v1",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"directives\":[{\"source_line_id\":\"case-DEV-013:line-aa04ab84aa4732d274fc\",\"record_id\":null,\"selector_citations\":[],\"edits\":[{\"path\":\"/charge_details/payment_term\",\"action\":\"clear\",\"expected_old_stated\":true,\"expected_old\":\"PP\",\"value\":null,\"citations\":[{\"unit_id\":\"case-DEV-013:u11\",\"quote\":\"Fee row DEV-013-R1: Handling Fee | USD 40; payment PP\"},{\"unit_id\":\"case-DEV-013:u12\",\"quote\":\"Please clear payment_term PP.\"}]}]}]}",
+      "status": "success",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 2859,
+          "output_tokens": 135,
+          "total_tokens": 2994,
+          "input_token_details": {
+            "cache_read": 896
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage7-intents-v1",
+        "mode": "live",
+        "reasoning_content_saved": false
+      }
+    }
+  ],
+  "draft": {
+    "directives": [
+      {
+        "source_line_id": "case-DEV-013:line-aa04ab84aa4732d274fc",
+        "record_id": null,
+        "selector_citations": [],
+        "edits": [
+          {
+            "path": "/charge_details/payment_term",
+            "action": "clear",
+            "expected_old_stated": true,
+            "expected_old": "PP",
+            "value": null,
+            "citations": [
+              {
+                "unit_id": "case-DEV-013:u11",
+                "quote": "Fee row DEV-013-R1: Handling Fee | USD 40; payment PP"
+              },
+              {
+                "unit_id": "case-DEV-013:u12",
+                "quote": "Please clear payment_term PP."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

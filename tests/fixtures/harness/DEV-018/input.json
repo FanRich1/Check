@@ -1,0 +1,61 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "case-DEV-018",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Cedar Development Buyer",
+      "totals": [
+        {
+          "group_id": "explicit-cross-currency-scope",
+          "source_id": "case-DEV-018",
+          "line_ids": [
+            "case-DEV-018:line-560a8d0e71d87beececf",
+            "case-DEV-018:line-aa9651dc26417c4d723b"
+          ],
+          "currency": "USD",
+          "currency_evidence": [
+            {
+              "source_id": "case-DEV-018",
+              "locator": {
+                "kind": "email_body",
+                "page": null,
+                "section": "case-DEV-018:f6:line-8",
+                "region": null,
+                "sheet": null,
+                "cells": null,
+                "block": null,
+                "pointer": null
+              },
+              "quote": "TOTAL USD 70"
+            }
+          ],
+          "total": {
+            "value": 70,
+            "evidence": [
+              {
+                "source_id": "case-DEV-018",
+                "locator": {
+                  "kind": "email_body",
+                  "page": null,
+                  "section": "case-DEV-018:f6:line-8",
+                  "region": null,
+                  "sheet": null,
+                  "cells": null,
+                  "block": null,
+                  "pointer": null
+                },
+                "quote": "TOTAL USD 70"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

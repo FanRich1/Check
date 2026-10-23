@@ -1,0 +1,144 @@
+{
+  "fingerprint": "109ebc25cfe381a34b49cb1733219013919be708a0b0d677dc7f61ffdcd68c65",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-008\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-008:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-008:u4\",\"quote\":\"Invoice No: INV-H2-008\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-008:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-008:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-008:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Transit escort\",\"amount\":48,\"currency_raw\":\"CHF\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-008:u7\",\"quote\":\"Description: Transit escort\"}],\"amount\":[{\"unit_id\":\"case-H2-008:u7\",\"quote\":\"Amount: 48 CHF\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-008:u7\",\"quote\":\"Amount: 48 CHF\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-008:u7\",\"quote\":\"Terms: PP\"}]}},{\"charge_item_raw\":\"Transit escort\",\"amount\":52,\"currency_raw\":\"CHF\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-008:u8\",\"quote\":\"Description: Transit escort\"}],\"amount\":[{\"unit_id\":\"case-H2-008:u8\",\"quote\":\"Amount: 52 CHF\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-008:u8\",\"quote\":\"Amount: 52 CHF\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-008:u8\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3442,
+          "output_tokens": 476,
+          "total_tokens": 3918,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-008",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-008:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-008:u4",
+              "quote": "Invoice No: INV-H2-008"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-008:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-008:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-008:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Transit escort",
+            "amount": 48,
+            "currency_raw": "CHF",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-008:u7",
+                  "quote": "Description: Transit escort"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-008:u7",
+                  "quote": "Amount: 48 CHF"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-008:u7",
+                  "quote": "Amount: 48 CHF"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-008:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Transit escort",
+            "amount": 52,
+            "currency_raw": "CHF",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-008:u8",
+                  "quote": "Description: Transit escort"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-008:u8",
+                  "quote": "Amount: 52 CHF"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-008:u8",
+                  "quote": "Amount: 52 CHF"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-008:u8",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

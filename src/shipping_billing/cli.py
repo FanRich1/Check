@@ -138,6 +138,24 @@ def parser():
     run.add_argument(
         "--output", type=Path, required=True, help="New directory for records, manifest, state and audit"
     )
+    bench = sub.add_parser(
+        "benchmark", help="Run frozen raw-document cases and score source-aligned billing predictions"
+    )
+    bench.add_argument("--dataset", type=Path, default=Path("tests/fixtures/harness"))
+    bench.add_argument("--split", choices=["development", "validation", "holdout"], required=True)
+    bench.add_argument("--mode", choices=["live", "replay"], required=True)
+    bench.add_argument("--rounds", type=int, choices=[1, 2, 3], default=1)
+    bench.add_argument("--workers", type=int, choices=[1, 2, 3, 4], default=2)
+    bench.add_argument("--storage", type=Path, required=True)
+    bench.add_argument("--output", type=Path, required=True)
+    bench.add_argument(
+        "--release", type=Path, help="Required frozen application/scorer/dataset marker for live holdout"
+    )
+    freeze = sub.add_parser(
+        "freeze-evaluation", help="Record application/scorer and all three split fingerprints"
+    )
+    freeze.add_argument("--dataset", type=Path, default=Path("tests/fixtures/harness"))
+    freeze.add_argument("--output", type=Path, required=True)
     return p
 
 
@@ -436,6 +454,36 @@ def main(argv=None):
                 )
             )
             return 0 if report["passed"] else 1
+        elif args.command == "freeze-evaluation":
+            from shipping_billing.harness.dataset import freeze_release
+
+            print(dumps(freeze_release(args.dataset.resolve(), args.output)))
+        elif args.command == "benchmark":
+            from shipping_billing.harness.runner import evaluate_dataset
+
+            if args.output.resolve().is_relative_to(args.dataset.resolve()) or (
+                args.mode == "live" and args.storage.resolve().is_relative_to(args.dataset.resolve())
+            ):
+                raise BillingError(
+                    "EVALUATION_OUTPUT_OVERLAP",
+                    "Predictions and writable live cache must be outside frozen cases.",
+                )
+            if (args.output / "evaluation.json").exists():
+                raise BillingError(
+                    "PREDICTION_EXISTS", "Use a new output directory for an independent evaluation."
+                )
+            result = evaluate_dataset(
+                args.dataset,
+                split=args.split,
+                settings=settings,
+                output=args.output,
+                storage=args.storage,
+                mode=args.mode,
+                rounds=args.rounds,
+                workers=args.workers,
+                release=args.release,
+            )
+            return 0 if result["passed"] else 1
         elif args.command == "run":
             from shipping_billing.pipeline.engine import run_pipeline
 

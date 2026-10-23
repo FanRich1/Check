@@ -1,0 +1,15 @@
+{
+  "inputs": [
+    "input.docx"
+  ],
+  "source_id": "case-H2-010",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Birchwood Components Ltd"
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

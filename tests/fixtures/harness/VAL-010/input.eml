@@ -1,0 +1,16 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <val-010@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Invoice / ACCOUNT STATEMENT
+Reference: not provided
+Issued by: Bluewater Shipping Services
+Bill to: Maple Parts Corporation
+Invoice date: 2026-10-20
+booking_no: BOOK-VAL-010
+Item VAL-010-R1: Booking service; line amount 25; currency EUR; payment PP

@@ -1,0 +1,66 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "H2-004:1",
+      "anchors": [
+        {
+          "source_id": "case-H2-004",
+          "locator": {
+            "kind": "image_region",
+            "page": 1,
+            "section": "case-H2-004:f7:line-1",
+            "region": "frame-1:full-image",
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "PENDING_REVIEW",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-H2-004",
+          "document_date": "2026-10-22"
+        },
+        "transaction_party": {
+          "issuer": "Atlas Wharf Services",
+          "recipient": "Birchwood Components Ltd"
+        },
+        "charge_details": {
+          "charge_item": "Gate attendance",
+          "charge_item_raw": "Gate attendance",
+          "amount": 31,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Birchwood Components Ltd",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": false,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": [
+        "IMAGE_TEXT_REQUIRES_VERIFICATION"
+      ]
+    }
+  ],
+  "expected_exit": 1,
+  "risk_codes": [
+    "IMAGE_TEXT_REQUIRES_VERIFICATION"
+  ],
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 1
+}

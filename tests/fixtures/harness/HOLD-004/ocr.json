@@ -1,0 +1,33 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "67f38a39a316846b1967b1fea354546f41dd591eda88906423783ac07b04c54a": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "INVOICE",
+        "Document reference = INV-HOLD-004",
+        "Issuer = Seaport Meridian Logistics",
+        "Recipient (billed customer) = Pinecrest Equipment Limited",
+        "Document date = 2026-10-20",
+        "ACTUAL SHIPMENT CHARGES",
+        "HOLD-004-R1 / Image check one / line total USD 16; payment PP"
+      ],
+      "documents": []
+    },
+    "f8ab05dcc37dd03c10fd310c084f1ce190e23eec5c46ef6f257f36bc69fa9d19": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "INVOICE",
+        "Document reference = INV-HOLD-004",
+        "Issuer = Seaport Meridian Logistics",
+        "Recipient (billed customer) = Pinecrest Equipment Limited",
+        "Document date = 2026-10-20",
+        "ACTUAL SHIPMENT CHARGES",
+        "HOLD-004-R2 / Image check two / line total USD 29; payment PP"
+      ],
+      "documents": []
+    }
+  }
+}

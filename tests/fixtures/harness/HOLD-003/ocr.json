@@ -1,0 +1,29 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "1f87c45f5e34047bbce13d2a919411734e2d154dad71b9b1ff977ffe319cdaac": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "INVOICE",
+        "Document reference = INV-HOLD-003",
+        "Issuer = Seaport Meridian Logistics",
+        "Recipient (billed customer) = Pinecrest Equipment Limited",
+        "Document date = 2026-10-20"
+      ],
+      "documents": []
+    },
+    "95dcf78b97309e30a0a8da26e312f32842e6ad2c608ce32154a84b72908aa10f": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "INVOICE",
+        "Document reference = INV-HOLD-003",
+        "Issuer = Seaport Meridian Logistics",
+        "Recipient (billed customer) = Pinecrest Equipment Limited",
+        "Document date = 2026-10-20"
+      ],
+      "documents": []
+    }
+  }
+}

@@ -1,6 +1,8 @@
 """Deterministic stage 5 normalization and validation; no ledger mutation or model calls."""
 
 import re
+from datetime import date
+from decimal import Decimal
 
 from shipping_billing.domain import money
 from shipping_billing.domain.contracts import (
@@ -13,7 +15,7 @@ from shipping_billing.domain.contracts import (
     RuleEvent,
 )
 from shipping_billing.domain.evidence import EvidenceIndex, labeled_amount, labeled_currencies
-from shipping_billing.domain.finance import financial_direction
+from shipping_billing.domain.finance import explicit_document_title, financial_direction
 from shipping_billing.domain.normalization import (
     CHARGES,
     CURRENCIES,
@@ -37,6 +39,23 @@ def problem(code, field=None, *, blocking=True):
         field=field,
         message="Domain rule: " + code,
     )
+
+
+def explicit_row_description(raw, charge, refs, index):
+    """Interpret an explicit code / description / line-total row without discarding raw evidence."""
+    pattern = r"^(?P<code>[A-Za-z][A-Za-z0-9_-]{0,63})\s*/\s*(?P<name>[^/\n]{1,160}?)\s*/\s*line total\s+(?P<currency>\S+)\s+(?P<amount>[+-]?\d+(?:\.\d+)?)(?:\s*;.*)?$"
+    for unit in index.units:
+        if not any(e.source_id == unit.source_id and e.locator == unit.locator for e in refs):
+            continue
+        match = re.fullmatch(pattern, unit.text.strip(), re.IGNORECASE)
+        if not match or not re.search(r"\d", match["code"]):
+            continue
+        if charge.currency_raw != match["currency"] or charge.amount != Decimal(match["amount"]):
+            continue
+        parts = [p.strip() for p in raw.split("/")]
+        if parts in ([match["code"], match["name"]], [match["code"], match["name"], "line total"]):
+            return match["name"]
+    return raw
 
 
 def append_unique(issues, item):
@@ -156,6 +175,33 @@ def normalize_line(candidate, source_issues, context, charges, parties, index):
             )
 
     validate_literals(line, index)
+    raw_type = c.document_info.document_type
+    title = explicit_document_title(raw_type)
+    event(
+        "document.explicit_title",
+        "/document_info/document_type",
+        raw_type,
+        title,
+        c.field_evidence.get("/document_info/document_type", []),
+    )
+    c.document_info.document_type = title
+    raw_date = c.document_info.document_date_raw
+    if raw_date and re.fullmatch(r"\d{4}-\d{2}-\d{2}", raw_date.strip()):
+        try:
+            date.fromisoformat(raw_date.strip())
+        except ValueError:
+            add_issue("INVALID_DOCUMENT_DATE", "/document_info/document_date")
+        else:
+            refs = c.field_evidence.get("/document_info/document_date_raw", [])
+            event(
+                "date.explicit_iso",
+                "/document_info/document_date",
+                c.document_info.document_date,
+                raw_date.strip(),
+                refs,
+            )
+            c.document_info.document_date = raw_date.strip()
+            c.field_evidence["/document_info/document_date"] = list(refs)
     charge = c.charge_details
     raw = charge.charge_item_raw
     if raw is not None:
@@ -163,7 +209,24 @@ def normalize_line(candidate, source_issues, context, charges, parties, index):
             r"(?:\d+\s*[xX]\s*)?\d{2}\s*['′]?\s*(?:HC|HQ|GP|DC|ST|OT|FR)", raw.strip(), re.IGNORECASE
         ):
             add_issue("EQUIPMENT_CODE_NOT_CHARGE_DESCRIPTION", "/charge_details/charge_item")
-        normal = resolve(raw, charges)
+        description = explicit_row_description(
+            raw, charge, c.field_evidence.get("/charge_details/charge_item_raw", []), index
+        )
+        description = re.sub(
+            r"^Item\s+(?=[A-Za-z0-9_-]*\d)[A-Za-z0-9][A-Za-z0-9_-]{0,63}:\s+",
+            "",
+            description,
+            flags=re.IGNORECASE,
+        )
+        if description != raw:
+            event(
+                "charge.explicit_row_label",
+                "/charge_details/charge_item",
+                raw,
+                description,
+                c.field_evidence.get("/charge_details/charge_item_raw", []),
+            )
+        normal = resolve(description, charges)
         event(
             "charge.exact_alias",
             "/charge_details/charge_item",
@@ -219,6 +282,16 @@ def normalize_line(candidate, source_issues, context, charges, parties, index):
             for e in refs
         ):
             scope = "line"
+        else:
+            row_refs = c.field_evidence.get("/charge_details/charge_item_raw", [])
+            if any(
+                e.source_id == r.source_id
+                and e.locator == r.locator
+                and any(getattr(e.locator, k) for k in ("section", "region", "cells", "block"))
+                for e in refs
+                for r in row_refs
+            ):
+                scope = "line"
     term, condition, payment_issue = payment(
         charge.payment_term_raw,
         scope=scope,

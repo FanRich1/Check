@@ -1,0 +1,13 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "DEV-007-source",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "TEST ORIGIN LOGISTICS"
+    }
+  },
+  "existing_bills": [],
+  "faults": {}
+}

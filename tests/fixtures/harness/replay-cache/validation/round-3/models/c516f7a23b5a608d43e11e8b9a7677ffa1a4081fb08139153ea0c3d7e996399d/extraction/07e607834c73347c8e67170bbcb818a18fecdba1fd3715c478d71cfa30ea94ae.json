@@ -1,0 +1,144 @@
+{
+  "fingerprint": "07e607834c73347c8e67170bbcb818a18fecdba1fd3715c478d71cfa30ea94ae",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice / ACCOUNT STATEMENT\",\"reference_no\":\"INV-VAL-007\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Bluewater Shipping Services\",\"recipient\":\"Maple Parts Corporation\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-VAL-007:u1\",\"quote\":\"Invoice / ACCOUNT STATEMENT\"}],\"reference_no\":[{\"unit_id\":\"case-VAL-007:u2\",\"quote\":\"Reference: INV-VAL-007\"}],\"document_date_raw\":[{\"unit_id\":\"case-VAL-007:u5\",\"quote\":\"Invoice date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-VAL-007:u3\",\"quote\":\"Issued by: Bluewater Shipping Services\"}],\"recipient\":[{\"unit_id\":\"case-VAL-007:u4\",\"quote\":\"Bill to: Maple Parts Corporation\"}]},\"fees\":[{\"charge_item_raw\":\"Lashing service\",\"amount\":16,\"currency_raw\":\"NZD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-007:u6\",\"quote\":\"Lashing service\"}],\"amount\":[{\"unit_id\":\"case-VAL-007:u6\",\"quote\":\"line amount 16\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-007:u6\",\"quote\":\"currency NZD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-007:u6\",\"quote\":\"payment PP\"}]}},{\"charge_item_raw\":\"Seal replacement\",\"amount\":19,\"currency_raw\":\"NZD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-007:u7\",\"quote\":\"Seal replacement\"}],\"amount\":[{\"unit_id\":\"case-VAL-007:u7\",\"quote\":\"line amount 19\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-007:u7\",\"quote\":\"currency NZD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-007:u7\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3274,
+          "output_tokens": 468,
+          "total_tokens": 3742,
+          "input_token_details": {
+            "cache_read": 3072
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice / ACCOUNT STATEMENT",
+        "reference_no": "INV-VAL-007",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-VAL-007:u1",
+              "quote": "Invoice / ACCOUNT STATEMENT"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-VAL-007:u2",
+              "quote": "Reference: INV-VAL-007"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-VAL-007:u5",
+              "quote": "Invoice date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-VAL-007:u3",
+              "quote": "Issued by: Bluewater Shipping Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-VAL-007:u4",
+              "quote": "Bill to: Maple Parts Corporation"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Lashing service",
+            "amount": 16,
+            "currency_raw": "NZD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-007:u6",
+                  "quote": "Lashing service"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-007:u6",
+                  "quote": "line amount 16"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-007:u6",
+                  "quote": "currency NZD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-007:u6",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Seal replacement",
+            "amount": 19,
+            "currency_raw": "NZD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-007:u7",
+                  "quote": "Seal replacement"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-007:u7",
+                  "quote": "line amount 19"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-007:u7",
+                  "quote": "currency NZD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-007:u7",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

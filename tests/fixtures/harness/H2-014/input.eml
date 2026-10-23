@@ -1,0 +1,19 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <h2-014@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Credit Note
+Supplier / issuer: Atlas Wharf Services
+Customer / bill to: Birchwood Components Ltd
+Invoice No: INV-H2-014 | Invoice date: 2026-10-22
+REGISTER OF COMPLETED SERVICES
+Each entry below represents a separate service delivered.
+Description: Service allowance | Amount: 12.80 USD | Terms: PP | Entry: ENTRY=
+-01
+Credit original reference EARLIER-772. Original payer: Birchwood Components L=
+td; Original payee: Atlas Wharf Services

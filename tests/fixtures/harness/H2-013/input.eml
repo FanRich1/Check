@@ -1,0 +1,16 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <h2-013@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+Invoice
+Supplier / issuer: Atlas Wharf Services
+Customer / bill to: Birchwood Components Ltd
+Invoice No: INV-H2-013 | Invoice date: 2026-10-22
+REGISTER OF COMPLETED SERVICES
+Each entry below represents a separate service delivered.
+Description: Unassigned service | Amount: 33 $ | Terms: COD | Entry: ENTRY-01

@@ -1,0 +1,14 @@
+{
+  "previous_manifest_sha256": "90322f89c21d573c5234529137109a5e957a7cfdb11247f1261903a4998f42b1",
+  "reason": "Development-only annotation audit; original failed runs retained; validation/holdout not executed.",
+  "revisions": [
+    {
+      "path": "tests\\fixtures\\harness\\DEV-018\\input.json",
+      "reason": "Development input explicitly declares the total covers both rows; no currency conversion is authorized."
+    },
+    {
+      "path": "tests\\fixtures\\harness\\DEV-022\\expected.json",
+      "reason": "Annotation correction to the pre-existing scan verification policy: PDF_NO_NATIVE_TEXT requires review."
+    }
+  ]
+}

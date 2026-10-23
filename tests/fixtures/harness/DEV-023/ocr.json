@@ -1,0 +1,18 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "73f3a831ca226ab27ef6f5db7b5a94dfa64a4bf6782fd00093738e6091c506d4": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Document type: Invoice",
+        "Invoice number: INV-DEV-023",
+        "Issuer: Dover Testing Logistics",
+        "Bill to: Cedar Development Buyer",
+        "Document date: 2026-10-20",
+        "Fee row DEV-023-R1: Handling Fee | USD 40; payment PP"
+      ],
+      "documents": []
+    }
+  }
+}

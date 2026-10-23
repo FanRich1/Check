@@ -1,0 +1,102 @@
+{
+  "annotation_source": "authored_synthetic_not_prediction",
+  "rows": [
+    {
+      "row_id": "DEV-002:1",
+      "anchors": [
+        {
+          "source_id": "DEV-002-source",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "DEV-002-source:f6:line-3",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "NO_CHANGE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-DEV-002",
+          "document_date": "2026-09-20"
+        },
+        "transaction_party": {
+          "issuer": "TEST DESTINATION AGENCY",
+          "recipient": "TEST ORIGIN LOGISTICS"
+        },
+        "charge_details": {
+          "charge_item": "Handling Charge",
+          "charge_item_raw": "Handling Fee",
+          "amount": 40,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null
+        },
+        "financial_attributes": {
+          "accounting_entity": "TEST ORIGIN LOGISTICS",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": "DEV-002-old",
+      "changes": [],
+      "risk_codes": [],
+      "assert_values": {}
+    }
+  ],
+  "expected_exit": 0,
+  "old_snapshot_after": [
+    {
+      "record_id": "DEV-002-old",
+      "existing_record_id": "DEV-002-old",
+      "operation": "CREATE",
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-002",
+        "document_date": "2026-09-20"
+      },
+      "transaction_party": {
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS"
+      },
+      "charge_details": {
+        "charge_item": "Handling Charge",
+        "charge_item_raw": "Handling Fee",
+        "amount": 40,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null
+      },
+      "financial_attributes": {
+        "accounting_entity": "TEST ORIGIN LOGISTICS",
+        "posting_type": "AP"
+      },
+      "audit_trail": {
+        "ai_reasoning": [
+          "依据明确费用及交易方向；测试预期，不是模型运行结果。"
+        ],
+        "sources": [
+          "DEV-002-source"
+        ],
+        "field_evidence": {},
+        "issues": [],
+        "changes": []
+      },
+      "extensions": {
+        "cost_center": "SYNTHETIC-ONLY"
+      }
+    }
+  ],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "risk_codes": [],
+  "expected_document_count": 1
+}

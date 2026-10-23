@@ -1,0 +1,118 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "VAL-004:1",
+      "anchors": [
+        {
+          "source_id": "case-VAL-004",
+          "locator": {
+            "kind": "image_region",
+            "page": 1,
+            "section": "case-VAL-004:f6:line-1",
+            "region": "frame-1:full-image",
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "PENDING_REVIEW",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-VAL-004",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Image service A",
+          "charge_item_raw": "Image service A",
+          "amount": 29,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": false,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": [
+        "IMAGE_TEXT_REQUIRES_VERIFICATION"
+      ]
+    },
+    {
+      "row_id": "VAL-004:2",
+      "anchors": [
+        {
+          "source_id": "case-VAL-004",
+          "locator": {
+            "kind": "image_region",
+            "page": 1,
+            "section": "case-VAL-004:f7:line-1",
+            "region": "frame-1:full-image",
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "PENDING_REVIEW",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-VAL-004",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Image service B",
+          "charge_item_raw": "Image service B",
+          "amount": 38,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": false,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": [
+        "IMAGE_TEXT_REQUIRES_VERIFICATION"
+      ]
+    }
+  ],
+  "expected_exit": 1,
+  "risk_codes": [
+    "IMAGE_TEXT_REQUIRES_VERIFICATION"
+  ],
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 1
+}

@@ -1,0 +1,66 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "HOLD-014:1",
+      "anchors": [
+        {
+          "source_id": "case-HOLD-014",
+          "locator": {
+            "kind": "pdf_page",
+            "page": 1,
+            "section": "case-HOLD-014:f1:line-7",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "PENDING_REVIEW",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-HOLD-014",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Seaport Meridian Logistics",
+          "recipient": "Pinecrest Equipment Limited"
+        },
+        "charge_details": {
+          "charge_item": "OCR timeout service",
+          "charge_item_raw": "OCR timeout service",
+          "amount": 43,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Pinecrest Equipment Limited",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": false,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": [
+        "OCR_TIMEOUT_UNKNOWN_OUTCOME"
+      ]
+    }
+  ],
+  "expected_exit": 3,
+  "risk_codes": [
+    "OCR_TIMEOUT_UNKNOWN_OUTCOME"
+  ],
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": true,
+  "idempotence": true,
+  "expected_document_count": 1
+}

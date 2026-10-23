@@ -1,0 +1,110 @@
+{
+  "fingerprint": "bb716341e01de2c685a415b0b2fd50ddaadab7c0bc3632a542bfe5d1d0320d94",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-DEV-003\",\"document_date_raw\":\"2026-09-20\",\"issuer\":\"TEST DESTINATION AGENCY\",\"recipient\":\"TEST ORIGIN LOGISTICS\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"DEV-003-source:u6\",\"quote\":\"单据类型 Invoice\"}],\"reference_no\":[{\"unit_id\":\"DEV-003-source:u6\",\"quote\":\"单据编号 INV-DEV-003\"}],\"document_date_raw\":[{\"unit_id\":\"DEV-003-source:u6\",\"quote\":\"日期 2026-09-20\"}],\"issuer\":[{\"unit_id\":\"DEV-003-source:u7\",\"quote\":\"账单签发方和收款方：TEST DESTINATION AGENCY\"}],\"recipient\":[{\"unit_id\":\"DEV-003-source:u7\",\"quote\":\"账单接收方和付款方：TEST ORIGIN LOGISTICS\"}]},\"fees\":[{\"charge_item_raw\":\"Handling Charge\",\"amount\":55,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"DEV-003-source:u9\",\"quote\":\"费用名称 Handling Charge\"}],\"amount\":[{\"unit_id\":\"DEV-003-source:u8\",\"quote\":\"金额由 40 改为 55\"}],\"currency_raw\":[{\"unit_id\":\"DEV-003-source:u10\",\"quote\":\"币种 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"DEV-003-source:u10\",\"quote\":\"付款方式 PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3633,
+          "output_tokens": 344,
+          "total_tokens": 3977,
+          "input_token_details": {
+            "cache_read": 3456
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-003",
+        "document_date_raw": "2026-09-20",
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "DEV-003-source:u6",
+              "quote": "单据类型 Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "DEV-003-source:u6",
+              "quote": "单据编号 INV-DEV-003"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "DEV-003-source:u6",
+              "quote": "日期 2026-09-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "DEV-003-source:u7",
+              "quote": "账单签发方和收款方：TEST DESTINATION AGENCY"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "DEV-003-source:u7",
+              "quote": "账单接收方和付款方：TEST ORIGIN LOGISTICS"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Handling Charge",
+            "amount": 55,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "DEV-003-source:u9",
+                  "quote": "费用名称 Handling Charge"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "DEV-003-source:u8",
+                  "quote": "金额由 40 改为 55"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "DEV-003-source:u10",
+                  "quote": "币种 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "DEV-003-source:u10",
+                  "quote": "付款方式 PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

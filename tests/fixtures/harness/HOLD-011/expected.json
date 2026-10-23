@@ -1,0 +1,157 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "HOLD-011:1",
+      "anchors": [
+        {
+          "source_id": "case-HOLD-011",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "case-HOLD-011:f6:line-7",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "PENDING_REVIEW",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-HOLD-011",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Seaport Meridian Logistics",
+          "recipient": "Pinecrest Equipment Limited"
+        },
+        "charge_details": {
+          "charge_item": "Unresolved handling",
+          "charge_item_raw": "Unresolved handling",
+          "amount": 27,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Pinecrest Equipment Limited",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": false,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": [
+        "MULTIPLE_MATCHES"
+      ]
+    }
+  ],
+  "expected_exit": 1,
+  "risk_codes": [
+    "MULTIPLE_MATCHES"
+  ],
+  "old_snapshot_after": [
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-HOLD-011",
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Seaport Meridian Logistics",
+        "recipient": "Pinecrest Equipment Limited"
+      },
+      "charge_details": {
+        "charge_item": "Unresolved handling",
+        "charge_item_raw": "Unresolved handling",
+        "amount": 21,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "USD",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Pinecrest Equipment Limited",
+        "posting_type": "AP"
+      },
+      "record_id": "OLD-HOLD-011-1",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {}
+    },
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": "INV-HOLD-011",
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Seaport Meridian Logistics",
+        "recipient": "Pinecrest Equipment Limited"
+      },
+      "charge_details": {
+        "charge_item": "Unresolved handling",
+        "charge_item_raw": "Unresolved handling",
+        "amount": 32,
+        "currency": "USD",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "USD",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Pinecrest Equipment Limited",
+        "posting_type": "AP"
+      },
+      "record_id": "OLD-HOLD-011-2",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {}
+    }
+  ],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 1
+}

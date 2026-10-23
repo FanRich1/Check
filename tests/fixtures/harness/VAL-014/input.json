@@ -1,0 +1,17 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "case-VAL-014",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Maple Parts Corporation"
+    },
+    "lines": {}
+  },
+  "existing_bills": [],
+  "ocr_fixture": "ocr.json",
+  "faults": {
+    "model": "MODEL_INVALID_STRUCTURE"
+  }
+}

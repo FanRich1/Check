@@ -1,0 +1,144 @@
+{
+  "fingerprint": "04a1ecb5520c5dff8e07465c1dee95d5320f903901fd0625215102fe2ffa33f1",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice / ACCOUNT STATEMENT\",\"reference_no\":\"INV-VAL-004\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Bluewater Shipping Services\",\"recipient\":\"Maple Parts Corporation\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-VAL-004:u1\",\"quote\":\"Invoice / ACCOUNT STATEMENT\"}],\"reference_no\":[{\"unit_id\":\"case-VAL-004:u2\",\"quote\":\"Reference: INV-VAL-004\"}],\"document_date_raw\":[{\"unit_id\":\"case-VAL-004:u5\",\"quote\":\"Invoice date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-VAL-004:u3\",\"quote\":\"Issued by: Bluewater Shipping Services\"}],\"recipient\":[{\"unit_id\":\"case-VAL-004:u4\",\"quote\":\"Bill to: Maple Parts Corporation\"}]},\"fees\":[{\"charge_item_raw\":\"Image service A\",\"amount\":29,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-004:u6\",\"quote\":\"Item VAL-004-R1: Image service A\"}],\"amount\":[{\"unit_id\":\"case-VAL-004:u6\",\"quote\":\"line amount 29\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-004:u6\",\"quote\":\"currency USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-004:u6\",\"quote\":\"payment PP\"}]}},{\"charge_item_raw\":\"Image service B\",\"amount\":38,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-004:u7\",\"quote\":\"Item VAL-004-R2: Image service B\"}],\"amount\":[{\"unit_id\":\"case-VAL-004:u7\",\"quote\":\"line amount 38\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-004:u7\",\"quote\":\"currency USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-004:u7\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3344,
+          "output_tokens": 478,
+          "total_tokens": 3822,
+          "input_token_details": {
+            "cache_read": 3200
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice / ACCOUNT STATEMENT",
+        "reference_no": "INV-VAL-004",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-VAL-004:u1",
+              "quote": "Invoice / ACCOUNT STATEMENT"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-VAL-004:u2",
+              "quote": "Reference: INV-VAL-004"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-VAL-004:u5",
+              "quote": "Invoice date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-VAL-004:u3",
+              "quote": "Issued by: Bluewater Shipping Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-VAL-004:u4",
+              "quote": "Bill to: Maple Parts Corporation"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Image service A",
+            "amount": 29,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-004:u6",
+                  "quote": "Item VAL-004-R1: Image service A"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-004:u6",
+                  "quote": "line amount 29"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-004:u6",
+                  "quote": "currency USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-004:u6",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Image service B",
+            "amount": 38,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-004:u7",
+                  "quote": "Item VAL-004-R2: Image service B"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-004:u7",
+                  "quote": "line amount 38"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-004:u7",
+                  "quote": "currency USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-004:u7",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

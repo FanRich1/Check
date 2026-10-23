@@ -1,0 +1,31 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "e90eb0811e737ae670dc4f83ca1c9f503d0c3989c687c7dcbfb25501cf30a768": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Document type: Invoice",
+        "Invoice number: INV-DEV-022",
+        "Issuer: Dover Testing Logistics",
+        "Bill to: Cedar Development Buyer",
+        "Document date: 2026-10-20",
+        "Fee row DEV-022-R1: Scan service A | USD 21; payment PP"
+      ],
+      "documents": []
+    },
+    "fa443f9d3a871c9423e0339a02839f1cb3a4fff5abe7d3834813b7e6470a64bf": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Document type: Invoice",
+        "Invoice number: INV-DEV-022",
+        "Issuer: Dover Testing Logistics",
+        "Bill to: Cedar Development Buyer",
+        "Document date: 2026-10-20",
+        "Fee row DEV-022-R2: Scan service B | USD 31; payment PP"
+      ],
+      "documents": []
+    }
+  }
+}

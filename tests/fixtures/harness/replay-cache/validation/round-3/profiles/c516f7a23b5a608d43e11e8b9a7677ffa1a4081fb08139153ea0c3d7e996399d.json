@@ -1,0 +1,15 @@
+{
+  "provider": "deepseek",
+  "model": "deepseek-flash",
+  "base_url": "https://api.deepseek.com",
+  "origin": "live",
+  "versions": {
+    "workflow": "stage7-workflow-v1",
+    "parser": "stage3-parser-v1",
+    "ocr": "order-change-v1",
+    "extraction": "stage4-evidence-v7",
+    "normalization": "stage5-domain-v1",
+    "reconciliation": "stage6-reconcile-v1",
+    "intents": "stage7-intents-v1"
+  }
+}

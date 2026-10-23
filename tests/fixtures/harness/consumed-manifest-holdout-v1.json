@@ -1,0 +1,428 @@
+{
+  "schema_version": "stage8-dataset-v1",
+  "split": "holdout",
+  "annotation_review": "assistant_authored_not_independently_signed",
+  "leakage_policy": "all source/template/format variants remain within one declared split family",
+  "cases": [
+    {
+      "case_id": "HOLD-001",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-001",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-002",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-002",
+      "formats": [
+        "eml",
+        "xlsx"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-003",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-003",
+      "formats": [
+        "pdf"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "HOLD-004",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-004",
+      "formats": [
+        "tiff"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "HOLD-005",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-005",
+      "formats": [
+        "xls"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-006",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-006",
+      "formats": [
+        "xlsx"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-007",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-007",
+      "formats": [
+        "doc"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-008",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-008",
+      "formats": [
+        "docx"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-009",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-009",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-010",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-010",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-011",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-011",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-012",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-012",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-013",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-013",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    },
+    {
+      "case_id": "HOLD-014",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-014",
+      "formats": [
+        "pdf"
+      ],
+      "ocr_origin": "authored_fixture"
+    },
+    {
+      "case_id": "HOLD-015",
+      "split": "holdout",
+      "family_id": "stage8-holdout-template-v1",
+      "source_kind": "synthetic",
+      "path": "HOLD-015",
+      "formats": [
+        "eml"
+      ],
+      "ocr_origin": "not_needed"
+    }
+  ],
+  "files": [
+    {
+      "path": "HOLD-001/expected.json",
+      "sha256": "fff585de41447961d298c4dbd1f248a18b5b99b3e4dc98804a32d9951abeed94"
+    },
+    {
+      "path": "HOLD-001/input.eml",
+      "sha256": "f9efd4c78e0389e9d08fd7bc41fd46ce7d68f41b70f633d9a3cc41e01e8e18cc"
+    },
+    {
+      "path": "HOLD-001/input.json",
+      "sha256": "1ead4e6bd64fde046513934a4b9364fab8a25469a9c33322b15db487dedb0d5f"
+    },
+    {
+      "path": "HOLD-001/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-002/expected.json",
+      "sha256": "e40318fd663a836689db03ff49834f4e266839e7236aebf385ce5368e1db259c"
+    },
+    {
+      "path": "HOLD-002/fees.xlsx",
+      "sha256": "2aa7c1e87cdc99dd2d4ce55459c9f014e6f10e8efaa66021605c709dd5987e35"
+    },
+    {
+      "path": "HOLD-002/input.eml",
+      "sha256": "88da2a2c4d660dfafa60272849a1a0169d7a27cd4c9bb9164260524e5c63f126"
+    },
+    {
+      "path": "HOLD-002/input.json",
+      "sha256": "18dfb74bd83a779d2c083f28897951fada2c2a52eab3664be8c286cd36c3e457"
+    },
+    {
+      "path": "HOLD-002/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-003/expected.json",
+      "sha256": "5185c8aca007a5547d26b60be7cd8125ae784d7203b23020a7b78a57988cd440"
+    },
+    {
+      "path": "HOLD-003/input.json",
+      "sha256": "41aed032d751345414dc3d211facc0376110bfb04b0a4127ebf10da94e10e680"
+    },
+    {
+      "path": "HOLD-003/input.pdf",
+      "sha256": "8d0448b80e4bee7374024c835b553d8fb511e218b71cb705237b35c0eaf997b5"
+    },
+    {
+      "path": "HOLD-003/ocr.json",
+      "sha256": "271d3a68a43d3d173f5721513ae29c9b292ded0286009a4c231d9132809b36db"
+    },
+    {
+      "path": "HOLD-004/expected.json",
+      "sha256": "772968e94d274d205a834ac9c1e8d3d530d040c62b54b119c8924ca6a96e9c69"
+    },
+    {
+      "path": "HOLD-004/input.json",
+      "sha256": "b07415c68333d69488f30373744dca582df867c7b41cce8d7e20b92b32579e1d"
+    },
+    {
+      "path": "HOLD-004/input.tiff",
+      "sha256": "155d0c8d9f734aa23713ff69ab0905e56adf8043fd30d86d52e49dfa3293619e"
+    },
+    {
+      "path": "HOLD-004/ocr.json",
+      "sha256": "e8c900b813bb094689a4b2bb4caed81e59b4023af2441bbdeef03e0524633fb0"
+    },
+    {
+      "path": "HOLD-005/expected.json",
+      "sha256": "145973345c3a51e7f17da16d6ea7ac439d4dc21dcf2f81cd15c4ea127c3edc62"
+    },
+    {
+      "path": "HOLD-005/input.json",
+      "sha256": "07a16ab53c75315d3c7d32f7a45b0579e8c7428221f76dfd4d9bffa52a8f438f"
+    },
+    {
+      "path": "HOLD-005/input.xls",
+      "sha256": "2ea8ccf2f25547d1d422b8b5f47f2d50b4e20c418025437517a3a5f924f6860c"
+    },
+    {
+      "path": "HOLD-005/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-006/expected.json",
+      "sha256": "cdb337581969e3e6b9d66a2f136b857bc3af9839166df8d73bfff4703f8565b8"
+    },
+    {
+      "path": "HOLD-006/input.json",
+      "sha256": "8f81cb53fc1e9dad75598432d8b4a0a63edc4cd080c41e09b7599740ecc07675"
+    },
+    {
+      "path": "HOLD-006/input.xlsx",
+      "sha256": "f6ab071bb488d14c0acff9027943f84edf701611312e5e6d68918db55bc646cd"
+    },
+    {
+      "path": "HOLD-006/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-007/expected.json",
+      "sha256": "77d9fcd9a5c8c6316a6dbde5f1da09460faeb3a80b4dffed910db72a44fd0dd0"
+    },
+    {
+      "path": "HOLD-007/input.doc",
+      "sha256": "80acd4525e5496845a92296cf5573f694124528a671ab597f887c0868186bc10"
+    },
+    {
+      "path": "HOLD-007/input.json",
+      "sha256": "9d9700c5eb34b2e6b313a21583e37591d2b6cac93ca41b8606032e1fa03e23b9"
+    },
+    {
+      "path": "HOLD-007/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-008/expected.json",
+      "sha256": "63953756b38d709e8247d7f786893fc722b35cc40b035c8717c348aa6b6d48cf"
+    },
+    {
+      "path": "HOLD-008/input.docx",
+      "sha256": "4f24fb0064d193c546b961841b637a592493a06587f04fd5f306c08096b69ccd"
+    },
+    {
+      "path": "HOLD-008/input.json",
+      "sha256": "bbb1301afe19c5057ebdfc72b8acf74d3b33ba598be25a63302dfe85802ab3c2"
+    },
+    {
+      "path": "HOLD-008/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-009/expected.json",
+      "sha256": "ba520952bedefd38ad4c163f8cfd5565b64933f8429637a4ce32b0bc65ab78fd"
+    },
+    {
+      "path": "HOLD-009/input.eml",
+      "sha256": "1ae8b35985a64f74080965626048e4adc0b27130767c1b6a0f014eec7ed5d008"
+    },
+    {
+      "path": "HOLD-009/input.json",
+      "sha256": "ce20722a3a3079d484684fabecb1a05187174b87f26f0caa974daaa13056ed80"
+    },
+    {
+      "path": "HOLD-009/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-010/expected.json",
+      "sha256": "a66463df0ee6f28b57f1a766b6c4220fa5021e10693d338f8d2d73784d9f7aa2"
+    },
+    {
+      "path": "HOLD-010/input.eml",
+      "sha256": "2eff8579d69c3691b950b09c887de18b96946ef00c477b3c8883ddaae5a7153d"
+    },
+    {
+      "path": "HOLD-010/input.json",
+      "sha256": "3300cd8cadae7fa216c03c87579b54a71a3502fa0a31b61667b58b518f284e9a"
+    },
+    {
+      "path": "HOLD-010/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-011/expected.json",
+      "sha256": "d81d12d199d8705963a9c45d2c6b8a7b6272157e350e8f7e31f8e33e4be5d1b9"
+    },
+    {
+      "path": "HOLD-011/input.eml",
+      "sha256": "1e1b980021b16e7c3535aa74433305c143b279d01cfb2f7f428cf01aa6401cfb"
+    },
+    {
+      "path": "HOLD-011/input.json",
+      "sha256": "16913916442cd93195e42eea50229f62fab03513e3d2b40f7a7c0f8a8576f5e1"
+    },
+    {
+      "path": "HOLD-011/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-012/expected.json",
+      "sha256": "970cd1ce9c6ce7fccf82197e1366ba9f700307721c8661bfd17eaddff908d1e1"
+    },
+    {
+      "path": "HOLD-012/input.eml",
+      "sha256": "d87f6c7583a951bf5acf96c26972703a04da101aaaae4d91a2abdfffbecef413"
+    },
+    {
+      "path": "HOLD-012/input.json",
+      "sha256": "077da1ddd723195ebaa38dd309deb408672d4bfd5b1bd2254431534521075a01"
+    },
+    {
+      "path": "HOLD-012/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-013/expected.json",
+      "sha256": "db5a2f036a658d885a0344c457b251d4de93b7b56842c22467927be5096549df"
+    },
+    {
+      "path": "HOLD-013/input.eml",
+      "sha256": "3d7078cea3c53a1c5b246b2bcdab030f6a0260e2c0de4bf1e4ffbd84941d9956"
+    },
+    {
+      "path": "HOLD-013/input.json",
+      "sha256": "3e16def88ce16d8d6a86f66e5099c9c56d44401cd6c57dbd71c67e2c47035760"
+    },
+    {
+      "path": "HOLD-013/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    },
+    {
+      "path": "HOLD-014/expected.json",
+      "sha256": "5d5cae6400cc171d43907fa8a8e4c846df310437df7c4784d45be2a9b9f46e98"
+    },
+    {
+      "path": "HOLD-014/input.json",
+      "sha256": "e36f25b642bbe3e165870d6c136e28c29a13383e99bd8d3b3820c4bd5020ed24"
+    },
+    {
+      "path": "HOLD-014/input.pdf",
+      "sha256": "a2cfc7f997fff90e162de119d867c2d196bf8f4c5e0859d36e890eb08ba4e086"
+    },
+    {
+      "path": "HOLD-014/ocr.json",
+      "sha256": "9a5fe0f7411b4388f6ad239c4c90323d4fb55a55c553c1ea5b7f1d43e1e23d3d"
+    },
+    {
+      "path": "HOLD-015/batch-1.eml",
+      "sha256": "615d4cb30d8d8466b037127f3989a076cf19c82134e87a718154ef0349464fde"
+    },
+    {
+      "path": "HOLD-015/batch-2.eml",
+      "sha256": "0093d5232a3c8bd76abad433753ab1fdeab2db45d4f52a8e6f25ff259c50ab37"
+    },
+    {
+      "path": "HOLD-015/batch-3.eml",
+      "sha256": "6c252cd2e7bcae4515e57cdcb0638b9431e003e57d8b9cf487f242b1d7d61ce5"
+    },
+    {
+      "path": "HOLD-015/expected.json",
+      "sha256": "56347bd5a83510393eeab8eba88fd3091b013c65354d056ee0d4f712833d41d5"
+    },
+    {
+      "path": "HOLD-015/input.json",
+      "sha256": "056ccbd6dd11c0a3970ddb621599a5b96a5c79362ff5d93221a6b4a2c0acef6d"
+    },
+    {
+      "path": "HOLD-015/ocr.json",
+      "sha256": "be0d53e3a5eb87d06367c1f3dada0e748cb89ba15aaab006c4417ee66497a436"
+    }
+  ]
+}

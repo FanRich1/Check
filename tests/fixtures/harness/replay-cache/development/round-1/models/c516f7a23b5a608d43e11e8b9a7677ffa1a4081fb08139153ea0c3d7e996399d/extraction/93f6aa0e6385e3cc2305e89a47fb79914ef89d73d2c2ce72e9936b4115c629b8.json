@@ -1,0 +1,75 @@
+{
+  "fingerprint": "93f6aa0e6385e3cc2305e89a47fb79914ef89d73d2c2ce72e9936b4115c629b8",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-DEV-021\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Dover Testing Logistics\",\"recipient\":\"Cedar Development Buyer\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-DEV-021:u6\",\"quote\":\"Document type: Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-DEV-021:u7\",\"quote\":\"Invoice number: INV-DEV-021\"}],\"document_date_raw\":[{\"unit_id\":\"case-DEV-021:u10\",\"quote\":\"Document date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-DEV-021:u8\",\"quote\":\"Issuer: Dover Testing Logistics\"}],\"recipient\":[{\"unit_id\":\"case-DEV-021:u9\",\"quote\":\"Bill to: Cedar Development Buyer\"}]},\"fees\":[]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3613,
+          "output_tokens": 203,
+          "total_tokens": 3816,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-021",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Dover Testing Logistics",
+        "recipient": "Cedar Development Buyer",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-DEV-021:u6",
+              "quote": "Document type: Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-DEV-021:u7",
+              "quote": "Invoice number: INV-DEV-021"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-DEV-021:u10",
+              "quote": "Document date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-DEV-021:u8",
+              "quote": "Issuer: Dover Testing Logistics"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-DEV-021:u9",
+              "quote": "Bill to: Cedar Development Buyer"
+            }
+          ]
+        },
+        "fees": []
+      }
+    ],
+    "observations": []
+  }
+}

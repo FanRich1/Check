@@ -1,0 +1,144 @@
+{
+  "fingerprint": "a357ff92616c978f7ddcc1b37d9b204330db5ffcacc2dbf87e545a6f886cc465",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-001\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-001:u6\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-001:u9\",\"quote\":\"Invoice No: INV-H2-001\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-001:u9\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-001:u7\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-001:u8\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Export escort\",\"amount\":64.35,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-001:u12\",\"quote\":\"Description: Export escort\"}],\"amount\":[{\"unit_id\":\"case-H2-001:u12\",\"quote\":\"Amount: 64.35 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-001:u12\",\"quote\":\"Amount: 64.35 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-001:u12\",\"quote\":\"Terms: PP\"}]}},{\"charge_item_raw\":\"Shuttle service\",\"amount\":21,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-001:u13\",\"quote\":\"Description: Shuttle service\"}],\"amount\":[{\"unit_id\":\"case-H2-001:u13\",\"quote\":\"Amount: 21 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-001:u13\",\"quote\":\"Amount: 21 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-001:u13\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3747,
+          "output_tokens": 480,
+          "total_tokens": 4227,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-001",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-001:u6",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-001:u9",
+              "quote": "Invoice No: INV-H2-001"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-001:u9",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-001:u7",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-001:u8",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Export escort",
+            "amount": 64.35,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-001:u12",
+                  "quote": "Description: Export escort"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-001:u12",
+                  "quote": "Amount: 64.35 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-001:u12",
+                  "quote": "Amount: 64.35 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-001:u12",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Shuttle service",
+            "amount": 21,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-001:u13",
+                  "quote": "Description: Shuttle service"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-001:u13",
+                  "quote": "Amount: 21 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-001:u13",
+                  "quote": "Amount: 21 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-001:u13",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

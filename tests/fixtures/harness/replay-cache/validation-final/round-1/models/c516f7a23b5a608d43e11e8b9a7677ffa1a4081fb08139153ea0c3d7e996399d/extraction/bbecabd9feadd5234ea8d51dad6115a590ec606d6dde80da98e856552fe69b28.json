@@ -1,0 +1,144 @@
+{
+  "fingerprint": "bbecabd9feadd5234ea8d51dad6115a590ec606d6dde80da98e856552fe69b28",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice / ACCOUNT STATEMENT\",\"reference_no\":\"INV-VAL-008\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Bluewater Shipping Services\",\"recipient\":\"Maple Parts Corporation\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-VAL-008:u1\",\"quote\":\"Invoice / ACCOUNT STATEMENT\"}],\"reference_no\":[{\"unit_id\":\"case-VAL-008:u2\",\"quote\":\"Reference: INV-VAL-008\"}],\"document_date_raw\":[{\"unit_id\":\"case-VAL-008:u5\",\"quote\":\"Invoice date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-VAL-008:u3\",\"quote\":\"Issued by: Bluewater Shipping Services\"}],\"recipient\":[{\"unit_id\":\"case-VAL-008:u4\",\"quote\":\"Bill to: Maple Parts Corporation\"}]},\"fees\":[{\"charge_item_raw\":\"Cargo inspection\",\"amount\":27,\"currency_raw\":\"EUR\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-008:u6\",\"quote\":\"Cargo inspection\"}],\"amount\":[{\"unit_id\":\"case-VAL-008:u6\",\"quote\":\"line amount 27\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-008:u6\",\"quote\":\"currency EUR\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-008:u6\",\"quote\":\"payment PP\"}]}},{\"charge_item_raw\":\"Storage Fee\",\"amount\":23,\"currency_raw\":\"EUR\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-008:u7\",\"quote\":\"Storage Fee\"}],\"amount\":[{\"unit_id\":\"case-VAL-008:u7\",\"quote\":\"line amount 23\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-008:u7\",\"quote\":\"currency EUR\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-008:u7\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3528,
+          "output_tokens": 462,
+          "total_tokens": 3990,
+          "input_token_details": {
+            "cache_read": 3328
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice / ACCOUNT STATEMENT",
+        "reference_no": "INV-VAL-008",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-VAL-008:u1",
+              "quote": "Invoice / ACCOUNT STATEMENT"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-VAL-008:u2",
+              "quote": "Reference: INV-VAL-008"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-VAL-008:u5",
+              "quote": "Invoice date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-VAL-008:u3",
+              "quote": "Issued by: Bluewater Shipping Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-VAL-008:u4",
+              "quote": "Bill to: Maple Parts Corporation"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Cargo inspection",
+            "amount": 27,
+            "currency_raw": "EUR",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-008:u6",
+                  "quote": "Cargo inspection"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-008:u6",
+                  "quote": "line amount 27"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-008:u6",
+                  "quote": "currency EUR"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-008:u6",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Storage Fee",
+            "amount": 23,
+            "currency_raw": "EUR",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-008:u7",
+                  "quote": "Storage Fee"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-008:u7",
+                  "quote": "line amount 23"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-008:u7",
+                  "quote": "currency EUR"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-008:u7",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

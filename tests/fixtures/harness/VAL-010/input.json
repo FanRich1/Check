@@ -1,0 +1,110 @@
+{
+  "inputs": [
+    "input.eml"
+  ],
+  "source_id": "case-VAL-010",
+  "context": {
+    "normalization_context": {
+      "accounting_entity": "Maple Parts Corporation"
+    },
+    "lines": {}
+  },
+  "existing_bills": [
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": null,
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation"
+      },
+      "charge_details": {
+        "charge_item": "Booking service",
+        "charge_item_raw": "Booking service",
+        "amount": 20,
+        "currency": "EUR",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "EUR",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Maple Parts Corporation",
+        "posting_type": "AP"
+      },
+      "record_id": "OLD-VAL-010-1",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {
+        "booking_no": "BOOK-VAL-010"
+      }
+    },
+    {
+      "document_info": {
+        "document_type": "Invoice",
+        "reference_no": null,
+        "document_date": "2026-10-20"
+      },
+      "transaction_party": {
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation"
+      },
+      "charge_details": {
+        "charge_item": "Booking service",
+        "charge_item_raw": "Booking service",
+        "amount": 30,
+        "currency": "EUR",
+        "payment_term": "PP",
+        "quantity": null,
+        "unit_price": null,
+        "currency_raw": "EUR",
+        "payment_term_raw": "PP",
+        "legacy_tax_code": "T0"
+      },
+      "financial_attributes": {
+        "accounting_entity": "Maple Parts Corporation",
+        "posting_type": "AP"
+      },
+      "record_id": "OLD-VAL-010-2",
+      "extensions": {
+        "cost_center": "FIXTURE",
+        "erp": {
+          "status": "approved",
+          "tags": [
+            "retain",
+            1,
+            true
+          ]
+        }
+      },
+      "erp_extra": {
+        "do_not_change": {
+          "nested": "original"
+        }
+      },
+      "shipping_info": {
+        "booking_no": "BOOK-VAL-010"
+      }
+    }
+  ],
+  "ocr_fixture": "ocr.json",
+  "faults": {}
+}

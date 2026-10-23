@@ -3,6 +3,7 @@
 import hashlib
 import re
 from decimal import Decimal
+from functools import lru_cache
 from pathlib import Path
 
 from pydantic import ValidationError
@@ -34,9 +35,19 @@ def issue(code, field=None):
     )
 
 
+@lru_cache(maxsize=1)
+def currency_tokens():
+    from shipping_billing.domain.normalization import CURRENCIES
+
+    return "|".join(sorted(CURRENCIES))
+
+
 def contains_value(value, text):
     if isinstance(value, Decimal | int | float):
-        numbers = re.findall(r"(?<![\w.])[+-]?\d+(?:,\d{3})*(?:\.\d+)?(?![\d.])", text)
+        codes = currency_tokens()
+        text = re.sub(r"(?<![A-Za-z])(" + codes + r")(?=[+-]?\d)", r"\1 ", text)
+        text = re.sub(r"(?<=\d)(" + codes + r")(?![A-Za-z])", r" \1", text)
+        numbers = re.findall(r"(?<![A-Za-z0-9_.-])[+-]?\d+(?:,\d{3})*(?:\.\d+)?(?![A-Za-z0-9_]|\.\d)", text)
         return Decimal(str(value)) in [Decimal(n.replace(",", "")) for n in numbers]
     if isinstance(value, list):
         return all(contains_value(v, text) for v in value)
@@ -50,6 +61,8 @@ def checked_value(value, citations, units, allowed, field, issues, evidence):
     for citation in citations:
         unit = units.get(citation.unit_id)
         if unit is None or unit.source_id not in allowed or citation.quote not in unit.text:
+            continue
+        if isinstance(value, Decimal | int | float) and not contains_value(value, unit.text):
             continue
         refs.append((unit, citation.quote))
     if not refs or not contains_value(value, "\n".join(q for _, q in refs)):
@@ -121,6 +134,40 @@ def materialize(draft, target, units, allowed):
                 problems.append(issue("RELATED_SOURCE_FEE_NOT_OWNED"))
                 continue
             row_units = name_units & amount_units if fee.amount is not None else name_units
+            if not row_units and name_units and amount_units:
+                # Recover one actual contiguous edit paragraph, not arbitrary concatenated lines.
+                paragraphs = []
+                for unit in units.values():
+                    span = unit.metadata.get("original_contiguous_lines")
+                    if (
+                        unit.source_id != target.source_id
+                        or not span
+                        or fee.charge_item_raw not in unit.text
+                        or not contains_value(fee.amount, unit.text)
+                    ):
+                        continue
+                    prefix = (unit.locator.section or "").split(":edit-paragraph-")[0] + ":line-"
+
+                    def inside_span(uid):
+                        if uid == unit.unit_id:
+                            return True
+                        section = units[uid].locator.section or ""
+                        return (
+                            section.startswith(prefix)
+                            and section[len(prefix) :].isdigit()
+                            and span[0] <= int(section[len(prefix) :]) <= span[1]
+                        )
+
+                    if any(inside_span(uid) for uid in name_units) and any(
+                        inside_span(uid) for uid in amount_units
+                    ):
+                        paragraphs.append(unit)
+                if len(paragraphs) == 1:
+                    unit = paragraphs[0]
+                    proof = Evidence(source_id=unit.source_id, locator=unit.locator, quote=unit.text)
+                    field_evidence["charge_item_raw"] = [proof]
+                    field_evidence["amount"] = [proof]
+                    row_units = {unit.unit_id}
             if not row_units:
                 problems_for_fee.append(issue("FEE_ROW_EVIDENCE_MISMATCH"))
             identity = sorted(row_units or name_units)

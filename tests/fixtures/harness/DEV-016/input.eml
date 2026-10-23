@@ -1,0 +1,17 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <dev-016@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+Document type: Credit Note
+Invoice number: INV-DEV-016
+Issuer: Dover Testing Logistics
+Bill to: Cedar Development Buyer
+Document date: 2026-10-20
+Fee row DEV-016-R1: Service rebate | USD 25; payment PP
+Credit original reference ORIG-DEV-016. Original payer: Cedar Development Buy=
+er; Original payee: Dover Testing Logistics

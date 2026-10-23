@@ -1,0 +1,9 @@
+{
+  "reason": "V1 raw fee descriptions included row identifiers; fixing after feedback consumes v1.",
+  "consumed_manifest": "consumed-manifest-holdout-v1.json",
+  "original_release": "release.json",
+  "original_evaluation": "outputs/stage8/holdout-v1/evaluation.json",
+  "replacement_family": "stage8-replacement-invoice-panels-v2",
+  "replacement_cases": 15,
+  "provenance": "New raw layouts, parties and business cases authored before replacement inference; no labels enter model inputs."
+}

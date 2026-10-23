@@ -1,0 +1,61 @@
+{
+  "fingerprint": "34f8c172c6570ae935199e8b761dbbfb58e33984ef384dbdd8d73766317c04db",
+  "prompt_version": "stage7-intents-v1",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"directives\":[{\"source_line_id\":\"case-DEV-013:line-aa04ab84aa4732d274fc\",\"record_id\":null,\"selector_citations\":[{\"unit_id\":\"case-DEV-013:u11\",\"quote\":\"Fee row DEV-013-R1: Handling Fee | USD 40; payment PP\"}],\"edits\":[{\"path\":\"/charge_details/payment_term\",\"action\":\"clear\",\"expected_old_stated\":true,\"expected_old\":\"PP\",\"value\":null,\"citations\":[{\"unit_id\":\"case-DEV-013:u12\",\"quote\":\"Please clear payment_term PP.\"},{\"unit_id\":\"case-DEV-013:u11\",\"quote\":\"Fee row DEV-013-R1: Handling Fee | USD 40; payment PP\"}]}]}]}",
+      "status": "success",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 2860,
+          "output_tokens": 167,
+          "total_tokens": 3027,
+          "input_token_details": {
+            "cache_read": 1024
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage7-intents-v1",
+        "mode": "live",
+        "reasoning_content_saved": false
+      }
+    }
+  ],
+  "draft": {
+    "directives": [
+      {
+        "source_line_id": "case-DEV-013:line-aa04ab84aa4732d274fc",
+        "record_id": null,
+        "selector_citations": [
+          {
+            "unit_id": "case-DEV-013:u11",
+            "quote": "Fee row DEV-013-R1: Handling Fee | USD 40; payment PP"
+          }
+        ],
+        "edits": [
+          {
+            "path": "/charge_details/payment_term",
+            "action": "clear",
+            "expected_old_stated": true,
+            "expected_old": "PP",
+            "value": null,
+            "citations": [
+              {
+                "unit_id": "case-DEV-013:u12",
+                "quote": "Please clear payment_term PP."
+              },
+              {
+                "unit_id": "case-DEV-013:u11",
+                "quote": "Fee row DEV-013-R1: Handling Fee | USD 40; payment PP"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

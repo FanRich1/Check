@@ -1,0 +1,138 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "VAL-002:1",
+      "anchors": [
+        {
+          "source_id": "case-VAL-002/part-1.2",
+          "locator": {
+            "kind": "pdf_page",
+            "page": 1,
+            "section": "case-VAL-002/part-1.2:f1:line-6",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        },
+        {
+          "source_id": "case-VAL-002/part-1.2",
+          "locator": {
+            "kind": "pdf_page",
+            "page": 1,
+            "section": "case-VAL-002/part-1.2:f7:line-1",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-VAL-002",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Inspection A",
+          "charge_item_raw": "Inspection A",
+          "amount": 12,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    },
+    {
+      "row_id": "VAL-002:2",
+      "anchors": [
+        {
+          "source_id": "case-VAL-002/part-1.2",
+          "locator": {
+            "kind": "pdf_page",
+            "page": 1,
+            "section": "case-VAL-002/part-1.2:f1:line-7",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        },
+        {
+          "source_id": "case-VAL-002/part-1.2",
+          "locator": {
+            "kind": "pdf_page",
+            "page": 1,
+            "section": "case-VAL-002/part-1.2:f8:line-1",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-VAL-002",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Inspection B",
+          "charge_item_raw": "Inspection B",
+          "amount": 21,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    }
+  ],
+  "expected_exit": 0,
+  "risk_codes": [],
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 2
+}

@@ -1,0 +1,20 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "4ee2b40da84cb1599d92983438546993733d6c7f53234011313e0b5fd067d10d": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Invoice / ACCOUNT STATEMENT",
+        "Reference: INV-VAL-003",
+        "Issued by: Bluewater Shipping Services",
+        "Bill to: Maple Parts Corporation",
+        "Invoice date: 2026-10-20",
+        "Item VAL-003-R1: Scan inspection; line amount 26; currency USD; payment PP",
+        "Item VAL-003-R2: Scan handling; line amount 34; currency USD; payment PP",
+        "If cancellation occurs an additional USD 160 would be payable. No cancellation occurred."
+      ],
+      "documents": []
+    }
+  }
+}

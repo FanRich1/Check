@@ -1,0 +1,85 @@
+{
+  "fingerprint": "3925f14630c12b58fa8da6e189f8e4642df13bb8e3b8e62ea662088495042c92",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-DEV-010\",\"document_date_raw\":\"2026-09-20\",\"issuer\":\"TEST DESTINATION AGENCY\",\"recipient\":\"TEST ORIGIN LOGISTICS\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"DEV-010-source:u6\",\"quote\":\"单据类型 Invoice\"}],\"reference_no\":[{\"unit_id\":\"DEV-010-source:u6\",\"quote\":\"单据编号 INV-DEV-010\"}],\"document_date_raw\":[{\"unit_id\":\"DEV-010-source:u6\",\"quote\":\"日期 2026-09-20\"}],\"issuer\":[{\"unit_id\":\"DEV-010-source:u7\",\"quote\":\"账单签发方和收款方：TEST DESTINATION AGENCY\"}],\"recipient\":[{\"unit_id\":\"DEV-010-source:u7\",\"quote\":\"账单接收方和付款方：TEST ORIGIN LOGISTICS\"}]},\"fees\":[]}],\"observations\":[{\"kind\":\"general_term\",\"citations\":[{\"unit_id\":\"DEV-010-source:u8\",\"quote\":\"若取消转关申请将收 USD 25\"}]}]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3298,
+          "output_tokens": 249,
+          "total_tokens": 3547,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-010",
+        "document_date_raw": "2026-09-20",
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "DEV-010-source:u6",
+              "quote": "单据类型 Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "DEV-010-source:u6",
+              "quote": "单据编号 INV-DEV-010"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "DEV-010-source:u6",
+              "quote": "日期 2026-09-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "DEV-010-source:u7",
+              "quote": "账单签发方和收款方：TEST DESTINATION AGENCY"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "DEV-010-source:u7",
+              "quote": "账单接收方和付款方：TEST ORIGIN LOGISTICS"
+            }
+          ]
+        },
+        "fees": []
+      }
+    ],
+    "observations": [
+      {
+        "kind": "general_term",
+        "citations": [
+          {
+            "unit_id": "DEV-010-source:u8",
+            "quote": "若取消转关申请将收 USD 25"
+          }
+        ]
+      }
+    ]
+  }
+}

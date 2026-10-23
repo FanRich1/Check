@@ -1,0 +1,144 @@
+{
+  "fingerprint": "cd4cfba7e25597eaed2873fd1866f4c49d14a5c64df9b51d9bb95e66c6893233",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-DEV-025\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Dover Testing Logistics\",\"recipient\":\"Cedar Development Buyer\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-DEV-025:u1\",\"quote\":\"Document type: Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-DEV-025:u2\",\"quote\":\"Invoice number: INV-DEV-025\"}],\"document_date_raw\":[{\"unit_id\":\"case-DEV-025:u5\",\"quote\":\"Document date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-DEV-025:u3\",\"quote\":\"Issuer: Dover Testing Logistics\"}],\"recipient\":[{\"unit_id\":\"case-DEV-025:u4\",\"quote\":\"Bill to: Cedar Development Buyer\"}]},\"fees\":[{\"charge_item_raw\":\"Workbook A\",\"amount\":21,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-DEV-025:u6\",\"quote\":\"Workbook A\"}],\"amount\":[{\"unit_id\":\"case-DEV-025:u6\",\"quote\":\"USD 21\"}],\"currency_raw\":[{\"unit_id\":\"case-DEV-025:u6\",\"quote\":\"USD 21\"}],\"payment_term_raw\":[{\"unit_id\":\"case-DEV-025:u6\",\"quote\":\"payment PP\"}]}},{\"charge_item_raw\":\"Workbook B\",\"amount\":31,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-DEV-025:u7\",\"quote\":\"Workbook B\"}],\"amount\":[{\"unit_id\":\"case-DEV-025:u7\",\"quote\":\"USD 31\"}],\"currency_raw\":[{\"unit_id\":\"case-DEV-025:u7\",\"quote\":\"USD 31\"}],\"payment_term_raw\":[{\"unit_id\":\"case-DEV-025:u7\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3308,
+          "output_tokens": 458,
+          "total_tokens": 3766,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-025",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Dover Testing Logistics",
+        "recipient": "Cedar Development Buyer",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-DEV-025:u1",
+              "quote": "Document type: Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-DEV-025:u2",
+              "quote": "Invoice number: INV-DEV-025"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-DEV-025:u5",
+              "quote": "Document date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-DEV-025:u3",
+              "quote": "Issuer: Dover Testing Logistics"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-DEV-025:u4",
+              "quote": "Bill to: Cedar Development Buyer"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Workbook A",
+            "amount": 21,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-DEV-025:u6",
+                  "quote": "Workbook A"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-DEV-025:u6",
+                  "quote": "USD 21"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-DEV-025:u6",
+                  "quote": "USD 21"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-DEV-025:u6",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Workbook B",
+            "amount": 31,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-DEV-025:u7",
+                  "quote": "Workbook B"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-DEV-025:u7",
+                  "quote": "USD 31"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-DEV-025:u7",
+                  "quote": "USD 31"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-DEV-025:u7",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

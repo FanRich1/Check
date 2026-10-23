@@ -1,0 +1,17 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <hold-013@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+INVOICE
+Document reference =3D INV-HOLD-013
+Issuer =3D Seaport Meridian Logistics
+Recipient (billed customer) =3D Pinecrest Equipment Limited
+Document date =3D 2027-01-15
+ACTUAL SHIPMENT CHARGES
+HOLD-013-R1 / Equipment survey / line total USD 0.30; payment FREIGHT PREPAID=
+; quantity 3; unit price 0.10

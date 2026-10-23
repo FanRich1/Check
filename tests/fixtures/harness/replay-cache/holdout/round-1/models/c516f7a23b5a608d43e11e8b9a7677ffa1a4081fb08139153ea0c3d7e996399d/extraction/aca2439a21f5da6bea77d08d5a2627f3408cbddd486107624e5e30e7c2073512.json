@@ -1,0 +1,144 @@
+{
+  "fingerprint": "aca2439a21f5da6bea77d08d5a2627f3408cbddd486107624e5e30e7c2073512",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-010\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-010:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-010:u4\",\"quote\":\"Invoice No: INV-H2-010\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-010:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-010:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-010:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Terminal visit\",\"amount\":47,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-010:u7\",\"quote\":\"Description: Terminal visit\"}],\"amount\":[{\"unit_id\":\"case-H2-010:u7\",\"quote\":\"Amount: 47 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-010:u7\",\"quote\":\"Amount: 47 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-010:u7\",\"quote\":\"Terms: PP\"}]}},{\"charge_item_raw\":\"Terminal visit\",\"amount\":47,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-010:u8\",\"quote\":\"Description: Terminal visit\"}],\"amount\":[{\"unit_id\":\"case-H2-010:u8\",\"quote\":\"Amount: 47 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-010:u8\",\"quote\":\"Amount: 47 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-010:u8\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3755,
+          "output_tokens": 474,
+          "total_tokens": 4229,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-010",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-010:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-010:u4",
+              "quote": "Invoice No: INV-H2-010"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-010:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-010:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-010:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Terminal visit",
+            "amount": 47,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-010:u7",
+                  "quote": "Description: Terminal visit"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-010:u7",
+                  "quote": "Amount: 47 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-010:u7",
+                  "quote": "Amount: 47 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-010:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Terminal visit",
+            "amount": 47,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-010:u8",
+                  "quote": "Description: Terminal visit"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-010:u8",
+                  "quote": "Amount: 47 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-010:u8",
+                  "quote": "Amount: 47 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-010:u8",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

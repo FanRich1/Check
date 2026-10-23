@@ -1,0 +1,156 @@
+{
+  "fingerprint": "5a31ac0d674fa4b8b1b508828a730fd770441ee52d33f67e93a693d77e9d35a6",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice / ACCOUNT STATEMENT\",\"reference_no\":\"INV-VAL-006\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Bluewater Shipping Services\",\"recipient\":\"Maple Parts Corporation\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-VAL-006:u1\",\"quote\":\"Invoice / ACCOUNT STATEMENT\"}],\"reference_no\":[{\"unit_id\":\"case-VAL-006:u2\",\"quote\":\"Reference: INV-VAL-006\"}],\"document_date_raw\":[{\"unit_id\":\"case-VAL-006:u5\",\"quote\":\"Invoice date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-VAL-006:u3\",\"quote\":\"Issued by: Bluewater Shipping Services\"}],\"recipient\":[{\"unit_id\":\"case-VAL-006:u4\",\"quote\":\"Bill to: Maple Parts Corporation\"}]},\"fees\":[{\"charge_item_raw\":\"Equipment wash\",\"amount\":15,\"currency_raw\":\"JPY\",\"quantity\":3,\"unit_price\":5,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-006:u6\",\"quote\":\"Item VAL-006-R1: Equipment wash; line amount 15; currency JPY; payment PP; quantity 3; unit price 5\"}],\"amount\":[{\"unit_id\":\"case-VAL-006:u6\",\"quote\":\"line amount 15\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-006:u6\",\"quote\":\"currency JPY\"}],\"quantity\":[{\"unit_id\":\"case-VAL-006:u6\",\"quote\":\"quantity 3\"}],\"unit_price\":[{\"unit_id\":\"case-VAL-006:u6\",\"quote\":\"unit price 5\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-006:u6\",\"quote\":\"payment PP\"}]}},{\"charge_item_raw\":\"Crate rental\",\"amount\":25,\"currency_raw\":\"JPY\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-006:u7\",\"quote\":\"Item VAL-006-R2: Crate rental; line amount 25; currency JPY; payment PP\"}],\"amount\":[{\"unit_id\":\"case-VAL-006:u7\",\"quote\":\"line amount 25\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-006:u7\",\"quote\":\"currency JPY\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-006:u7\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3331,
+          "output_tokens": 555,
+          "total_tokens": 3886,
+          "input_token_details": {
+            "cache_read": 3197
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice / ACCOUNT STATEMENT",
+        "reference_no": "INV-VAL-006",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-VAL-006:u1",
+              "quote": "Invoice / ACCOUNT STATEMENT"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-VAL-006:u2",
+              "quote": "Reference: INV-VAL-006"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-VAL-006:u5",
+              "quote": "Invoice date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-VAL-006:u3",
+              "quote": "Issued by: Bluewater Shipping Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-VAL-006:u4",
+              "quote": "Bill to: Maple Parts Corporation"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Equipment wash",
+            "amount": 15,
+            "currency_raw": "JPY",
+            "quantity": 3,
+            "unit_price": 5,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-006:u6",
+                  "quote": "Item VAL-006-R1: Equipment wash; line amount 15; currency JPY; payment PP; quantity 3; unit price 5"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-006:u6",
+                  "quote": "line amount 15"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-006:u6",
+                  "quote": "currency JPY"
+                }
+              ],
+              "quantity": [
+                {
+                  "unit_id": "case-VAL-006:u6",
+                  "quote": "quantity 3"
+                }
+              ],
+              "unit_price": [
+                {
+                  "unit_id": "case-VAL-006:u6",
+                  "quote": "unit price 5"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-006:u6",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Crate rental",
+            "amount": 25,
+            "currency_raw": "JPY",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-006:u7",
+                  "quote": "Item VAL-006-R2: Crate rental; line amount 25; currency JPY; payment PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-006:u7",
+                  "quote": "line amount 25"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-006:u7",
+                  "quote": "currency JPY"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-006:u7",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

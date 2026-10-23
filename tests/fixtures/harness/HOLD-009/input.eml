@@ -1,0 +1,17 @@
+From: synthetic@example.invalid
+To: fixture@example.invalid
+Subject: Synthetic invoice material
+Date: Fri, 23 Oct 2026 06:00:00 +0000
+Message-ID: <hold-009@example.invalid>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+
+INVOICE
+Document reference = INV-HOLD-009
+Issuer = Seaport Meridian Logistics
+Recipient (billed customer) = Pinecrest Equipment Limited
+Document date = 2026-10-20
+ACTUAL SHIPMENT CHARGES
+HOLD-009-R1 / Payment correction / line total USD 28; payment CC
+Please change payment_term from PP to CC.

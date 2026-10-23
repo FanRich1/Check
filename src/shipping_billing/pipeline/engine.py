@@ -57,8 +57,13 @@ def cache_profile(storage, settings, mode, selected=None):
             "versions": VERSIONS,
         }
         key = digest(profile)
-        write_json(storage / "profiles" / (key + ".json"), profile)
-        write_json(storage / "active-profile.json", {"namespace": key})
+        # Stable profiles need no replacement; Windows readers can temporarily prevent replacing open files.
+        for path, value in (
+            (storage / "profiles" / (key + ".json"), profile),
+            (storage / "active-profile.json", {"namespace": key}),
+        ):
+            if not path.is_file() or load_json(path) != value:
+                write_json(path, value)
     else:
         if selected is None and (storage / "active-profile.json").is_file():
             active = load_json(storage / "active-profile.json")

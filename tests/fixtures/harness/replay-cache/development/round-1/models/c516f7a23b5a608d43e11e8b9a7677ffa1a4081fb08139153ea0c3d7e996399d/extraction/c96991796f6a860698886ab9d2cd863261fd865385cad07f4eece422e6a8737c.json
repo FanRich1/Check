@@ -1,0 +1,154 @@
+{
+  "fingerprint": "c96991796f6a860698886ab9d2cd863261fd865385cad07f4eece422e6a8737c",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-DEV-005\",\"document_date_raw\":\"2026-09-20\",\"issuer\":\"TEST DESTINATION AGENCY\",\"recipient\":\"TEST ORIGIN LOGISTICS\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"DEV-005-source:u6\",\"quote\":\"单据类型 Invoice\"}],\"reference_no\":[{\"unit_id\":\"DEV-005-source:u6\",\"quote\":\"单据编号 INV-DEV-005\"}],\"document_date_raw\":[{\"unit_id\":\"DEV-005-source:u6\",\"quote\":\"日期 2026-09-20\"}],\"issuer\":[{\"unit_id\":\"DEV-005-source:u7\",\"quote\":\"账单签发方和收款方：TEST DESTINATION AGENCY\"}],\"recipient\":[{\"unit_id\":\"DEV-005-source:u7\",\"quote\":\"账单接收方和付款方：TEST ORIGIN LOGISTICS\"}]},\"fees\":[{\"charge_item_raw\":\"Handling Charge\",\"amount\":65,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"DEV-005-source:u8\",\"quote\":\"费用行 L1：Handling Charge\"}],\"amount\":[{\"unit_id\":\"DEV-005-source:u8\",\"quote\":\"金额 USD 65\"}],\"currency_raw\":[{\"unit_id\":\"DEV-005-source:u8\",\"quote\":\"金额 USD 65\"}],\"payment_term_raw\":[{\"unit_id\":\"DEV-005-source:u8\",\"quote\":\"付款方式 PP\"}]}},{\"charge_item_raw\":\"Handling Charge\",\"amount\":35,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"DEV-005-source:u9\",\"quote\":\"费用行 L2：Handling Charge\"}],\"amount\":[{\"unit_id\":\"DEV-005-source:u9\",\"quote\":\"金额 USD 35\"}],\"currency_raw\":[{\"unit_id\":\"DEV-005-source:u9\",\"quote\":\"金额 USD 35\"}],\"payment_term_raw\":[{\"unit_id\":\"DEV-005-source:u9\",\"quote\":\"付款方式 PP\"}]}}]}],\"observations\":[{\"kind\":\"total\",\"citations\":[{\"unit_id\":\"DEV-005-source:u10\",\"quote\":\"合计 USD 100\"}]}]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3481,
+          "output_tokens": 505,
+          "total_tokens": 3986,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-DEV-005",
+        "document_date_raw": "2026-09-20",
+        "issuer": "TEST DESTINATION AGENCY",
+        "recipient": "TEST ORIGIN LOGISTICS",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "DEV-005-source:u6",
+              "quote": "单据类型 Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "DEV-005-source:u6",
+              "quote": "单据编号 INV-DEV-005"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "DEV-005-source:u6",
+              "quote": "日期 2026-09-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "DEV-005-source:u7",
+              "quote": "账单签发方和收款方：TEST DESTINATION AGENCY"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "DEV-005-source:u7",
+              "quote": "账单接收方和付款方：TEST ORIGIN LOGISTICS"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Handling Charge",
+            "amount": 65,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "DEV-005-source:u8",
+                  "quote": "费用行 L1：Handling Charge"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "DEV-005-source:u8",
+                  "quote": "金额 USD 65"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "DEV-005-source:u8",
+                  "quote": "金额 USD 65"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "DEV-005-source:u8",
+                  "quote": "付款方式 PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Handling Charge",
+            "amount": 35,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "DEV-005-source:u9",
+                  "quote": "费用行 L2：Handling Charge"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "DEV-005-source:u9",
+                  "quote": "金额 USD 35"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "DEV-005-source:u9",
+                  "quote": "金额 USD 35"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "DEV-005-source:u9",
+                  "quote": "付款方式 PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": [
+      {
+        "kind": "total",
+        "citations": [
+          {
+            "unit_id": "DEV-005-source:u10",
+            "quote": "合计 USD 100"
+          }
+        ]
+      }
+    ]
+  }
+}

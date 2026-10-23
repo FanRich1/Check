@@ -1,0 +1,178 @@
+{
+  "fingerprint": "63484322155d9299c064f18a3b96cefc5bfb969e05a4ca1dc5f9b9a1b6be7b30",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice / ACCOUNT STATEMENT\",\"reference_no\":\"INV-VAL-005\",\"document_date_raw\":\"2026-10-20\",\"issuer\":\"Bluewater Shipping Services\",\"recipient\":\"Maple Parts Corporation\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-VAL-005:u1\",\"quote\":\"Invoice / ACCOUNT STATEMENT\"}],\"reference_no\":[{\"unit_id\":\"case-VAL-005:u2\",\"quote\":\"Reference: INV-VAL-005\"}],\"document_date_raw\":[{\"unit_id\":\"case-VAL-005:u5\",\"quote\":\"Invoice date: 2026-10-20\"}],\"issuer\":[{\"unit_id\":\"case-VAL-005:u3\",\"quote\":\"Issued by: Bluewater Shipping Services\"}],\"recipient\":[{\"unit_id\":\"case-VAL-005:u4\",\"quote\":\"Bill to: Maple Parts Corporation\"}]},\"fees\":[{\"charge_item_raw\":\"Forklift rental\",\"amount\":14,\"currency_raw\":\"GBP\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-005:u6\",\"quote\":\"Forklift rental\"}],\"amount\":[{\"unit_id\":\"case-VAL-005:u6\",\"quote\":\"line amount 14\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-005:u6\",\"quote\":\"currency GBP\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-005:u6\",\"quote\":\"payment PP\"}]}},{\"charge_item_raw\":\"Forklift rental\",\"amount\":14,\"currency_raw\":\"GBP\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-005:u7\",\"quote\":\"Forklift rental\"}],\"amount\":[{\"unit_id\":\"case-VAL-005:u7\",\"quote\":\"line amount 14\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-005:u7\",\"quote\":\"currency GBP\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-005:u7\",\"quote\":\"payment PP\"}]}},{\"charge_item_raw\":\"Forklift rental\",\"amount\":14,\"currency_raw\":\"GBP\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-VAL-005:u8\",\"quote\":\"Forklift rental\"}],\"amount\":[{\"unit_id\":\"case-VAL-005:u8\",\"quote\":\"line amount 14\"}],\"currency_raw\":[{\"unit_id\":\"case-VAL-005:u8\",\"quote\":\"currency GBP\"}],\"payment_term_raw\":[{\"unit_id\":\"case-VAL-005:u8\",\"quote\":\"payment PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3464,
+          "output_tokens": 601,
+          "total_tokens": 4065,
+          "input_token_details": {
+            "cache_read": 3328
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice / ACCOUNT STATEMENT",
+        "reference_no": "INV-VAL-005",
+        "document_date_raw": "2026-10-20",
+        "issuer": "Bluewater Shipping Services",
+        "recipient": "Maple Parts Corporation",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-VAL-005:u1",
+              "quote": "Invoice / ACCOUNT STATEMENT"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-VAL-005:u2",
+              "quote": "Reference: INV-VAL-005"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-VAL-005:u5",
+              "quote": "Invoice date: 2026-10-20"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-VAL-005:u3",
+              "quote": "Issued by: Bluewater Shipping Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-VAL-005:u4",
+              "quote": "Bill to: Maple Parts Corporation"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Forklift rental",
+            "amount": 14,
+            "currency_raw": "GBP",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-005:u6",
+                  "quote": "Forklift rental"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-005:u6",
+                  "quote": "line amount 14"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-005:u6",
+                  "quote": "currency GBP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-005:u6",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Forklift rental",
+            "amount": 14,
+            "currency_raw": "GBP",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-005:u7",
+                  "quote": "Forklift rental"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-005:u7",
+                  "quote": "line amount 14"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-005:u7",
+                  "quote": "currency GBP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-005:u7",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Forklift rental",
+            "amount": 14,
+            "currency_raw": "GBP",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-VAL-005:u8",
+                  "quote": "Forklift rental"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-VAL-005:u8",
+                  "quote": "line amount 14"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-VAL-005:u8",
+                  "quote": "currency GBP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-VAL-005:u8",
+                  "quote": "payment PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "fingerprint": "2db512b598c69ee4a4ef6716359ccbc59688f69d15891a623974da53068eeea5",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-007\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-007:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-007:u4\",\"quote\":\"Invoice No: INV-H2-007\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-007:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-007:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-007:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Pallet rental\",\"amount\":30,\"currency_raw\":\"USD\",\"quantity\":3,\"unit_price\":10,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-007:u7\",\"quote\":\"Description: Pallet rental\"}],\"amount\":[{\"unit_id\":\"case-H2-007:u7\",\"quote\":\"Amount: 30 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-007:u7\",\"quote\":\"Amount: 30 USD\"}],\"quantity\":[{\"unit_id\":\"case-H2-007:u7\",\"quote\":\"Quantity: 3\"}],\"unit_price\":[{\"unit_id\":\"case-H2-007:u7\",\"quote\":\"Unit price: 10\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-007:u7\",\"quote\":\"Terms: PP\"}]}},{\"charge_item_raw\":\"Label printing\",\"amount\":4.5,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-007:u8\",\"quote\":\"Description: Label printing\"}],\"amount\":[{\"unit_id\":\"case-H2-007:u8\",\"quote\":\"Amount: 4.50 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-007:u8\",\"quote\":\"Amount: 4.50 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-007:u8\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3476,
+          "output_tokens": 528,
+          "total_tokens": 4004,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-007",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-007:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-007:u4",
+              "quote": "Invoice No: INV-H2-007"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-007:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-007:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-007:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Pallet rental",
+            "amount": 30,
+            "currency_raw": "USD",
+            "quantity": 3,
+            "unit_price": 10,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-007:u7",
+                  "quote": "Description: Pallet rental"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-007:u7",
+                  "quote": "Amount: 30 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-007:u7",
+                  "quote": "Amount: 30 USD"
+                }
+              ],
+              "quantity": [
+                {
+                  "unit_id": "case-H2-007:u7",
+                  "quote": "Quantity: 3"
+                }
+              ],
+              "unit_price": [
+                {
+                  "unit_id": "case-H2-007:u7",
+                  "quote": "Unit price: 10"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-007:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Label printing",
+            "amount": 4.5,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-007:u8",
+                  "quote": "Description: Label printing"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-007:u8",
+                  "quote": "Amount: 4.50 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-007:u8",
+                  "quote": "Amount: 4.50 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-007:u8",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

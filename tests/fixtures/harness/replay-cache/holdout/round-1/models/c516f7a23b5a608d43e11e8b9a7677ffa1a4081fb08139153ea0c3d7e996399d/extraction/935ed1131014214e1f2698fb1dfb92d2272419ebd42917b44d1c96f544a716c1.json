@@ -1,0 +1,144 @@
+{
+  "fingerprint": "935ed1131014214e1f2698fb1dfb92d2272419ebd42917b44d1c96f544a716c1",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-H2-006\",\"document_date_raw\":\"2026-10-22\",\"issuer\":\"Atlas Wharf Services\",\"recipient\":\"Birchwood Components Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"case-H2-006:u1\",\"quote\":\"Invoice\"}],\"reference_no\":[{\"unit_id\":\"case-H2-006:u4\",\"quote\":\"Invoice No: INV-H2-006\"}],\"document_date_raw\":[{\"unit_id\":\"case-H2-006:u4\",\"quote\":\"Invoice date: 2026-10-22\"}],\"issuer\":[{\"unit_id\":\"case-H2-006:u2\",\"quote\":\"Supplier / issuer: Atlas Wharf Services\"}],\"recipient\":[{\"unit_id\":\"case-H2-006:u3\",\"quote\":\"Customer / bill to: Birchwood Components Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Delivery check\",\"amount\":26,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-006:u7\",\"quote\":\"Description: Delivery check\"}],\"amount\":[{\"unit_id\":\"case-H2-006:u7\",\"quote\":\"Amount: 26 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-006:u7\",\"quote\":\"Amount: 26 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-006:u7\",\"quote\":\"Terms: PP\"}]}},{\"charge_item_raw\":\"Cargo photography\",\"amount\":28,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"case-H2-006:u14\",\"quote\":\"Description: Cargo photography\"}],\"amount\":[{\"unit_id\":\"case-H2-006:u14\",\"quote\":\"Amount: 28 USD\"}],\"currency_raw\":[{\"unit_id\":\"case-H2-006:u14\",\"quote\":\"Amount: 28 USD\"}],\"payment_term_raw\":[{\"unit_id\":\"case-H2-006:u14\",\"quote\":\"Terms: PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 4157,
+          "output_tokens": 474,
+          "total_tokens": 4631,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-H2-006",
+        "document_date_raw": "2026-10-22",
+        "issuer": "Atlas Wharf Services",
+        "recipient": "Birchwood Components Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "case-H2-006:u1",
+              "quote": "Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "case-H2-006:u4",
+              "quote": "Invoice No: INV-H2-006"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "case-H2-006:u4",
+              "quote": "Invoice date: 2026-10-22"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "case-H2-006:u2",
+              "quote": "Supplier / issuer: Atlas Wharf Services"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "case-H2-006:u3",
+              "quote": "Customer / bill to: Birchwood Components Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Delivery check",
+            "amount": 26,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-006:u7",
+                  "quote": "Description: Delivery check"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-006:u7",
+                  "quote": "Amount: 26 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-006:u7",
+                  "quote": "Amount: 26 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-006:u7",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          },
+          {
+            "charge_item_raw": "Cargo photography",
+            "amount": 28,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "case-H2-006:u14",
+                  "quote": "Description: Cargo photography"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "case-H2-006:u14",
+                  "quote": "Amount: 28 USD"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "case-H2-006:u14",
+                  "quote": "Amount: 28 USD"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "case-H2-006:u14",
+                  "quote": "Terms: PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

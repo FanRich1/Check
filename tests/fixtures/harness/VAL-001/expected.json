@@ -1,0 +1,162 @@
+{
+  "annotation_source": "authored_before_inference_not_independently_business_signed",
+  "rows": [
+    {
+      "row_id": "VAL-001:1",
+      "anchors": [
+        {
+          "source_id": "case-VAL-001",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "case-VAL-001:f6:line-12",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-VAL-001",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Cargo securing",
+          "charge_item_raw": "Cargo securing",
+          "amount": 17,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    },
+    {
+      "row_id": "VAL-001:2",
+      "anchors": [
+        {
+          "source_id": "case-VAL-001",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "case-VAL-001:f6:line-14",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-VAL-001",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Terminal Handling Charge",
+          "charge_item_raw": "THC",
+          "amount": 22,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    },
+    {
+      "row_id": "VAL-001:3",
+      "anchors": [
+        {
+          "source_id": "case-VAL-001",
+          "locator": {
+            "kind": "email_body",
+            "page": null,
+            "section": "case-VAL-001:f6:line-16",
+            "region": null,
+            "sheet": null,
+            "cells": null,
+            "block": null,
+            "pointer": null
+          }
+        }
+      ],
+      "expected": {
+        "operation": "CREATE",
+        "document_info": {
+          "document_type": "Invoice",
+          "reference_no": "INV-VAL-001",
+          "document_date": "2026-10-20"
+        },
+        "transaction_party": {
+          "issuer": "Bluewater Shipping Services",
+          "recipient": "Maple Parts Corporation"
+        },
+        "charge_details": {
+          "charge_item": "Documentation Fee",
+          "charge_item_raw": "Doc Fee",
+          "amount": 13,
+          "currency": "USD",
+          "payment_term": "PP",
+          "quantity": null,
+          "unit_price": null,
+          "currency_raw": "USD",
+          "payment_term_raw": "PP"
+        },
+        "financial_attributes": {
+          "accounting_entity": "Maple Parts Corporation",
+          "posting_type": "AP"
+        }
+      },
+      "automatic": true,
+      "expected_record_id": null,
+      "changes": [],
+      "assert_values": {},
+      "risk_codes": []
+    }
+  ],
+  "expected_exit": 0,
+  "risk_codes": [],
+  "old_snapshot_after": [],
+  "request_rejection": false,
+  "fault_expected": false,
+  "idempotence": true,
+  "expected_document_count": 1
+}

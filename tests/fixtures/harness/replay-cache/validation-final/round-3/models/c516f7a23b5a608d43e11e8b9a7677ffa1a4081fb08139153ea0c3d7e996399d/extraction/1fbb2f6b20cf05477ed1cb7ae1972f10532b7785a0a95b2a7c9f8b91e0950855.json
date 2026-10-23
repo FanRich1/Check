@@ -1,0 +1,22 @@
+{
+  "fingerprint": "1fbb2f6b20cf05477ed1cb7ae1972f10532b7785a0a95b2a7c9f8b91e0950855",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{invalid JSON",
+      "status": "error",
+      "error": "MODEL_INVALID_STRUCTURE"
+    },
+    {
+      "attempt": 2,
+      "repair": true,
+      "raw_content": "{invalid JSON",
+      "status": "error",
+      "error": "MODEL_INVALID_STRUCTURE"
+    }
+  ],
+  "mode": "live",
+  "error": "MODEL_INVALID_STRUCTURE"
+}

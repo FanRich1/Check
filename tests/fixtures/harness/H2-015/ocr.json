@@ -1,0 +1,17 @@
+{
+  "origin": "authored_fixed_ocr_not_provider_capture",
+  "pages": {
+    "fc2d85b7fa0e640b1675a142ff98a5ea21aca0d232cc24e1368bbae2e5acf4ab": {
+      "mode": "test_injected",
+      "network_calls": 0,
+      "text_blocks": [
+        "Invoice",
+        "Supplier / issuer: Atlas Wharf Services",
+        "Customer / bill to: Birchwood Components Ltd",
+        "Invoice No: INV-H2-015 | Invoice date: 2026-10-22",
+        "REGISTER OF COMPLETED SERVICES"
+      ],
+      "documents": []
+    }
+  }
+}
