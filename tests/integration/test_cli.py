@@ -160,9 +160,13 @@ def test_online_error_does_not_expose_secret(monkeypatch, capsys):
     assert "CANARY-secret" not in capsys.readouterr().err
 
 
-def test_reserved_pipeline_is_not_fake_success(capsys):
-    assert main(["run"]) == 4
-    assert "PIPELINE_NOT_IMPLEMENTED" in capsys.readouterr().err
+def test_pipeline_requires_inputs_and_output(capsys):
+    import pytest
+
+    with pytest.raises(SystemExit) as error:
+        main(["run"])
+    assert error.value.code == 2
+    assert "required" in capsys.readouterr().err
 
 
 def test_schema_export(tmp_path):

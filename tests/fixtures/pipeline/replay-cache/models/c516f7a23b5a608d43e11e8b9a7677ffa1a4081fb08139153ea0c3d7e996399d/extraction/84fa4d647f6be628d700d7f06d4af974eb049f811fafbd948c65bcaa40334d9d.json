@@ -1,0 +1,110 @@
+{
+  "fingerprint": "84fa4d647f6be628d700d7f06d4af974eb049f811fafbd948c65bcaa40334d9d",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-E2E-001\",\"document_date_raw\":\"Fri, 23 Oct 2026 08:00:00 +0000\",\"issuer\":\"Supplier Ltd\",\"recipient\":\"Buyer Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"input-9c166a26f5900575430d:u6\",\"quote\":\"Type: Invoice\"}],\"reference_no\":[{\"unit_id\":\"input-9c166a26f5900575430d:u7\",\"quote\":\"Invoice: INV-E2E-001\"}],\"document_date_raw\":[{\"unit_id\":\"input-9c166a26f5900575430d:u4\",\"quote\":\"Fri, 23 Oct 2026 08:00:00 +0000\"}],\"issuer\":[{\"unit_id\":\"input-9c166a26f5900575430d:u8\",\"quote\":\"Issuer: Supplier Ltd\"}],\"recipient\":[{\"unit_id\":\"input-9c166a26f5900575430d:u9\",\"quote\":\"Bill to: Buyer Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Handling Fee\",\"amount\":50,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"input-9c166a26f5900575430d:u10\",\"quote\":\"Handling Fee | USD | 50 | PP\"}],\"amount\":[{\"unit_id\":\"input-9c166a26f5900575430d:u10\",\"quote\":\"Handling Fee | USD | 50 | PP\"}],\"currency_raw\":[{\"unit_id\":\"input-9c166a26f5900575430d:u10\",\"quote\":\"Handling Fee | USD | 50 | PP\"}],\"payment_term_raw\":[{\"unit_id\":\"input-9c166a26f5900575430d:u10\",\"quote\":\"Handling Fee | USD | 50 | PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3805,
+          "output_tokens": 444,
+          "total_tokens": 4249,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-E2E-001",
+        "document_date_raw": "Fri, 23 Oct 2026 08:00:00 +0000",
+        "issuer": "Supplier Ltd",
+        "recipient": "Buyer Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "input-9c166a26f5900575430d:u6",
+              "quote": "Type: Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "input-9c166a26f5900575430d:u7",
+              "quote": "Invoice: INV-E2E-001"
+            }
+          ],
+          "document_date_raw": [
+            {
+              "unit_id": "input-9c166a26f5900575430d:u4",
+              "quote": "Fri, 23 Oct 2026 08:00:00 +0000"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "input-9c166a26f5900575430d:u8",
+              "quote": "Issuer: Supplier Ltd"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "input-9c166a26f5900575430d:u9",
+              "quote": "Bill to: Buyer Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Handling Fee",
+            "amount": 50,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "input-9c166a26f5900575430d:u10",
+                  "quote": "Handling Fee | USD | 50 | PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "input-9c166a26f5900575430d:u10",
+                  "quote": "Handling Fee | USD | 50 | PP"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "input-9c166a26f5900575430d:u10",
+                  "quote": "Handling Fee | USD | 50 | PP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "input-9c166a26f5900575430d:u10",
+                  "quote": "Handling Fee | USD | 50 | PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

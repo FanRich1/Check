@@ -1,0 +1,327 @@
+{
+  "$defs": {
+    "DiscoveredInput": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "source_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Id"
+        },
+        "disposition": {
+          "enum": [
+            "selected",
+            "ignored"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "path",
+        "disposition"
+      ],
+      "title": "DiscoveredInput",
+      "type": "object"
+    },
+    "Issue": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "warning",
+            "error"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "blocks_automation": {
+          "title": "Blocks Automation",
+          "type": "boolean"
+        },
+        "field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field"
+        },
+        "message": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "blocks_automation",
+        "message"
+      ],
+      "title": "Issue",
+      "type": "object"
+    },
+    "PipelineFile": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "parent_source_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Source Id"
+        },
+        "status": {
+          "enum": [
+            "processed",
+            "no_charge",
+            "pending_review",
+            "error"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/Issue"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "original_name": {
+          "title": "Original Name",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sha256"
+        },
+        "detected_format": {
+          "title": "Detected Format",
+          "type": "string"
+        },
+        "stages": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Stages",
+          "type": "object"
+        },
+        "record_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Record Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_id",
+        "status",
+        "original_name",
+        "sha256",
+        "detected_format",
+        "stages"
+      ],
+      "title": "PipelineFile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0",
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "workflow_version": {
+      "const": "stage7-workflow-v1",
+      "default": "stage7-workflow-v1",
+      "title": "Workflow Version",
+      "type": "string"
+    },
+    "run_id": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "live",
+        "replay",
+        "offline",
+        "test_injected"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "pending_review",
+        "error"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "billing_pipeline_executed": {
+      "const": true,
+      "default": true,
+      "title": "Billing Pipeline Executed",
+      "type": "boolean"
+    },
+    "discovery": {
+      "items": {
+        "$ref": "#/$defs/DiscoveredInput"
+      },
+      "title": "Discovery",
+      "type": "array"
+    },
+    "files": {
+      "items": {
+        "$ref": "#/$defs/PipelineFile"
+      },
+      "title": "Files",
+      "type": "array"
+    },
+    "counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Counts",
+      "type": "object"
+    },
+    "model_invocations": {
+      "title": "Model Invocations",
+      "type": "integer"
+    },
+    "ocr_network_calls": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Ocr Network Calls"
+    },
+    "cache_profile": {
+      "additionalProperties": true,
+      "title": "Cache Profile",
+      "type": "object"
+    },
+    "versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Versions",
+      "type": "object"
+    },
+    "input_state_sha256": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Input State Sha256",
+      "type": "string"
+    },
+    "context_sha256": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "title": "Context Sha256",
+      "type": "string"
+    },
+    "artifact_sha256": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Artifact Sha256",
+      "type": "object"
+    },
+    "exit_code": {
+      "enum": [
+        0,
+        1,
+        3
+      ],
+      "title": "Exit Code",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "run_id",
+    "mode",
+    "status",
+    "discovery",
+    "files",
+    "counts",
+    "model_invocations",
+    "ocr_network_calls",
+    "cache_profile",
+    "versions",
+    "input_state_sha256",
+    "context_sha256",
+    "artifact_sha256",
+    "exit_code"
+  ],
+  "title": "PipelineManifest",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

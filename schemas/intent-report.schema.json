@@ -1,0 +1,315 @@
+{
+  "$defs": {
+    "EditIntent": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "pattern": "^/(document_info|transaction_party|charge_details|shipping_info|extensions)/.+",
+          "title": "Path",
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "set",
+            "clear"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "expected_old": {
+          "title": "Expected Old"
+        },
+        "value": {
+          "title": "Value"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "path",
+        "action",
+        "expected_old",
+        "value",
+        "evidence"
+      ],
+      "title": "EditIntent",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "locator": {
+          "$ref": "#/$defs/Locator"
+        },
+        "quote": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Quote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "locator",
+        "quote"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "IntentFile": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "not_needed",
+            "completed",
+            "pending_review",
+            "error"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "issue_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Issue Codes",
+          "type": "array"
+        },
+        "attempts": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Attempts",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_id",
+        "status"
+      ],
+      "title": "IntentFile",
+      "type": "object"
+    },
+    "LineDirective": {
+      "additionalProperties": false,
+      "properties": {
+        "selector": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordSelector"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "edits": {
+          "items": {
+            "$ref": "#/$defs/EditIntent"
+          },
+          "title": "Edits",
+          "type": "array"
+        }
+      },
+      "title": "LineDirective",
+      "type": "object"
+    },
+    "Locator": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "email_body",
+            "email_header",
+            "pdf_page",
+            "image_region",
+            "sheet_cells",
+            "word_block",
+            "existing_record"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "page": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Page"
+        },
+        "section": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Section"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "sheet": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sheet"
+        },
+        "cells": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cells"
+        },
+        "block": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Block"
+        },
+        "pointer": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pointer"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Locator",
+      "type": "object"
+    },
+    "RecordSelector": {
+      "additionalProperties": false,
+      "properties": {
+        "record_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Record Id",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "record_id",
+        "evidence"
+      ],
+      "title": "RecordSelector",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": "stage7-intents-v1",
+      "default": "stage7-intents-v1",
+      "title": "Version",
+      "type": "string"
+    },
+    "directives": {
+      "additionalProperties": {
+        "$ref": "#/$defs/LineDirective"
+      },
+      "title": "Directives",
+      "type": "object"
+    },
+    "files": {
+      "items": {
+        "$ref": "#/$defs/IntentFile"
+      },
+      "title": "Files",
+      "type": "array"
+    },
+    "model_invocations": {
+      "default": 0,
+      "title": "Model Invocations",
+      "type": "integer"
+    }
+  },
+  "title": "IntentReport",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

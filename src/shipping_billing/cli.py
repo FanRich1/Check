@@ -15,6 +15,7 @@ from shipping_billing.extraction.contracts import ExtractionReport
 from shipping_billing.io import dumps, load_json, write_json
 from shipping_billing.models import BillingRequest, Candidate, RunManifest
 from shipping_billing.parsers.contracts import ParseReport
+from shipping_billing.pipeline.contracts import IntentReport, PipelineManifest
 from shipping_billing.reconciliation.contracts import LedgerState, ReconciliationContext, ReconciliationReport
 
 SCHEMAS = {
@@ -29,6 +30,8 @@ SCHEMAS = {
     "ledger-state": TypeAdapter(LedgerState),
     "reconciliation-context": TypeAdapter(ReconciliationContext),
     "reconciliation-report": TypeAdapter(ReconciliationReport),
+    "pipeline-manifest": TypeAdapter(PipelineManifest),
+    "intent-report": TypeAdapter(IntentReport),
 }
 LOG = logging.getLogger("shipping_billing")
 
@@ -112,7 +115,29 @@ def parser():
     ev.add_argument("--case", type=Path, required=True)
     ev.add_argument("--actual", type=Path, required=True)
     ev.add_argument("--report", type=Path, required=True)
-    sub.add_parser("run", help="Reserved stage 7 end-to-end entry; use individual stage commands currently")
+    run = sub.add_parser(
+        "run", help="Process documents through parsing, evidence extraction and final billing decisions"
+    )
+    run.add_argument("inputs", type=Path, nargs="+", help="Files or recursively scanned document directories")
+    run.add_argument("--mode", choices=["live", "replay", "offline"], default="replay")
+    run.add_argument("--source-id", help="Optional explicit ID for exactly one input")
+    run.add_argument("--accounting-entity", help="Explicit accounting entity; do not combine with context")
+    run.add_argument("--context", type=Path, help="Normalization policy and optional manual edit directives")
+    old_run = run.add_mutually_exclusive_group()
+    old_run.add_argument("--state", type=Path)
+    old_run.add_argument("--existing-bills", type=Path)
+    run.add_argument(
+        "--ocr-map", type=Path, help="Page URL map in live mode; exact page archive map in replay"
+    )
+    run.add_argument("--cloudflared", type=Path, help="Explicit temporary OCR document delivery in live mode")
+    run.add_argument("--local-ocr", action="store_true", help="Explicitly enable supplementary local OCR")
+    run.add_argument("--storage", type=Path, default=Path("data/local/pipeline"))
+    run.add_argument(
+        "--cache-profile", help="Select an existing SHA-256 model/rule cache namespace in replay"
+    )
+    run.add_argument(
+        "--output", type=Path, required=True, help="New directory for records, manifest, state and audit"
+    )
     return p
 
 
@@ -412,10 +437,69 @@ def main(argv=None):
             )
             return 0 if report["passed"] else 1
         elif args.command == "run":
-            raise BillingError(
-                "PIPELINE_NOT_IMPLEMENTED",
-                "The billing pipeline starts in later stages; no output was produced.",
+            from shipping_billing.pipeline.engine import run_pipeline
+
+            if args.context and args.accounting_entity:
+                raise BillingError(
+                    "CONFLICTING_CONTEXT_ARGUMENTS", "Use either context or accounting-entity."
+                )
+            if args.cloudflared and args.mode != "live":
+                raise BillingError(
+                    "INVALID_RUN_ARGUMENTS", "Temporary delivery is only available in live mode."
+                )
+            if args.cache_profile and args.mode == "live":
+                raise BillingError(
+                    "INVALID_RUN_ARGUMENTS", "Live mode selects its actual model/rule cache profile."
+                )
+            context = (
+                ReconciliationContext.model_validate(load_json(args.context))
+                if args.context
+                else ReconciliationContext(
+                    normalization_context=NormalizationContext(accounting_entity=args.accounting_entity)
+                )
             )
+            state = LedgerState.model_validate(load_json(args.state)) if args.state else LedgerState()
+            if args.existing_bills:
+                state = LedgerState(bills=load_json(args.existing_bills))
+            local = None
+            if args.local_ocr:
+                from shipping_billing.parsers.local_text import LocalTextOCR
+
+                local = LocalTextOCR()
+            result = run_pipeline(
+                args.inputs,
+                settings=settings,
+                output=args.output,
+                storage=args.storage,
+                mode=args.mode,
+                state=state,
+                context=context,
+                source_id=args.source_id,
+                ocr_map=args.ocr_map,
+                cloudflared=args.cloudflared,
+                local_ocr=local,
+                cache_namespace=args.cache_profile,
+                protected=[
+                    p
+                    for p in (args.context, args.state, args.existing_bills, args.ocr_map, args.env_file)
+                    if p
+                ],
+                progress=lambda stage, count: LOG.info("run stage=%s items=%d", stage, count),
+            )
+            print(
+                dumps(
+                    {
+                        "mode": result.mode,
+                        "status": result.status,
+                        **result.counts,
+                        "model_invocations": result.model_invocations,
+                        "ocr_network_calls": result.ocr_network_calls,
+                        "billing_pipeline_executed": True,
+                        "output": str(args.output),
+                    }
+                )
+            )
+            return result.exit_code
         return 0
     except ValidationError as exc:
         # Pydantic's default error string includes input values, potentially credentials.

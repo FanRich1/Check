@@ -2,7 +2,7 @@
 
 基于 Python 和 LangChain，解析航运邮件及附件中的费用信息，匹配已有账单，输出经过校验的结构化 JSON。
 
-当前状态：阶段 6 旧账单匹配、去重与授权增量更新已通过组件验收，64/64 个业务场景和重传检查通过，见 [阶段 6 验收记录](docs/stage6-report.md)。已支持多格式解析、带证据的费用提取、标准化、Decimal 校验、AR/AP 判断，以及 CREATE / UPDATE / NO_CHANGE / PENDING_REVIEW。真实材料 7/7 条费用保留，缺记账主体时复核；OCR 风险继续保留。下一步为阶段 7 完整工作流，`run` 仍返回未实现。样本基准未经过独立业务人员签核。
+当前状态：阶段 7 完整工作流已接入 `run`，支持原始文件/目录 → 解析/OCR → 提取 → 标准化 → 修改意图 → 匹配与增量更新 → 最终 JSON。17/17 个端到端流程场景通过；合成邮件的真实 LangChain 新增、更新及离线重传已跑通，详见 [阶段 7 验收记录](docs/stage7-report.md)。真实材料 7/7 条费用保留，缺记账主体时复核；邮件内嵌图片历史 OCR 空响应明确登记为来源错误。下一步为阶段 8 完整质量评测。样本基准未经过独立业务人员签核。
 
 ## 项目位置
 
@@ -49,6 +49,15 @@ python -m venv .venv
 ## 已可运行的命令
 
 ```powershell
+# 完整离线演示：真实模型历史响应回放，无密钥、无网络，依次新增、更新、重传
+.\.venv\Scripts\python.exe -m scripts.stage7_demo --mode replay --storage tests/fixtures/pipeline/replay-cache --output outputs/demo-stage7
+
+# 一次处理原始文件，结果、状态、审计及来源清单写入新的目录
+.\.venv\Scripts\shipping-billing.exe run tests/fixtures/pipeline/inputs/new.eml --accounting-entity "Buyer Ltd" --storage tests/fixtures/pipeline/replay-cache --output outputs/run-new
+# 保存完整 state；重传已应用更新的材料应得到 NO_CHANGE
+.\.venv\Scripts\shipping-billing.exe run tests/fixtures/pipeline/inputs/amendment.eml --accounting-entity "Buyer Ltd" --state outputs/run-new/state.json --storage tests/fixtures/pipeline/replay-cache --output outputs/run-update
+.\.venv\Scripts\shipping-billing.exe run tests/fixtures/pipeline/inputs/amendment.eml --accounting-entity "Buyer Ltd" --state outputs/run-update/state.json --storage tests/fixtures/pipeline/replay-cache --output outputs/run-repeat
+
 # 默认离线，不需要密钥，不发送网络请求
 .\.venv\Scripts\shipping-billing.exe config-check
 .\.venv\Scripts\shipping-billing.exe validate request tests/fixtures/synthetic/DEV-001/request.json
@@ -106,7 +115,7 @@ python -m venv .venv
 | 1 | 离线比较不一致，包含无效结构的预测 |
 | 2 | 输入/配置无效，文件不可读或命令参数错误 |
 | 3 | 写出失败、在线服务/识别失败或内部错误 |
-| 4 | 工作流未实现，不生成伪造账单结果 |
+| 4 | 保留给尚未实现的入口；当前 run 已实现 |
 
 `parse` 命令另有明确语义：0 全部来源解析完成，1 含复核项（离线 PDF/图片因 OCR 未运行也属于此类），3 有来源解析错误；每个来源仍登记并写出报告。live 模式通过显式 `--cloudflared` 或 `--ocr-map` 启用文件传入，replay 模式需要按页匹配内容哈希的归档映射。完整示例见 [阶段 3 记录](docs/stage3-report.md)。
 
@@ -115,5 +124,9 @@ python -m venv .venv
 `normalize` 不调用模型或 OCR，不需要密钥。0 领域检查完成、1 有复核项、2 输入/策略无效、3 上游来源错误或运行失败；结果始终保留每个来源和原始候选。`ready` 表示领域检查通过，尚不是 CREATE/UPDATE。`--context` 可提供别名、带证据的原账关系、舍入规则及明细范围明确的合计；不能与 `--accounting-entity` 同用。完整策略和边界见 [阶段 5 说明](docs/stage5-report.md)。
 
 `reconcile` 同样离线运行。0 全部完成、1 含复核、2 输入/策略无效、3 上游来源错误或运行失败。必须提供阶段 5 报告及其原始提取报告，context 内的 normalization_context 必须完全一致。首次可用 `--existing-bills` 提供旧账数组，后续应保存并传入完整 `--state`，保留来源去重索引。`--records-output` 是核心结果数组，`--state-output` 是新业务快照及身份/审计，不原地修改旧账。详见 [操作示例](tests/fixtures/reconciliation/README.md)。
+
+`run` 默认 replay，从原始文件重新解析并读取精确匹配的模型/OCR 归档，缓存缺失明确报错；不会自动转为在线调用。`--mode live` 配合 `--env-file .env` 启用真实 LangChain，PDF/图片还需显式 `--ocr-map` URL 映射或 `--cloudflared`；`--local-ocr` 是可选补充。`--mode offline` 不运行 OCR，模型仍只读回放，缺归档或未识别页面不会伪装成功。0 完成，1 含业务复核，2 输入/配置无效，3 含来源执行失败或程序错误；部分失败仍输出其他来源的结果。
+
+目录输入递归选择 EML/PDF/JPG/PNG/TIFF/XLS/XLSX/DOC/DOCX，其他文件和排除目录登记在 discovery，附件按真实格式解析。最多选择 100 个顶层文件，解析仍受大小/页数/递归预算限制。`--context` 接收 ReconciliationContext，不能与 `--accounting-entity` 合用。输出目录应为新目录，防止覆盖旧状态。模型缓存按模型与规则版本隔离；可用 `--cache-profile` 选择历史命名空间。完整说明及在线示例见 [阶段 7 文档](docs/stage7-report.md)。
 
 错误消息和日志不输出请求正文、API 密钥或 Pydantic 原始输入。完整参数见 `--help`。原始数据、环境文件、虚拟环境和运行报告均被 Git 忽略；仓库只分发合成资料和结构 schema。

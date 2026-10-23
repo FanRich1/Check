@@ -261,6 +261,8 @@ class ExtractionEngine:
             try:
                 if self.mode == "replay":
                     archive = load_json(archive_path)
+                    if not isinstance(archive, dict):
+                        raise BillingError("MODEL_REPLAY_INVALID", "Replay archive must be an object.")
                     if (
                         archive.get("fingerprint") != fingerprint
                         or archive.get("prompt_version") != PROMPT_VERSION

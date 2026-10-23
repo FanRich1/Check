@@ -1,0 +1,52 @@
+{
+  "fingerprint": "742d745d95b7c8b09187e96c6ee91b25c80aff37beaf26b8d6d33833ce4dad45",
+  "prompt_version": "stage7-intents-v1",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"directives\":[{\"source_line_id\":\"input-9c166a26f5900575430d:line-1e8d6e1019a601aac09a\",\"record_id\":null,\"selector_citations\":[],\"edits\":[{\"path\":\"/charge_details/amount\",\"action\":\"set\",\"expected_old_stated\":true,\"expected_old\":40,\"value\":50,\"citations\":[{\"unit_id\":\"input-9c166a26f5900575430d:u11\",\"quote\":\"Update amount from 40 to 50\"}]}]}]}",
+      "status": "success",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3010,
+          "output_tokens": 124,
+          "total_tokens": 3134,
+          "input_token_details": {
+            "cache_read": 0
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage7-intents-v1",
+        "mode": "live",
+        "reasoning_content_saved": false
+      }
+    }
+  ],
+  "draft": {
+    "directives": [
+      {
+        "source_line_id": "input-9c166a26f5900575430d:line-1e8d6e1019a601aac09a",
+        "record_id": null,
+        "selector_citations": [],
+        "edits": [
+          {
+            "path": "/charge_details/amount",
+            "action": "set",
+            "expected_old_stated": true,
+            "expected_old": 40,
+            "value": 50,
+            "citations": [
+              {
+                "unit_id": "input-9c166a26f5900575430d:u11",
+                "quote": "Update amount from 40 to 50"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

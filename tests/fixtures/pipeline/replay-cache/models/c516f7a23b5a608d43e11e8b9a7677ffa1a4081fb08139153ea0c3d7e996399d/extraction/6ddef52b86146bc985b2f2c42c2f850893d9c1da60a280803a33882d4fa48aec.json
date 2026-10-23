@@ -1,0 +1,104 @@
+{
+  "fingerprint": "6ddef52b86146bc985b2f2c42c2f850893d9c1da60a280803a33882d4fa48aec",
+  "prompt_version": "stage4-evidence-v7",
+  "attempts": [
+    {
+      "attempt": 1,
+      "repair": false,
+      "raw_content": "{\"documents\":[{\"document_type\":\"Invoice\",\"reference_no\":\"INV-E2E-001\",\"document_date_raw\":null,\"issuer\":\"Supplier Ltd\",\"recipient\":\"Buyer Ltd\",\"shipping_info\":{},\"evidence\":{\"document_type\":[{\"unit_id\":\"input-91cf9e1b008f082d3742:u6\",\"quote\":\"Type: Invoice\"}],\"reference_no\":[{\"unit_id\":\"input-91cf9e1b008f082d3742:u7\",\"quote\":\"Invoice: INV-E2E-001\"}],\"issuer\":[{\"unit_id\":\"input-91cf9e1b008f082d3742:u8\",\"quote\":\"Issuer: Supplier Ltd\"}],\"recipient\":[{\"unit_id\":\"input-91cf9e1b008f082d3742:u9\",\"quote\":\"Bill to: Buyer Ltd\"}]},\"fees\":[{\"charge_item_raw\":\"Handling Fee\",\"amount\":40,\"currency_raw\":\"USD\",\"quantity\":null,\"unit_price\":null,\"payment_term_raw\":\"PP\",\"evidence\":{\"charge_item_raw\":[{\"unit_id\":\"input-91cf9e1b008f082d3742:u10\",\"quote\":\"Handling Fee | USD | 40 | PP\"}],\"amount\":[{\"unit_id\":\"input-91cf9e1b008f082d3742:u10\",\"quote\":\"Handling Fee | USD | 40 | PP\"}],\"currency_raw\":[{\"unit_id\":\"input-91cf9e1b008f082d3742:u10\",\"quote\":\"Handling Fee | USD | 40 | PP\"}],\"payment_term_raw\":[{\"unit_id\":\"input-91cf9e1b008f082d3742:u10\",\"quote\":\"Handling Fee | USD | 40 | PP\"}]}}]}],\"observations\":[]}",
+      "metadata": {
+        "requested_model": "deepseek-flash",
+        "served_model": "deepseek-flash",
+        "usage": {
+          "input_tokens": 3716,
+          "output_tokens": 390,
+          "total_tokens": 4106,
+          "input_token_details": {
+            "cache_read": 2176
+          },
+          "output_token_details": {}
+        },
+        "prompt_version": "stage4-evidence-v7",
+        "mode": "live",
+        "reasoning_content_saved": false
+      },
+      "status": "success"
+    }
+  ],
+  "mode": "live",
+  "draft": {
+    "documents": [
+      {
+        "document_type": "Invoice",
+        "reference_no": "INV-E2E-001",
+        "document_date_raw": null,
+        "issuer": "Supplier Ltd",
+        "recipient": "Buyer Ltd",
+        "shipping_info": {},
+        "evidence": {
+          "document_type": [
+            {
+              "unit_id": "input-91cf9e1b008f082d3742:u6",
+              "quote": "Type: Invoice"
+            }
+          ],
+          "reference_no": [
+            {
+              "unit_id": "input-91cf9e1b008f082d3742:u7",
+              "quote": "Invoice: INV-E2E-001"
+            }
+          ],
+          "issuer": [
+            {
+              "unit_id": "input-91cf9e1b008f082d3742:u8",
+              "quote": "Issuer: Supplier Ltd"
+            }
+          ],
+          "recipient": [
+            {
+              "unit_id": "input-91cf9e1b008f082d3742:u9",
+              "quote": "Bill to: Buyer Ltd"
+            }
+          ]
+        },
+        "fees": [
+          {
+            "charge_item_raw": "Handling Fee",
+            "amount": 40,
+            "currency_raw": "USD",
+            "quantity": null,
+            "unit_price": null,
+            "payment_term_raw": "PP",
+            "evidence": {
+              "charge_item_raw": [
+                {
+                  "unit_id": "input-91cf9e1b008f082d3742:u10",
+                  "quote": "Handling Fee | USD | 40 | PP"
+                }
+              ],
+              "amount": [
+                {
+                  "unit_id": "input-91cf9e1b008f082d3742:u10",
+                  "quote": "Handling Fee | USD | 40 | PP"
+                }
+              ],
+              "currency_raw": [
+                {
+                  "unit_id": "input-91cf9e1b008f082d3742:u10",
+                  "quote": "Handling Fee | USD | 40 | PP"
+                }
+              ],
+              "payment_term_raw": [
+                {
+                  "unit_id": "input-91cf9e1b008f082d3742:u10",
+                  "quote": "Handling Fee | USD | 40 | PP"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "observations": []
+  }
+}

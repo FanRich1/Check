@@ -1,6 +1,6 @@
 # 数据契约 v0.1.0
 
-阶段 0 冻结业务语义和示例；阶段 1 已实现运行模型、结构 schema、校验 CLI 和最小离线比较，详见 [阶段 1 交付记录](stage1-report.md)。实际业务流程仍在后续阶段实现。版本变化需记录兼容性影响。
+阶段 0 冻结业务语义和示例；阶段 1 实现基础模型与 schema，阶段 7 已串联原始材料到最终账单流程，详见 [阶段 7 交付记录](stage7-report.md)。版本变化需记录兼容性影响。
 
 ## 1. 请求
 
@@ -122,3 +122,15 @@ PENDING_REVIEW 保留可确定候选值及具体阻断原因，不应用到旧�
 `ReconciliationReport`：records 是四类核心账单结果，decisions 为每个输入费用行的匹配、差异、拟议变更和问题，files 为来源清单，next_state 为可保存的新快照。PENDING_REVIEW 的拟议变更只存在 decision 中，不作为已应用的 audit changes；其业务快照保持旧值。完整 state 应用于下一次运行，单独核心账单数组不保留来源索引。结构 schema 为 ledger-state、reconciliation-context、reconciliation-report。
 
 本阶段为离线组件，model_invocations=0，billing_pipeline_executed=false；完整原始文档流水线和自动意图提取在阶段 7 集成。
+
+## 12. 阶段 7 流水线清单与意图报告
+
+`run` 使用文件/目录、--accounting-entity 或 ReconciliationContext、旧账数组/完整 LedgerState 及显式模型/OCR 配置。BillingRequest 继续作为可验证的交换结构，当前 CLI 不将其中 url 自动下载为输入；OCR URL 通过 --ocr-map 显式提供。配置和旧账无效时为请求错误，不能当作空账本。
+
+`PipelineManifest` 独立于早期 RunManifest：mode 为 live/replay/offline/test_injected，billing_pipeline_executed=true，记录 run_id、发现清单、所有来源的原始名称/哈希/类型/阶段状态/记录 ID、计数、实际调用数、版本、策略/旧状态哈希及产物哈希。errors 优先退出码 3，正常复核为 1，完成为 0；CLI 请求错误为 2。目录非支持文件和排除目录均显式记录 ignored，不伪造费用。failed OCR 来源仍保留，父邮件反映子来源未完成状态。
+
+`IntentReport` 保存逐行 LineDirective、逐来源意图提取状态、尝试和本次调用数。模型草案的引文先转为登记的 Evidence，再经来源家族、行绑定、修改语义及字段白名单验证。未明确打印旧值时，仅唯一旧匹配可提供 CAS 基线；旧值明确打印时需与引文及实际旧账一致。失败不能默认为无修改。没有候选可绑定的修改请求进入复核。
+
+主 records.json 保持六个核心分组及四种操作，JSON 数字使用 Decimal 精确写出，不混入运行模式等顶层元数据。独立 audit.json 列出源行、匹配/领域规则及已应用变化；state.json 提供下次输入。中间阶段报告仍保持各自原有 billing_pipeline_executed=false，表示其自身仅为组件，不否定最终 manifest 的完整流程事实。
+
+输出为新目录，manifest 最后写入并列出其他产物 SHA-256；不存在完整 manifest 时不得消费半成品。每个 JSON 原子写入，但不承诺多个文件整体事务。原始副本位于该次输出 work，回放缓存只读。重传应携带完整 state，不提供旧状态时不是持久化账本。缓存按模型配置、提示词/schema、证据及各阶段规则版本区分，回放不会悄悄重新调用模型。
