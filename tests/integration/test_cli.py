@@ -14,6 +14,65 @@ def test_installed_module_help():
     assert "evaluate" in run.stdout
 
 
+def test_normalize_cli_ready_and_missing_entity(tmp_path):
+    from scripts.stage5_cases import make_input
+
+    source, context = make_input()
+    input_path, ctx_path, output = (
+        tmp_path / "input.json",
+        tmp_path / "context.json",
+        tmp_path / "output.json",
+    )
+    write_json(input_path, source.model_dump(mode="python"))
+    write_json(ctx_path, context.model_dump(mode="python"))
+    assert main(["normalize", str(input_path), "--context", str(ctx_path), "--output", str(output)]) == 0
+    line = load_json(output)["lines"][0]
+    assert line["financial_attributes"]["posting_type"] == "AP" and line["status"] == "ready"
+    assert main(["normalize", str(input_path), "--output", str(output)]) == 1
+    assert load_json(output)["lines"][0]["financial_attributes"]["posting_type"] is None
+    assert main(["normalize", str(input_path), "--context", str(ctx_path), "--output", str(ctx_path)]) == 2
+
+
+def test_normalize_rejects_context_conflict_and_bad_input(tmp_path):
+    from scripts.stage5_cases import make_input
+
+    source, context = make_input()
+    path, ctx, output = tmp_path / "input.json", tmp_path / "context.json", tmp_path / "output.json"
+    write_json(path, source.model_dump(mode="python"))
+    write_json(ctx, context.model_dump(mode="python"))
+    assert (
+        main(
+            [
+                "normalize",
+                str(path),
+                "--context",
+                str(ctx),
+                "--accounting-entity",
+                "A",
+                "--output",
+                str(output),
+            ]
+        )
+        == 2
+    )
+    invalid = source.model_dump(mode="python")
+    invalid["files"][0]["candidates"][0]["charge_details"]["amount"] = "DO_NOT_ECHO"
+    write_json(path, invalid)
+    assert main(["normalize", str(path), "--output", str(output)]) == 2
+
+
+def test_normalize_source_error_is_not_successful_empty_output(tmp_path):
+    from scripts.stage5_cases import make_input
+
+    source, _ = make_input()
+    source.files[0].status = "error"
+    source.files[0].candidates = []
+    path, output = tmp_path / "input.json", tmp_path / "output.json"
+    write_json(path, source.model_dump(mode="python"))
+    assert main(["normalize", str(path), "--output", str(output)]) == 3
+    assert load_json(output)["files"][0]["status"] == "error"
+
+
 def test_parse_office_and_partial_failure(tmp_path, capsys):
     fixture = Path(__file__).resolve().parents[1] / "fixtures/parsing/fees.xlsx"
     report = tmp_path / "parsed.json"

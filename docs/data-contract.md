@@ -98,3 +98,13 @@ PENDING_REVIEW 保留可确定候选值及具体阻断原因，不应用到旧�
 `ExtractedCandidate` 扩展基础 `Candidate`，补充 source_id、shipping_info、逐字段 JSON Pointer 形式的 field_evidence。日期和付款规则暂存原文，`document_date` 与 `payment_term` 不在阶段 4 强行标准化。打印的三字币种只按字面复制，ISO 有效性在阶段 5 校验；单独 `$` 保留为 currency_raw，currency 为 null。
 
 证据单元由解析层逐行生成；空间 OCR 行保留组合框和原始识别框，组合后的引文并非重新识别的供应方原文。每条引用都验证原文子串、定位和字段值支持。物理费用行身份避免仅凭同名合并；跨来源费用去重和最终账单身份留待阶段 6。`billing_pipeline_executed=false` 表示尚未执行完整账单决策，不表示没有执行模型。
+
+## 10. 阶段 5 领域策略与报告
+
+`NormalizationContext`：accounting_entity、显式 party_aliases/charge_aliases、rounding、按 source_line_id 指定的 lines 策略，以及明确来源、明细行和币种的 totals。金额策略使用带原文证据的 SupportedFact；settlement 必须能证明 payer/payee，adjustment 必须证明原参考号、原付款方/收款方及贷项/冲销/折扣性质。无配置不认定 SHA/TAR 等缩写为某法人。循环、歧义别名和引用不存在明细的策略明确拒绝。
+
+`NormalizationReport` 包含输入/策略哈希、规则与币种快照版本、来源清单、NormalizedLine 和单据金额检查。每行保留 original 与 candidate、financial_attributes、issues、events、checks 和 ready/pending_review。original 不改写；candidate 仅保存已验证且按规则规范化的值。无依据字段被清空并阻断，而非补出猜测。上下文中的记账主体通过事件的 context_pointer 记录来源，不伪造文档引文。
+
+`ready` 是进入阶段 6 的领域检查结果，不代表已匹配、去重、授权更新或自动入账。原始来源的 OCR/提取风险不因标准化而消失。正常 invoice/debit 的已验证签发方收款、被开票接收方付款；若字段证据只证明 shipper/consignee/bank 等角色则复核；其他方向需明确的结算角色。贷项、冲销和负数需可定位原账关系，AR/AP 类别不翻转，仅将金额记为减少余额，正负原值均只处理一次。原关系冲突时保留原金额并复核。
+
+舍入默认 exact；仅显式 HALF_UP/HALF_EVEN 会对计算期望值按该币种小数位舍入，实际打印金额不静默修约。单价可多位小数；最终金额需符合币种精度。不存在全局 0.01 容差。单据税/折扣/已付/余额均是事实，不是费用行；百分比不能当成税额，不同币种不合并。历史币种不自动推测当期精度，进入复核。结构 schema 见 normalization-context.schema.json 与 normalization-report.schema.json。

@@ -40,6 +40,8 @@
 
 ## 额外明确的实现约定
 
+阶段 5 实现证据：R14/R15/R16 对应 `domain/normalization.py` 的词表、币种快照及作用范围规则；R22 对应 `domain/finance.py` 的主体、交易角色、原账关系与符号规则；R25 对应 `domain/money.py`、`totals.py` 的精确运算与按币种核对；R26 对应原始风险保留及 `engine.py` 中有原生文本佐证的受限字符纠正。63 条规则案例、额外边界测试、真实 7 条费用及全新安装验证见 [阶段 5 验收](stage5-report.md)。这仍不代表最终账单已接受或阶段 6 的去重/更新已实现。
+
 阶段 4 实现证据：R10/R11/R12/R18/R27 对应 `extraction/engine.py`、`contracts.py` 与逐字段证据校验；R13 已区分合计、已付和条件条款，金额勾稽留待阶段 5；R29 增加候选字段定位；R30 增加固定组件验证集和真实基准提取评分。真实材料 7/7 费用、合成片段 18/18 费用通过，详细分母与差异见 [阶段 4 验收](stage4-report.md)。这不是最终财务、匹配和操作验收。
 
 阶段 3 实现证据：R02/R03 对应 `parsers/email.py` 与 MIME/嵌套用例；R04/R05/R06 对应 `parsers/media.py`、`ocr/tunnel.py` 与 13 个页/帧的真实归档；R07 对应 `parsers/office.py` 的 XLS/XLSX 与公式用例；R08 对应 DOCX 读取、`parsers/legacy_word.py` 及真实 DOC 转换。R29 已具备解析来源定位，最终账单字段审计仍待后续阶段。详见 [阶段 3 验收](stage3-report.md)。

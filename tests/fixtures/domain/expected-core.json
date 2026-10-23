@@ -1,0 +1,9 @@
+{
+  "annotation_source": "authored_synthetic_not_prediction",
+  "name": "Handling Charge",
+  "amount": 40,
+  "currency": "USD",
+  "payment": "PP",
+  "posting": "AP",
+  "ready": true
+}

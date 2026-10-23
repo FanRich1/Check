@@ -47,6 +47,9 @@ dev = [
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"shipping_billing.domain" = ["data/*.json"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests/unit", "tests/integration"]
 addopts = "-ra"

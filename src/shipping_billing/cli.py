@@ -8,6 +8,7 @@ from pathlib import Path
 from pydantic import TypeAdapter, ValidationError
 
 from shipping_billing.config import Settings
+from shipping_billing.domain.contracts import NormalizationContext, NormalizationReport
 from shipping_billing.errors import BillingError
 from shipping_billing.evaluation import RECORDS, evaluate
 from shipping_billing.extraction.contracts import ExtractionReport
@@ -22,6 +23,8 @@ SCHEMAS = {
     "manifest": TypeAdapter(RunManifest),
     "parse-report": TypeAdapter(ParseReport),
     "extraction-report": TypeAdapter(ExtractionReport),
+    "normalization-context": TypeAdapter(NormalizationContext),
+    "normalization-report": TypeAdapter(NormalizationReport),
 }
 LOG = logging.getLogger("shipping_billing")
 
@@ -44,6 +47,13 @@ def parser():
     schema.add_argument("--output", type=Path)
     config = sub.add_parser("config-check", help="Check configuration without any network calls")
     config.add_argument("--mode", choices=["offline", "online"])
+    norm = sub.add_parser("normalize", help="Apply deterministic normalization, money and AR/AP rules")
+    norm.add_argument("input", type=Path, help="Stage 4 extraction report")
+    norm.add_argument(
+        "--context", type=Path, help="Explicit accounting entity, aliases and evidence-backed policy"
+    )
+    norm.add_argument("--accounting-entity", help="Explicit accounting entity; do not combine with context")
+    norm.add_argument("--output", type=Path, required=True)
     extract = sub.add_parser("extract", help="Extract evidence-checked fee candidates from a parse report")
     extract.add_argument("input", type=Path)
     extract.add_argument("--mode", choices=["live", "replay"], required=True)
@@ -83,7 +93,7 @@ def parser():
     ev.add_argument("--case", type=Path, required=True)
     ev.add_argument("--actual", type=Path, required=True)
     ev.add_argument("--report", type=Path, required=True)
-    sub.add_parser("run", help="Reserved billing pipeline entry; financial workflow not yet implemented")
+    sub.add_parser("run", help="Reserved end-to-end entry; matching and final decisions not yet implemented")
     return p
 
 
@@ -108,6 +118,37 @@ def main(argv=None):
         logging.basicConfig(level=settings.log_level, format="%(levelname)s %(name)s %(message)s")
         if args.command == "config-check":
             print(dumps(settings.public_summary()))
+        elif args.command == "normalize":
+            from shipping_billing.domain.engine import normalize
+
+            protect_outputs(args.output, [args.input] + ([args.context] if args.context else []))
+            if args.context and args.accounting_entity:
+                raise BillingError(
+                    "CONFLICTING_CONTEXT_ARGUMENTS", "Use either context or accounting-entity."
+                )
+            context = (
+                NormalizationContext.model_validate(load_json(args.context))
+                if args.context
+                else NormalizationContext(accounting_entity=args.accounting_entity)
+            )
+            result = normalize(ExtractionReport.model_validate(load_json(args.input)), context)
+            write_json(args.output, result.model_dump(mode="python"))
+            counts = {
+                s: sum(f.status == s for f in result.files)
+                for s in ("ready", "no_charge", "pending_review", "error")
+            }
+            print(
+                dumps(
+                    {
+                        "lines": len(result.lines),
+                        "ready_lines": sum(line.status == "ready" for line in result.lines),
+                        **counts,
+                        "model_invocations": 0,
+                        "billing_pipeline_executed": False,
+                    }
+                )
+            )
+            return 3 if counts["error"] else 1 if counts["pending_review"] else 0
         elif args.command == "extract":
             from shipping_billing.extraction.client import StructuredModelClient
             from shipping_billing.extraction.engine import ExtractionEngine

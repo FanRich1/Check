@@ -1,0 +1,9 @@
+{
+  "accounting_entity": "Buyer Ltd",
+  "party_aliases": {},
+  "charge_aliases": {},
+  "rounding": "exact",
+  "lines": {},
+  "totals": [],
+  "use_observed_totals": true
+}
