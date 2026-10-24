@@ -174,7 +174,15 @@ class PageOCR:
                 return {**cached, "input_sha256": digest, "page_source_id": unit_id}
             if self.cloudflared:
                 try:
-                    url, server = self._deliver(content, content_type)
+                    # Retry delivery only before submitting OCR; never repeat an uncertain POST.
+                    for attempt in range(2):
+                        try:
+                            url, server = self._deliver(content, content_type)
+                            break
+                        except BillingError as exc:
+                            if attempt or exc.code not in ("TUNNEL_NOT_READY", "TUNNEL_DOWNLOAD_FAILED"):
+                                raise
+                            self.close()
                     before = server.completed_gets
                     result = self.client.recognize(url, source_id=unit_id, file_sha256=digest, use_cache=True)
                     result["delivery"] = {

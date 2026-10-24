@@ -42,6 +42,41 @@ def test_live_does_not_upload_without_explicit_delivery(tmp_path):
     assert exc.value.code == "MISSING_OCR_DELIVERY"
 
 
+@pytest.mark.parametrize("failure,deliveries,posts", [
+    ("TUNNEL_NOT_READY", 2, 1), ("TUNNEL_DOWNLOAD_FAILED", 2, 1),
+    ("TUNNEL_CONTENT_MISMATCH", 1, 0), ("OCR_TIMEOUT_UNKNOWN_OUTCOME", 1, 1),
+])
+def test_retry_only_before_ocr_submission(tmp_path, monkeypatch, failure, deliveries, posts):
+    from types import SimpleNamespace
+
+    provider = PageOCR(Settings(), storage=tmp_path, mode="live", cloudflared=tmp_path / "fake")
+    calls = {"deliver": 0, "post": 0}
+    server = SimpleNamespace(completed_gets=0, revoke=lambda: None)
+
+    def deliver(*args):
+        calls["deliver"] += 1
+        if calls["deliver"] == 1 and failure.startswith("TUNNEL_"):
+            raise BillingError(failure, "delivery failure")
+        return "https://example.test/page", server
+
+    def recognize(*args, **kwargs):
+        calls["post"] += 1
+        if failure == "OCR_TIMEOUT_UNKNOWN_OUTCOME":
+            raise BillingError(failure, "unknown outcome")
+        return {"text_blocks": ["verified"]}
+
+    monkeypatch.setattr(provider, "_deliver", deliver)
+    monkeypatch.setattr(provider.client, "get_cached", lambda *args: None)
+    monkeypatch.setattr(provider.client, "recognize", recognize)
+    if failure in ("TUNNEL_CONTENT_MISMATCH", "OCR_TIMEOUT_UNKNOWN_OUTCOME"):
+        with pytest.raises(BillingError) as exc:
+            provider(b"page", "source", 1, "application/pdf")
+        assert exc.value.code == failure
+    else:
+        provider(b"page", "source", 1, "application/pdf")
+    assert calls == {"deliver": deliveries, "post": posts}
+
+
 def test_batch_reuses_tunnel_revokes_each_link_and_cache_needs_no_tunnel(tmp_path, monkeypatch):
     import json
     from contextlib import contextmanager

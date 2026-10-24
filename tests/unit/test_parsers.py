@@ -14,6 +14,23 @@ from shipping_billing.parsers.contracts import ParseLimits
 from shipping_billing.parsers.engine import DocumentParser
 
 
+@pytest.mark.parametrize("amount,conflict", [("245.00", False), ("250.00", True), ("NaN", True)])
+def test_vendor_amount_checked_against_exact_native_row(amount, conflict):
+    from shipping_billing.models import Locator
+    from shipping_billing.parsers.contracts import ParsedSource
+    from shipping_billing.parsers.media import check_vendor_against_text
+
+    source = ParsedSource(source_id="s", original_name="bill.pdf", detected_format="pdf",
+                          sha256="a" * 64, size_bytes=10)
+    source.fragment("CMDU 123 OCA17 On Carriage USD 245.0000 C", Locator(kind="pdf_page", page=1),
+                    "pdf_native_text")
+    source.ocr_results = [{"source_page": 1, "documents": [{"vendor_facts": {
+        "chargeList": [{"chargeItem": "On Carriage", "amount": amount}]
+    }}]}]
+    check_vendor_against_text(source, 1)
+    assert any(i.code == "OCR_AMOUNT_NOT_CORROBORATED" for i in source.issues) == conflict
+
+
 def pdf_bytes(pages=1):
     stream = io.BytesIO()
     doc = canvas.Canvas(stream)

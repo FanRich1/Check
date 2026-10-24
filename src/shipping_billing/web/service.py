@@ -67,7 +67,11 @@ def display(value):
 def explain(code):
     messages = {
         "MISSING_ACCOUNTING_ENTITY": "尚未指定记账主体，无法判断应收或应付。",
-        "UNKNOWN_PARTY_ROLE": "材料中的开票方或付款方关系不明确。",
+        "UNKNOWN_PARTY_ROLE": "尚未确认谁付款、谁收款，无法判断应收或应付。发货人、收货人和通知方不能直接当作付款双方；请核对付款说明或补充关联邮件。",
+        "TUNNEL_NOT_READY": "OCR 临时访问链接未建立成功，该页尚未提交识别。请稍后重新处理；更换账本或公司名称不能解决此网络问题。",
+        "TUNNEL_DOWNLOAD_FAILED": "OCR 临时文件链接无法访问，该页尚未提交识别。请检查网络后重新处理。",
+        "NATIVE_TEXT_VERIFIED": "费用字段已逐项核对 PDF 原生文字；OCR 结构化结果仅作为辅助信息。",
+        "OCR_AMOUNT_NOT_CORROBORATED": "OCR 费用金额与 PDF 原生费用行未能对应，请核对具体费用行。",
         "MULTIPLE_MATCHES": "匹配到多条旧账单，需要人工确认目标记录。",
         "AMBIGUOUS_CURRENCY": "材料仅提供含糊货币符号，无法唯一确定币种。",
         "MISSING_CURRENCY": "材料缺少明确币种。",
@@ -94,6 +98,14 @@ def explain(code):
         "MODEL_NOT_CONFIGURED": "模型尚未配置。请在项目 .env 中完成配置后重启工作台。",
     }
     return messages.get(code, "该项目未满足自动处理条件，请查看原文证据及问题代码。")
+
+
+def explain_issue(issue):
+    if not issue.get("blocks_automation", True) and issue["code"] in (
+        "OCR_STRUCTURED_REQUIRES_CHECK", "OCR_NO_ORIGINAL_TEXT"
+    ):
+        return "OCR 仅提供辅助结构化结果；本次费用字段已核对 PDF 原生文字，此项不再阻止自动入账。"
+    return explain(issue["code"])
 
 
 class JobStore:
@@ -433,7 +445,7 @@ class JobStore:
             record["quantity_display"] = display(row["charge_details"].get("quantity"))
             record["unit_price_display"] = display(row["charge_details"].get("unit_price"))
             record["issues"] = [
-                dict(**issue, explanation=explain(issue["code"])) for issue in row["audit_trail"]["issues"]
+                dict(**issue, explanation=explain_issue(issue)) for issue in row["audit_trail"]["issues"]
             ]
             record["changes_display"] = [
                 dict(path=c["path"], old=display(c["old"]), new=display(c["new"]))
@@ -452,7 +464,7 @@ class JobStore:
             ]
             records.append(record)
         files = [
-            {**f, "issues": [dict(**i, explanation=explain(i["code"])) for i in f["issues"]]}
+            {**f, "issues": [dict(**i, explanation=explain_issue(i)) for i in f["issues"]]}
             for f in manifest["files"]
         ]
         with self.lock:

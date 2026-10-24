@@ -227,6 +227,45 @@ def materialize(draft, target, units, allowed):
 Fee_KEYS = ("charge_item_raw", "amount", "currency_raw", "quantity", "unit_price", "payment_term_raw")
 
 
+def verify_native_evidence(target, file, units):
+    """Resolve generic vendor warnings only after successful OCR and native field checks.
+
+    Actual conflicts, missing roles and delivery failures remain blocking. Raw parse
+    evidence is retained unchanged; this decision belongs to the extraction result.
+    """
+    generic = {"OCR_STRUCTURED_REQUIRES_CHECK", "OCR_NO_ORIGINAL_TEXT"}
+    pages = target.metadata.get("pages", 0)
+    native = [u for u in units.values() if u.source_id == target.source_id and u.method == "pdf_native_text"]
+    completed = {p["page"] for p in target.metadata.get("ocr_page_status", []) if p["status"] == "completed"}
+    if (target.detected_format != "pdf" or not pages or not file.candidates
+            or completed != set(range(1, pages + 1))
+            or {u.locator.page for u in native} != completed):
+        return
+    all_issues = file.issues + [i for c in file.candidates for i in c.issues]
+    if any(i.blocks_automation and i.code not in generic for i in all_issues):
+        return
+    for candidate in file.candidates:
+        for field in ("charge_item", "amount", "currency"):
+            if not candidate.field_evidence.get("/charge_details/" + field):
+                return
+        for refs in candidate.field_evidence.values():
+            if not refs or any(not any(
+                ref.source_id == u.source_id and ref.locator == u.locator and ref.quote in u.text
+                for u in native
+            ) for ref in refs):
+                return
+    if not any(i.code in generic and i.blocks_automation for i in all_issues):
+        return
+    def verified(issues):
+        return [i.model_copy(update={"blocks_automation": False}) if i.code in generic else i for i in issues]
+    file.issues = verified(file.issues)
+    proof = Issue(code="NATIVE_TEXT_VERIFIED", severity="info", blocks_automation=False,
+                  message="Extracted fields verified against native PDF text; OCR completed on every page.")
+    file.issues.append(proof)
+    for candidate in file.candidates:
+        candidate.issues = verified(candidate.issues) + [proof]
+
+
 class ExtractionEngine:
     def __init__(
         self,
@@ -359,6 +398,7 @@ class ExtractionEngine:
                             archive.pop("error", None)
                 file.candidates, problems = materialize(draft, target, units, allowed)
                 file.issues.extend(problems)
+                verify_native_evidence(target, file, units)
                 for observation in draft.observations:
                     if all(
                         c.unit_id in units

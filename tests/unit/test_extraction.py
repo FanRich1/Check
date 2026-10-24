@@ -64,6 +64,39 @@ def engine(tmp_path, responses):
     return ExtractionEngine(client, storage=tmp_path, mode="test_injected")
 
 
+@pytest.mark.parametrize("condition,passes", [
+    ("native", True), ("failed_page", False), ("scan", False),
+    ("amount_conflict", False), ("unverified_field", False), ("missing_page", False),
+])
+def test_native_pdf_resolves_only_generic_ocr_warnings(tmp_path, condition, passes):
+    report = parsed()
+    source = report.sources[0]
+    source.detected_format = "pdf"
+    source.metadata = {"pages": 1, "ocr_page_status": [{"page": 1, "status": "completed"}]}
+    source.fragments[0].method = "pdf_native_text" if condition != "scan" else "specified_ocr_text"
+    source.fragments[0].locator = Locator(kind="pdf_page", page=1)
+    for code in ("OCR_STRUCTURED_REQUIRES_CHECK", "OCR_NO_ORIGINAL_TEXT"):
+        source.issue(code, "vendor warning")
+    if condition == "failed_page":
+        source.metadata["ocr_page_status"][0]["status"] = "error"
+        source.issue("TUNNEL_NOT_READY", "delivery failed")
+    if condition == "amount_conflict":
+        source.issue("OCR_AMOUNT_NOT_CORROBORATED", "amount differs")
+    if condition == "missing_page":
+        source.metadata["pages"] = 2
+    response = draft()
+    if condition == "unverified_field":
+        response["documents"][0]["fees"][0]["amount"] = 99
+    result = engine(tmp_path, [dumps(response)]).extract(report)
+    file = result.files[0]
+    assert (file.status == "extracted") == passes
+    assert any(i.code == "NATIVE_TEXT_VERIFIED" for i in file.issues) == passes
+    assert all(i.blocks_automation for i in source.issues)  # original evidence is immutable
+    if passes:
+        assert all(c.transaction_party.issuer is None for c in file.candidates)
+        assert [c.charge_details.amount for c in file.candidates] == [65, 35]
+
+
 def test_same_name_rows_and_exact_replay(tmp_path):
     first = engine(tmp_path, [dumps(draft())]).extract(parsed())
     rows = first.files[0].candidates
@@ -305,3 +338,36 @@ def test_evaluator_counts_failed_cases_and_extra_rows(tmp_path):
     report = engine(tmp_path, [dumps(draft())]).extract(parsed())
     scored = score(expected, {"case": report})
     assert scored["precision"]["numerator"] == 1 and scored["precision"]["denominator"] == 2
+
+
+def test_verified_native_invoice_books_once_with_explicit_parties(tmp_path):
+    from shipping_billing.domain.engine import normalize
+    from shipping_billing.reconciliation.contracts import ReconciliationContext
+    from shipping_billing.reconciliation.engine import reconcile
+
+    report = parsed("HANDLING 65 USD\nHANDLING 35 USD\nISSUER: Seller Ltd\nBILL TO: Buyer Ltd\nINVOICE")
+    source = report.sources[0]
+    source.detected_format = "pdf"
+    source.metadata = {"pages": 1, "ocr_page_status": [{"page": 1, "status": "completed"}]}
+    source.fragments[0].method = "pdf_native_text"
+    source.fragments[0].locator = Locator(kind="pdf_page", page=1)
+    source.issue("OCR_STRUCTURED_REQUIRES_CHECK", "vendor warning")
+    source.issue("OCR_NO_ORIGINAL_TEXT", "vendor warning")
+    response = draft()
+    doc = response["documents"][0]
+    for key, value, index, quote in [
+        ("issuer", "Seller Ltd", 3, "ISSUER: Seller Ltd"),
+        ("recipient", "Buyer Ltd", 4, "BILL TO: Buyer Ltd"),
+        ("document_type", "INVOICE", 5, "INVOICE"),
+    ]:
+        doc[key] = value
+        doc["evidence"][key] = [{"unit_id": f"s:u{index}", "quote": quote}]
+    extracted = engine(tmp_path, [dumps(response)]).extract(report)
+    ctx = ReconciliationContext(normalization_context={"accounting_entity": "Buyer Ltd"})
+    normalized = normalize(extracted, ctx.normalization_context)
+    first = reconcile(normalized, extracted, context=ctx, parsed=report)
+    assert [r.operation for r in first.records] == ["CREATE", "CREATE"]
+    assert all(r.financial_attributes.posting_type == "AP" for r in first.records)
+    repeat = reconcile(normalized, extracted, context=ctx, state=first.next_state, parsed=report)
+    assert all(r.operation == "NO_CHANGE" for r in repeat.records)
+    assert len(repeat.next_state.bills) == 2

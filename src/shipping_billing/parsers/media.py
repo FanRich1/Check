@@ -4,6 +4,7 @@ import io
 import re
 import warnings
 from collections import Counter
+from decimal import Decimal, InvalidOperation
 
 import pdfplumber
 from PIL import Image, ImageOps
@@ -44,13 +45,29 @@ def check_vendor_against_text(source, page):
                 for c in facts.get("chargeList", [])
                 if isinstance(c, dict)
             )
+            for charge in facts.get("chargeList", []):
+                if not isinstance(charge, dict) or not charge.get("chargeItem"):
+                    continue
+                name = str(charge["chargeItem"]).strip()
+                matching = [line for line in text.splitlines() if name.casefold() in line.casefold()]
+                try:
+                    amount = Decimal(str(charge.get("amount")))
+                    numbers = [
+                        Decimal(n.replace(",", "")) for line in matching
+                        for n in re.findall(r"(?<![\w.])[+-]?\d+(?:,\d{3})*(?:\.\d+)?(?![\w.])", line)
+                    ]
+                    supported = amount.is_finite() and amount in numbers
+                except InvalidOperation:
+                    supported = False
+                if not supported:
+                    source.issue("OCR_AMOUNT_NOT_CORROBORATED", "Vendor fee amount is not supported by its native fee row.")
             for name, count in counts.items():
                 if not name:
                     continue
                 occurrences = sum(
                     bool(
                         re.match(
-                            r"^\s*" + re.escape(name) + r"(?:\s*$|\s+(?:[-|$]|\d|USD\b|CNY\b|EUR\b))",
+                            r".*?\b" + re.escape(name) + r"(?:\s*$|\s+(?:[-|$]|\d|USD\b|CNY\b|EUR\b))",
                             line.upper(),
                         )
                     )
