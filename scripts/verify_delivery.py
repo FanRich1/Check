@@ -37,7 +37,7 @@ def main():
 
     try:
         assets = importlib.resources.files("shipping_billing.web") / "static"
-        report["packaged_static_assets"] = ["index.html", "app.css", "app.js", "mark.svg"]
+        report["packaged_static_assets"] = ["index.html", "app.css", "app.js", "review.js", "mark.svg"]
         if not all((assets / name).is_file() for name in report["packaged_static_assets"]):
             raise RuntimeError("Packaged web assets missing")
         run("pytest", ["-m", "pytest", "-q", "--junitxml=" + str(output / "pytest.xml")])

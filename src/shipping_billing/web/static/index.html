@@ -8,6 +8,7 @@
   <link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/assets/app.css">
   <script src="/assets/app.js" defer></script>
+  <script src="/assets/review.js" defer></script>
 </head>
 <body>
   <aside class="sidebar">
@@ -39,8 +40,8 @@
             <div class="material-tip"><span>↳</span><p><strong>邮件附件也会一并读取</strong><br>可以直接上传 EML 邮件，保留正文与附件的关联。</p></div>
           </section>
           <section class="card settings-card"><div class="card-heading"><div><span class="step-number">02</span><h2>设置处理方式</h2></div></div>
-            <div id="database-ledger-fields" hidden><label class="field-label" for="ledger-select">使用账本 <span class="required">*</span></label><select id="ledger-select" class="text-input"><option value="">请选择账本</option></select><p id="ledger-summary" class="field-help">选择账本后会自动读取已有费用，用于匹配和去重。</p><div><button type="button" id="new-ledger-button" class="text-button">＋ 新建账本</button>　<button type="button" id="manage-ledger-button" class="text-button">查看 / 导入 / 导出账本</button></div><p class="field-help">有效费用自动保存到所选账本；待复核费用单独保留。</p></div>
-            <label for="entity" class="field-label">记账主体 <span class="required">*</span></label><input id="entity" name="entity" class="text-input" placeholder="填写你方公司的完整名称" required maxlength="300" autocomplete="organization"><p class="field-help">按这家公司的视角判断应收（AR）或应付（AP）。</p>
+            <div id="database-ledger-fields" hidden><label class="field-label" for="ledger-select">使用账本 <span class="required">*</span></label><select id="ledger-select" class="text-input" aria-describedby="ledger-summary"><option value="">请选择账本</option></select><p id="ledger-summary" class="field-help" aria-live="polite">首次使用先新建账本；没有旧账单也可以开始。</p><div class="ledger-actions"><button type="button" id="new-ledger-button" class="text-button">＋ 新建账本</button><button type="button" id="manage-ledger-button" class="text-button" disabled>管理当前账本</button></div><p id="ledger-next-step" class="ledger-next-step" role="status"></p><p class="field-help">有效费用自动保存到所选账本；待复核费用单独保留。</p></div>
+            <label for="entity" class="field-label">记账主体 <span class="required">*</span></label><input id="entity" name="entity" class="text-input" placeholder="填写你方公司的完整名称" required maxlength="300" autocomplete="organization" aria-describedby="entity-help"><p id="entity-help" class="field-help">按这家公司的视角判断应收（AR）或应付（AP）。</p>
             <div id="legacy-ledger-input">
             <div class="field-label spaced">旧账单 <span class="optional">可选</span></div><label class="file-picker" for="old-state"><span class="file-picker-icon">⇅</span><span id="old-state-name">选择旧账单或账本 JSON</span><span>＋</span></label><input id="old-state" type="file" accept=".json,application/json" hidden><button type="button" class="text-button clear-option" id="clear-old" hidden>移除旧账单</button><p class="field-help">提供旧账单后，可以识别新增、修改和重复费用。</p>
             <div class="base-job-banner" id="base-job-banner" hidden><div><strong>已接续上次任务账本</strong><small id="base-job-title"></small></div><button type="button" class="text-button" id="clear-base">取消</button></div>
@@ -60,8 +61,8 @@
         <div id="progress-card" class="card progress-card" hidden><div class="progress-heading"><div class="spinner"></div><div><h2 id="progress-title">正在处理</h2><p>请保留此页面。你也可以稍后从历史任务重新打开。</p></div></div><ol id="progress-steps"><li data-stage="parse">读取材料</li><li data-stage="extract">提取费用</li><li data-stage="intents">识别修改</li><li data-stage="reconcile">核对账单</li><li data-stage="write">保存结果</li></ol></div>
         <div id="result-banner" class="notice" hidden></div>
         <div id="result-content" hidden><div id="metrics" class="metrics"></div>
-          <section class="card result-card"><div class="result-card-top"><div><h2>费用明细</h2><span id="result-count" class="muted-label"></span></div><div class="export-actions"><select id="download-kind" aria-label="选择下载内容"><option value="records.json">账单结果 JSON</option><option value="state.json">可续用账本 JSON</option><option value="audit.json">字段审计 JSON</option><option value="manifest.json">来源清单 JSON</option><option value="reviews.json">核对备注 JSON</option></select><button class="button primary compact" id="download-button">↓ 下载</button></div></div>
-            <div class="table-tools"><div id="operation-filters" class="tabs" aria-label="按操作筛选"><button data-operation="all" class="selected">全部</button><button data-operation="CREATE">新增</button><button data-operation="UPDATE">修改</button><button data-operation="NO_CHANGE">无变化</button><button data-operation="PENDING_REVIEW">待复核</button></div><input id="record-search" class="search-input" placeholder="搜索费用、单据或交易方" aria-label="搜索费用明细"></div>
+          <section class="card result-card"><div class="result-card-top"><div><h2>费用明细</h2><span id="result-count" class="muted-label"></span></div><div class="export-actions"><button id="download-current-ledger" class="button secondary compact" type="button" hidden>下载当前有效账本</button><select id="download-kind" aria-label="选择下载内容"><option value="records.json">原始账单识别结果 JSON</option><option value="state.json">原始任务账本快照 JSON</option><option value="audit.json">字段审计 JSON</option><option value="manifest.json">来源清单 JSON</option><option value="review-decisions.json">正式复审记录 JSON</option><option value="reviews.json">核对备注 JSON</option></select><button class="button primary compact" id="download-button">↓ 下载</button></div></div>
+            <div class="table-tools"><div id="operation-filters" class="tabs" aria-label="按操作筛选"><button data-operation="all" class="selected">全部</button><button data-operation="CREATE">新增</button><button data-operation="UPDATE">修改</button><button data-operation="NO_CHANGE">无变化</button><button data-operation="PENDING_REVIEW">待复核</button><button data-operation="REJECTED">已拒绝</button></div><input id="record-search" class="search-input" placeholder="搜索费用、单据或交易方" aria-label="搜索费用明细"></div>
             <div class="table-scroll"><table class="records-table"><thead><tr><th>费用项目 / 单据</th><th>交易双方</th><th class="number-cell">金额</th><th>记账方向</th><th>处理结果</th><th>核对标记</th><th></th></tr></thead><tbody id="record-rows"></tbody></table></div><div id="records-empty" class="empty-state" hidden>没有符合条件的费用。</div><div class="table-footer"><span>点击「查看依据」核对原文、变更及复核原因。</span><span>金额按币种分别展示</span></div>
           </section>
           <section class="card source-card"><div class="card-heading"><div><span class="step-number">↳</span><h2>来源文件与处理情况</h2></div><span id="source-count" class="muted-label"></span></div><div id="source-files"></div></section>
@@ -70,9 +71,47 @@
       <footer class="main-footer"><span>航运账单工作台</span><span>保留原文 · 明确变更 · 有据可查</span></footer>
     </main>
   </div>
-  <dialog id="detail-dialog" class="detail-dialog"><div class="dialog-header"><div><div class="eyebrow">BILLING DETAILS</div><h2 id="detail-title"></h2></div><button id="close-detail" class="close-button" aria-label="关闭费用详情">×</button></div><div id="detail-body" class="dialog-body"></div><form id="review-form" class="review-form"><h3>核对与跟进</h3><div class="review-fields"><label>核对标记<select id="review-status"><option value="unreviewed">待核对</option><option value="checked">已核对</option><option value="needs_followup">需补材料</option></select></label><label>备注<textarea id="review-note" rows="2" maxlength="2000" placeholder="记录需要补充的材料或核对结论"></textarea></label></div><div class="review-bottom"><small>核对标记用于跟进；待复核账单不会因此自动入账。</small><button type="submit" class="button primary compact">保存核对记录</button></div></form></dialog>
+  <dialog id="detail-dialog" class="detail-dialog"><div class="dialog-header"><div><div class="eyebrow">BILLING DETAILS</div><h2 id="detail-title"></h2></div><button id="close-detail" class="close-button" aria-label="关闭费用详情">×</button></div><div id="detail-body" class="dialog-body"></div><form id="review-form" class="review-form"><button id="manual-review-button" type="button" class="button primary compact" hidden>正式复审 / 修正入账</button><h3>核对与跟进</h3><div class="review-fields"><label>核对标记<select id="review-status"><option value="unreviewed">待核对</option><option value="checked">已核对</option><option value="needs_followup">需补材料</option></select></label><label>备注<textarea id="review-note" rows="2" maxlength="2000" placeholder="记录需要补充的材料或核对结论"></textarea></label></div><div class="review-bottom"><small>核对标记用于跟进；待复核账单不会因此自动入账。</small><button type="submit" class="button primary compact">保存核对记录</button></div></form></dialog>
   <dialog id="help-dialog" class="help-dialog"><div class="dialog-header"><h2>从这里开始使用</h2><button id="close-help" class="close-button" aria-label="关闭使用说明">×</button></div><div class="dialog-body"><div class="help-step"><b>1</b><div><h3>上传你的业务材料</h3><p>邮件上传 EML，附件会自动展开。也可以分别上传 PDF、图片、Excel 或 Word。旧版 DOC 需要本机安装 Microsoft Word。</p></div></div><div class="help-step"><b>2</b><div><h3>选择账本，确认记账公司</h3><p>启用数据库后先新建或选择账本，之后自动匹配同一账本的历史费用。旧账单可从账本管理导入新建空账本。未启用数据库时，可上传旧账单 JSON 或接续上次任务。</p></div></div><div class="help-step"><b>3</b><div><h3>查看明细，核对需要确认的内容</h3><p>新增、修改、无变化与待复核会分别标出。点击「查看依据」查看原文；缺少币种、匹配不唯一及 OCR 问题不会自动猜测为成功。</p></div></div><div class="help-note"><h3>关于 PDF、图片与模型</h3><p>模型配置从项目的 .env 读取，密钥不会发送给浏览器。PDF、图片及邮件图片使用指定 OCR，需要勾选临时链接或上传已有链接映射；识别失败会展示具体原因。材料中的文字会按配置发送给模型服务，启用 OCR 时相应页面会发送给指定识别服务。</p><p>启用数据库后，正式账本、任务记录和核对备注统一保存在数据库；处理产物保存在 outputs/web，上传材料保存在 data/local/web。这些本地资料不会随 Git 提交。</p></div></div></dialog>
   <div id="toast" class="toast" role="status" hidden></div>
-  <dialog id="ledger-dialog" class="help-dialog"><div class="dialog-header"><h2>账本管理</h2><button id="close-ledger" class="close-button" aria-label="关闭账本管理">×</button></div><div class="dialog-body"><form id="create-ledger-form"><h3>新建账本</h3><label class="field-label" for="new-ledger-name">账本名称</label><input id="new-ledger-name" class="text-input" maxlength="200" placeholder="例如：2026 年业务账本" required><label class="field-label spaced" for="new-ledger-entity">记账公司全称</label><input id="new-ledger-entity" class="text-input" maxlength="300" required><p class="field-help">不同公司使用独立账本；公司名称用于判断应收应付。</p><button class="button primary" type="submit">创建并选用</button></form><hr><h3>当前账本</h3><p id="managed-ledger-summary">请先选择账本。</p><button id="export-ledger-button" type="button" class="button secondary">下载当前账本 JSON</button><label class="field-label spaced" for="import-ledger-file">将旧账单导入新建空账本</label><input id="import-ledger-file" type="file" accept=".json,application/json"><p class="field-help">支持 state.json 或有效旧账单数组。已有账本通过上传业务材料进行匹配更新，导入不会覆盖已有费用。</p><button id="import-ledger-button" type="button" class="button secondary">导入所选旧账单</button><div id="ledger-error" class="form-error" role="alert" hidden></div><h3>当前有效费用</h3><div id="ledger-bills" class="field-help">最多显示前 100 条，可下载完整账本。</div></div></dialog>
+  <dialog id="create-ledger-dialog" class="help-dialog" aria-labelledby="create-ledger-title">
+    <div class="dialog-header"><h2 id="create-ledger-title">新建账本</h2><button id="close-create-ledger" type="button" class="close-button" aria-label="取消新建账本">×</button></div>
+    <form id="create-ledger-form" class="dialog-body">
+      <p class="field-help">为记账公司创建一个账本。创建后即可上传材料，没有旧账单也能开始。</p>
+      <label class="field-label spaced" for="new-ledger-entity">记账公司全称 <span class="required">*</span></label><input id="new-ledger-entity" class="text-input" maxlength="300" placeholder="填写你方公司的完整名称" autocomplete="organization" required>
+      <p class="field-help">请与业务材料中的公司名称保持一致，用于判断应收、应付。</p>
+      <label class="field-label spaced" for="new-ledger-name">账本名称 <span class="optional">可选</span></label><input id="new-ledger-name" class="text-input" maxlength="200" placeholder="留空则使用「公司名称 · 业务账本」">
+      <div id="create-ledger-error" class="form-error" role="alert" hidden></div>
+      <div class="ledger-dialog-actions"><button id="cancel-create-ledger" type="button" class="button secondary">取消</button><button id="create-ledger-submit" class="button primary" type="submit">创建并返回上传</button></div>
+    </form>
+  </dialog>
+  <dialog id="ledger-dialog" class="help-dialog" aria-labelledby="ledger-dialog-title">
+    <div class="dialog-header"><h2 id="ledger-dialog-title">管理当前账本</h2><button id="close-ledger" type="button" class="close-button" aria-label="关闭账本管理">×</button></div>
+    <div class="dialog-body"><p id="managed-ledger-summary">请先选择账本。</p><p class="field-help">此处用于查看、导出或导入历史数据。日常上传材料请返回工作台。</p>
+      <div id="ledger-error" class="form-error" role="alert" hidden></div>
+      <section class="ledger-section"><h3>当前有效费用</h3><div id="ledger-bills" class="field-help">最多显示前 100 条，可下载完整账本。</div><button id="export-ledger-button" type="button" class="button secondary">下载当前账本 JSON</button></section>
+      <details id="ledger-import-options" class="ledger-section"><summary>导入已有旧账单 <span class="optional">可选</span></summary><p class="field-help">没有旧账单请直接返回上传材料，无需导入。仅支持将 state.json 或有效旧账单数组导入新建空账本。</p><label class="field-label spaced" for="import-ledger-file">选择旧账单 JSON</label><input id="import-ledger-file" type="file" accept=".json,application/json"><p id="ledger-import-help" class="field-help"></p><button id="import-ledger-button" type="button" class="button secondary" disabled>导入所选旧账单</button></details>
+      <div class="ledger-dialog-actions"><button id="return-to-upload" type="button" class="button primary">返回上传材料 →</button></div>
+    </div>
+  </dialog>
+  <dialog id="manual-dialog" class="manual-dialog">
+    <div class="dialog-header"><div><div class="eyebrow">HUMAN REVIEW</div><h2>正式人工复审</h2></div><button id="close-manual" class="close-button" aria-label="关闭正式复审">×</button></div>
+    <form id="manual-form" class="dialog-body">
+      <p class="field-help">先对照原件和识别依据，再确认决定。原始结果保留；正式决定另存，可下载追溯。</p>
+      <div id="manual-error" class="form-error" role="alert" hidden></div>
+      <label class="field-label spaced" for="manual-ledger">正式账本</label><select id="manual-ledger" class="text-input" required></select>
+      <p id="manual-book-summary" class="field-help"></p><div id="manual-observations" class="field-help"></div>
+      <label class="field-label spaced" for="manual-action">本次决定</label><select id="manual-action" class="text-input"><option value="create">确认是独立新费用，新增入账</option><option value="update">修正并更新指定旧账</option><option value="duplicate">确认重复，保留指定旧账</option><option value="reject">拒绝本次费用入账</option></select>
+      <div id="manual-target-group"><label class="field-label spaced" for="manual-target">选择目标旧账</label><select id="manual-target" class="text-input"></select><p class="field-help">请核对单据、金额和记录编号；同名费用可能是不同的行。</p></div>
+      <div id="manual-fields" class="manual-fields detail-grid"></div>
+      <div id="manual-parties" class="detail-grid manual-fields"><label>确认付款方<input id="manual-payer" class="text-input" maxlength="300"></label><label>确认收款方<input id="manual-payee" class="text-input" maxlength="300"></label></div>
+      <p id="manual-direction" class="field-help"></p>
+      <label id="manual-distinct-label" class="manual-check"><input id="manual-distinct" type="checkbox"><span>我确认这是一笔独立的新费用，已核对可能匹配的旧账。</span></label>
+      <div class="detail-grid manual-fields"><label>复审人姓名<input id="manual-reviewer" class="text-input" maxlength="100" required></label><label>复审原因 / 原件核对结论<textarea id="manual-reason" maxlength="2000" rows="3" required></textarea></label></div>
+      <p class="field-help">本机单人模式记录你填写的复审人姓名；请说明如何解决原来的金额、币种、交易关系或来源问题。</p>
+      <button id="manual-preview-button" type="submit" class="button secondary">校验并预览决定</button>
+      <section id="manual-preview" class="detail-section" hidden><h3>正式提交预览</h3><p id="manual-preview-summary"></p><div id="manual-changes"></div><label class="manual-check"><input id="manual-confirm" type="checkbox"><span>我已核对原件、待复核原因和上述变更，确认正式提交这个决定。</span></label><button id="manual-approve" type="button" class="button primary" disabled>确认提交正式复审</button></section>
+    </form>
+  </dialog>
 </body>
 </html>

@@ -17,7 +17,7 @@ from shipping_billing.io import dumps, load_json, write_json
 from shipping_billing.pipeline.engine import run_pipeline
 from shipping_billing.reconciliation.contracts import LedgerState, ReconciliationContext
 
-DOWNLOADS = {"records.json", "audit.json", "manifest.json", "state.json", "reviews.json"}
+DOWNLOADS = {"records.json", "audit.json", "manifest.json", "state.json", "reviews.json", "review-decisions.json"}
 FORMATS = {".eml", ".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".xls", ".xlsx", ".doc", ".docx"}
 STAGES = {
     "queued": "等待处理",
@@ -412,7 +412,7 @@ class JobStore:
         folder = self.folder(job_id)
         result = folder / "result"
         if not (result / "manifest.json").is_file():
-            return dict(job=item, records=[], files=[], downloads=[], reviews={})
+            return dict(job=item, records=[], files=[], downloads=[], reviews={}, review_decisions={})
         manifest = load_json(result / "manifest.json")
         # Only complete, hash-verified artifacts may be displayed, continued or exported.
         try:
@@ -459,18 +459,112 @@ class JobStore:
             reviews = self.repository.get_reviews(job_id) if self.repository else (
                 load_json(folder / "reviews.json") if (folder / "reviews.json").exists() else {}
             )
+        resolutions = self.repository.get_decisions(job_id) if self.repository else {}
+        from shipping_billing.storage.review import visible_plan
+
+        resolutions = {rid: visible_plan(value) for rid, value in resolutions.items()}
         return dict(
             job=item,
             records=records,
             files=files,
             reviews=reviews,
+            review_decisions=resolutions,
             downloads=[
                 n for n in sorted(DOWNLOADS)
                 if (folder / n if n == "reviews.json" else result / n).is_file()
                 and not (n == "state.json" and item.get("ledger_id")
                          and item.get("ledger_commit_status") != "committed")
-            ],
+            ] + (["review-decisions.json"] if resolutions else []),
         )
+
+    def review_origin(self, job_id, record_id, ledger_id):
+        if not self.repository:
+            raise BillingError("DATABASE_NOT_CONFIGURED", "正式复审需要先启用数据库账本。")
+        result = self.result(job_id)
+        original = next((r for r in load_json(self.folder(job_id) / "result/records.json")
+                         if r["record_id"] == record_id), None) if result["records"] else None
+        if original is None:
+            raise BillingError("RECORD_NOT_FOUND", "任务中不存在这条费用。")
+        if original["operation"] != "PENDING_REVIEW":
+            raise BillingError("REVIEW_NOT_PENDING", "只有原始待复核费用可以正式复审。")
+        item = result["job"]
+        if item.get("demo") or item["status"] not in ("completed", "pending_review", "error"):
+            raise BillingError("REVIEW_NOT_AVAILABLE", "任务尚未完成或不能正式复审。")
+        book = self.repository.ledger(ledger_id)
+        bound = item.get("ledger_id") or item.get("review_ledger_id")
+        if bound and bound != ledger_id:
+            raise BillingError("LEDGER_ENTITY_CONFLICT", "请使用该任务所属的账本。")
+        if item.get("ledger_id") and item.get("ledger_commit_status") != "committed":
+            raise BillingError("REVIEW_NOT_AVAILABLE", "本次任务账本提交未完成，请重新处理后再复审。")
+        manifest = load_json(self.folder(job_id) / "result/manifest.json")
+
+        def artifact(name):
+            path = self.folder(job_id) / "result" / name
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != manifest["artifact_sha256"].get(name):
+                raise BillingError("RESULT_INTEGRITY_FAILED", "复审来源文件校验未通过，请重新处理。")
+            return load_json(path)
+
+        from shipping_billing.domain.contracts import NormalizationReport
+        from shipping_billing.extraction.contracts import ExtractionReport
+        from shipping_billing.extraction.engine import digest
+        from shipping_billing.reconciliation.matching import occurrence
+
+        observed = [d for d in artifact("reconciliation.json")["decisions"] if d["record_id"] == record_id]
+        normalized = NormalizationReport.model_validate(artifact("normalized.json"))
+        extraction = ExtractionReport.model_validate(artifact("extraction.json"))
+        hashes = {f["source_id"]: f["sha256"] for f in manifest["files"] if f.get("sha256")}
+        lines = {line.source_line_id: line for line in normalized.lines}
+        occurrences = []
+        for decision in observed:
+            line = lines[decision["source_line_id"]].model_copy(deep=True)
+            line.financial_attributes.accounting_entity = book["entity"]
+            physical, _ = occurrence(line, extraction, hashes)
+            incoming = deepcopy(decision["observed"])
+            incoming["financial_attributes"]["accounting_entity"] = book["entity"]
+            if physical:
+                occurrences.append(dict(key=physical, observed_sha256=digest(incoming)))
+        suggested = deepcopy(original)
+        if len(observed) == 1:
+            for group, values in observed[0]["observed"].items():
+                if isinstance(values, dict):
+                    suggested.setdefault(group, {}).update({k: v for k, v in values.items() if v is not None})
+        new_bill = deepcopy(observed[0]["observed"]) if observed else deepcopy(original)
+        checked = [dict(values=line.candidate.charge_details.model_dump(mode="python")) for line in normalized.lines
+                   if line.source_line_id in {d["source_line_id"] for d in observed}
+                   and any(c.code == "QUANTITY_PRICE" and c.status == "passed" for c in line.checks)]
+        return dict(job_id=job_id, original=original, suggested=suggested, new_bill=new_bill, observations=observed,
+                    checked_lines=checked,
+                    occurrences=occurrences, issues=original["audit_trail"]["issues"])
+
+    def review_workspace(self, job_id, record_id, ledger_id):
+        from shipping_billing.storage.review import form_values, visible_bill
+
+        origin = self.review_origin(job_id, record_id, ledger_id)
+        state, revision = self.repository.snapshot(ledger_id)
+        book = self.repository.ledger(ledger_id)
+        return dict(ledger={**book, "revision": revision}, record_id=record_id,
+                    suggested=form_values(origin["suggested"]),
+                    create_suggested=form_values(origin["new_bill"]),
+                    targets=[visible_bill(b.model_dump(mode="python", exclude_unset=True)) for b in state.bills],
+                    candidate_ids=sorted({rid for d in origin["observations"] for rid in d["matched_record_ids"]}),
+                    existing_record_id=origin["original"].get("existing_record_id"),
+                    observations=[dict(source_id=d["source_id"], amount_display=display(
+                        d["observed"].get("charge_details", {}).get("amount"))) for d in origin["observations"]],
+                    decision=self.repository.get_decisions(job_id).get(record_id))
+
+    def original_file(self, job_id, source_id):
+        result = self.result(job_id)
+        source = next((f for f in result["files"] if f["source_id"] == source_id), None)
+        if source is None or not re.fullmatch(r"[a-f0-9]{64}", source.get("sha256") or ""):
+            raise BillingError("SOURCE_NOT_FOUND", "该来源没有可下载的原文件。")
+        for folder in (self.inputs / job_id, self.folder(job_id) / "result/work/sources"):
+            folder = native_path(folder)
+            for path in folder.glob("*"):
+                if path.is_file() and path.resolve().is_relative_to(folder.resolve()) and hashlib.sha256(
+                    path.read_bytes()
+                ).hexdigest() == source["sha256"]:
+                    return path, file_name(source["original_name"])
+        raise BillingError("SOURCE_NOT_FOUND", "原文件已移走或校验不一致，请重新提供材料。")
 
     def review(self, job_id, record_id, status, note):
         if status not in ("unreviewed", "checked", "needs_followup") or len(note) > 2000:

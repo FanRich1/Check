@@ -255,6 +255,11 @@ def reconcile(normalized, extraction, *, state=None, context=None, parsed=None):
     pool = deepcopy(original_bills)
     identities = {entry.record_id: set(entry.occurrence_keys) for entry in state.identities}
     occurrences = {k: entry.record_id for entry in state.identities for k in entry.occurrence_keys}
+    reviewed = {}
+    for event in state.audit_log:
+        if event.get("kind") == "human_review" and event.get("action") in ("create", "update", "duplicate"):
+            for entry in event.get("occurrences", []):
+                reviewed[entry["key"]] = (entry["observed_sha256"], event["target_record_id"], event["decision_id"])
     created = {}
     plans = []
     for line in normalized.lines:
@@ -272,6 +277,25 @@ def reconcile(normalized, extraction, *, state=None, context=None, parsed=None):
             if edit.expected_old is not None and expected_supported(edit, line, index):
                 write(lookup, path, edit.expected_old)
         physical, document = occurrence(line, extraction, source_hashes)
+        previous_review = reviewed.get(physical)
+        if previous_review and previous_review[0] == digest(incoming) and occurrences.get(physical) == previous_review[1]:
+            reviewed_id = previous_review[1]
+            reviewed_bill = deepcopy(pool[reviewed_id])
+            # Exact original bytes, physical row and observed facts already have a human receipt.
+            # Reuse that decision without turning the stale OCR observation into a new edit.
+            if (not valid_money(reviewed_bill) and read(reviewed_bill, "/charge_details/charge_item")
+                and read(reviewed_bill, "/financial_attributes/posting_type") in ("AR", "AP")
+                and party(read(reviewed_bill, "/financial_attributes/accounting_entity"), parties)
+                == party(context.normalization_context.accounting_entity, parties)):
+                plans.append(dict(
+                    line=line, old=reviewed_bill, new=incoming, desired=deepcopy(reviewed_bill),
+                    physical=physical, document=document,
+                    decision=LineDecision(source_line_id=line.source_line_id, source_id=line.source_id,
+                                          operation="NO_CHANGE", record_id=reviewed_id,
+                                          matched_record_ids=[reviewed_id],
+                                          match_rule="human_review:" + previous_review[2], observed=incoming),
+                ))
+                continue
 
         def compatible(old):
             view = deepcopy(incoming)

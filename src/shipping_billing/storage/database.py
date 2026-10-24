@@ -1,6 +1,7 @@
 """Relational current balances, source identities and atomic per-job commit receipts."""
 
 import hashlib
+import secrets
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from decimal import Decimal
@@ -133,6 +134,13 @@ reviews = Table(
     Column("record_key", String(64), nullable=False), Column("record_id", PAYLOAD, nullable=False),
     Column("payload", PAYLOAD, nullable=False), PrimaryKeyConstraint("job_id", "record_key"),
 )
+review_decisions = Table(
+    "billing_review_decisions", metadata,
+    Column("job_id", String(32), ForeignKey("billing_jobs.id"), nullable=False),
+    Column("record_key", String(64), nullable=False), Column("record_id", PAYLOAD, nullable=False),
+    Column("ledger_id", String(32), ForeignKey("billing_ledgers.id"), nullable=False),
+    Column("payload", PAYLOAD, nullable=False), PrimaryKeyConstraint("job_id", "record_key"),
+)
 snapshots = Table(
     "billing_revisions", metadata,
     Column("ledger_id", String(32), ForeignKey("billing_ledgers.id"), nullable=False),
@@ -215,24 +223,27 @@ class LedgerRepository:
     def snapshot(self, ledger_id):
         with self.transaction() as connection:
             book = self._book(connection, ledger_id, lock=True)
-            rows = connection.execute(select(bills).where(bills.c.ledger_id == ledger_id)
-                                      .order_by(bills.c.position)).mappings().all()
-            keys = connection.execute(select(identities).where(identities.c.ledger_id == ledger_id)
-                                      .order_by(identities.c.position)).mappings().all()
-            grouped = {}
-            for row in keys:
-                grouped.setdefault(row["record_id"], []).append(row["occurrence"])
-            archived = connection.execute(select(snapshots.c.payload).where(
-                (snapshots.c.ledger_id == ledger_id) & (snapshots.c.revision == book["revision"])
-            )).scalar_one_or_none()
-            state = LedgerState.model_validate(dict(
-                bills=[loads(r["payload"]) for r in rows],
-                identities=loads(archived)["identities"] if archived else [
-                    dict(record_id=k, occurrence_keys=v) for k, v in grouped.items()
-                ],
-                audit_log=loads(book["audit_log"]),
-            ))
-            return state, book["revision"]
+            return self._snapshot(connection, book), book["revision"]
+
+    def _snapshot(self, connection, book):
+        ledger_id = book["id"]
+        rows = connection.execute(select(bills).where(bills.c.ledger_id == ledger_id)
+                                  .order_by(bills.c.position)).mappings().all()
+        keys = connection.execute(select(identities).where(identities.c.ledger_id == ledger_id)
+                                  .order_by(identities.c.position)).mappings().all()
+        grouped = {}
+        for row in keys:
+            grouped.setdefault(row["record_id"], []).append(row["occurrence"])
+        archived = connection.execute(select(snapshots.c.payload).where(
+            (snapshots.c.ledger_id == ledger_id) & (snapshots.c.revision == book["revision"])
+        )).scalar_one_or_none()
+        return LedgerState.model_validate(dict(
+            bills=[loads(r["payload"]) for r in rows],
+            identities=loads(archived)["identities"] if archived else [
+                dict(record_id=k, occurrence_keys=v) for k, v in grouped.items()
+            ],
+            audit_log=loads(book["audit_log"]),
+        ))
 
     def _validate_state(self, state, book):
         for bill in state.bills:
@@ -363,3 +374,75 @@ class LedgerRepository:
         with self.transaction() as connection:
             return {r.record_id: loads(r.payload) for r in connection.execute(
                 select(reviews.c.record_id, reviews.c.payload).where(reviews.c.job_id == job_id))}
+
+    def get_decisions(self, job_id):
+        with self.transaction() as connection:
+            return {r.record_id: loads(r.payload) for r in connection.execute(
+                select(review_decisions.c.record_id, review_decisions.c.payload)
+                .where(review_decisions.c.job_id == job_id))}
+
+    def _review_job(self, connection, origin, ledger_id):
+        value = connection.execute(select(jobs.c.payload).where(jobs.c.id == origin["job_id"])
+                                   .with_for_update()).scalar_one_or_none()
+        if value is None:
+            raise BillingError("JOB_NOT_FOUND", "找不到该任务。")
+        item = loads(value)
+        if item.get("demo") or item["status"] in ("queued", "running", "failed", "interrupted"):
+            raise BillingError("REVIEW_NOT_AVAILABLE", "示例、未完成或中断任务不能正式复审入账。")
+        if item.get("ledger_id") and item.get("ledger_commit_status") != "committed":
+            raise BillingError("REVIEW_NOT_AVAILABLE", "本次任务账本提交未完成，请重新处理材料后复审。")
+        if (item.get("ledger_id") or item.get("review_ledger_id") or ledger_id) != ledger_id:
+            raise BillingError("LEDGER_ENTITY_CONFLICT", "请使用该任务原本所属的账本。")
+        return item
+
+    def preview_review(self, origin, request):
+        from shipping_billing.storage.review import build_plan, visible_plan
+
+        with self.transaction() as connection:
+            book = self._book(connection, request.ledger_id, lock=True)
+            self._review_job(connection, origin, book["id"])
+            if connection.execute(select(review_decisions.c.record_key).where(
+                (review_decisions.c.job_id == origin["job_id"])
+                & (review_decisions.c.record_key == digest(request.record_id))
+            )).first():
+                raise BillingError("REVIEW_ALREADY_RESOLVED", "该费用已完成正式复审，请刷新查看记录。")
+            plan, state = build_plan(self._snapshot(connection, book), book, origin, request)
+            self._validate_state(state, book)
+            return visible_plan(plan)
+
+    def approve_review(self, origin, request, preview_token):
+        from shipping_billing.storage.review import build_plan, request_hash, visible_plan
+
+        with self.transaction() as connection:
+            book = self._book(connection, request.ledger_id, lock=True)
+            item = self._review_job(connection, origin, book["id"])
+            condition = ((review_decisions.c.job_id == origin["job_id"])
+                         & (review_decisions.c.record_key == digest(request.record_id)))
+            existing = connection.execute(select(review_decisions.c.payload).where(condition)).scalar_one_or_none()
+            if existing:
+                receipt = loads(existing)
+                if receipt["request_sha256"] == request_hash(request) and secrets.compare_digest(
+                    receipt["preview_token"], preview_token
+                ):
+                    return visible_plan(receipt)
+                raise BillingError("REVIEW_ALREADY_RESOLVED", "该费用已有正式决定，不能再次入账或覆盖决定。")
+            plan, state = build_plan(self._snapshot(connection, book), book, origin, request)
+            if not secrets.compare_digest(plan["preview_token"], preview_token):
+                raise BillingError("REVIEW_PREVIEW_CHANGED", "复审内容已变化，请重新预览再提交。")
+            receipt = {**plan, "decision_id": uuid4().hex, "decided_at": stamp(),
+                       "ledger_revision": book["revision"] + 1}
+            state.audit_log.append({"kind": "human_review", **receipt})
+            self._validate_state(state, book)
+            self._replace(connection, book, state, item["id"])
+            connection.execute(insert(review_decisions).values(
+                job_id=item["id"], record_key=digest(request.record_id), record_id=request.record_id,
+                ledger_id=book["id"], payload=dumps(receipt)))
+            item["review_ledger_id"] = book["id"]
+            resolved = connection.scalar(select(func.count()).select_from(review_decisions)
+                                         .where(review_decisions.c.job_id == item["id"]))
+            pending = connection.scalar(select(func.count()).select_from(observations).where(
+                (observations.c.job_id == item["id"]) & (observations.c.operation == "PENDING_REVIEW")))
+            item.update(review_resolved_count=resolved, review_pending_count=max(pending - resolved, 0),
+                        review_latest_revision=receipt["ledger_revision"], review_bill_count=len(state.bills))
+            self._save_job(connection, item)
+            return visible_plan(receipt)

@@ -350,3 +350,276 @@ def test_production_rejects_sqlite():
     with pytest.raises(BillingError) as exc:
         LedgerRepository("sqlite+pysqlite:///:memory:")
     assert exc.value.code == "DATABASE_CONFIG_INVALID"
+
+
+def review_request(client, book, result, *, action="create", target=None, fields=None):
+    rid = result["records"][0]["record_id"]
+    workspace = client.get(f"/api/jobs/{result['job']['id']}/review-workspace",
+                           params={"record_id": rid, "ledger_id": book["id"]})
+    assert workspace.status_code == 200, workspace.text
+    return dict(record_id=rid, ledger_id=book["id"], revision=workspace.json()["ledger"]["revision"],
+                action=action, target_record_id=target, fields=fields or {}, payer="Buyer Ltd", payee="Supplier Ltd",
+                reviewer="人工验收员", reason="已对照原件确认金额、币种和交易关系", distinct=action == "create")
+
+
+def approve(client, result, body):
+    base = f"/api/jobs/{result['job']['id']}"
+    preview = client.post(base + "/review-preview", json=body)
+    assert preview.status_code == 200, preview.text
+    response = client.post(base + "/review-approve", json={**body, "preview_token": preview.json()["preview_token"],
+                                                           "confirmed": True})
+    assert response.status_code == 200, response.text
+    return response.json(), preview.json()["preview_token"]
+
+
+def test_human_create_exact_reupload_receipt_and_originals_immutable(web, tmp_path):
+    client, store, book = web
+    raw = eml(tmp_path / "ambiguous.eml", currency="$").read_bytes()
+    result = finish(client, upload(client, book, raw))
+    assert result["records"][0]["operation"] == "PENDING_REVIEW"
+    folder = store.folder(result["job"]["id"]) / "result"
+    frozen = {name: (folder / name).read_bytes() for name in ("records.json", "state.json", "audit.json", "manifest.json")}
+    body = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+    receipt, token = approve(client, result, body)
+    assert receipt["after"]["amount_display"] == "40"
+    assert all((folder / name).read_bytes() == value for name, value in frozen.items())
+    state, revision = store.repository.snapshot(book["id"])
+    assert len(state.bills) == 1 and state.bills[0].charge_details.currency == "USD"
+    again = client.post(f"/api/jobs/{result['job']['id']}/review-approve",
+                        json={**body, "preview_token": token, "confirmed": True})
+    assert again.status_code == 200 and again.json()["decision_id"] == receipt["decision_id"]
+    assert store.repository.snapshot(book["id"])[1] == revision
+    repeat = finish(client, upload(client, book, raw))
+    assert repeat["records"][0]["operation"] == "NO_CHANGE"
+    assert len(store.repository.snapshot(book["id"])[0].bills) == 1
+    exported = client.get(f"/api/jobs/{result['job']['id']}/download/review-decisions.json")
+    assert exported.status_code == 200 and "人工验收员" in exported.text
+    original = client.get(f"/api/jobs/{result['job']['id']}/sources/{result['files'][0]['source_id']}/download")
+    assert original.status_code == 200 and original.content == raw
+    fresh = LedgerRepository(store.repository.engine.url, allow_sqlite=True)
+    try:
+        assert fresh.get_decisions(result["job"]["id"])[body["record_id"]]["decision_id"] == receipt["decision_id"]
+    finally:
+        fresh.close()
+
+
+def test_human_update_inherits_unknown_fields_and_uses_incoming_values(web, tmp_path):
+    client, store, book = web
+    state = state_fixture()
+    state.bills[0].document_info.reference_no = "INV-E2E-001"
+    store.repository.import_state(book["id"], state, 0)
+    result = finish(client, upload(client, book, eml(tmp_path / "conflict.eml", 70).read_bytes()))
+    body = review_request(client, book, result, action="update", target="OLD1", fields={"/charge_details/amount": "70"})
+    workspace = client.get(f"/api/jobs/{result['job']['id']}/review-workspace",
+                           params={"record_id": body["record_id"], "ledger_id": book["id"]}).json()
+    assert workspace["suggested"]["/charge_details/amount"] == "70"
+    receipt, _ = approve(client, result, body)
+    after = store.repository.snapshot(book["id"])[0].bills[0].model_dump(mode="python", exclude_unset=True)
+    before = state.bills[0].model_dump(mode="python", exclude_unset=True)
+    before["charge_details"]["amount"] = Decimal(70)
+    assert after == before
+    assert receipt["changes"] == [dict(path="/charge_details/amount", old=40, new=70, old_display="40", new_display="70")]
+
+
+@pytest.mark.parametrize("action", ["duplicate", "reject"])
+def test_human_duplicate_or_reject_keeps_original_financial_values(web, tmp_path, action):
+    client, store, book = web
+    first = finish(client, upload(client, book, eml(tmp_path / "first.eml").read_bytes()))
+    raw = eml(tmp_path / "conflict.eml", 70).read_bytes()
+    result = finish(client, upload(client, book, raw))
+    before, _ = store.repository.snapshot(book["id"])
+    body = review_request(client, book, result, action=action,
+                          target=first["records"][0]["record_id"] if action == "duplicate" else None)
+    approve(client, result, body)
+    after, _ = store.repository.snapshot(book["id"])
+    assert [b.model_dump() for b in after.bills] == [b.model_dump() for b in before.bills]
+    assert client.get(f"/api/jobs/{result['job']['id']}").json()["job"]["review_pending_count"] == 0
+    if action == "duplicate":
+        assert finish(client, upload(client, book, raw))["records"][0]["operation"] == "NO_CHANGE"
+
+
+@pytest.mark.parametrize("fields,payer,payee", [
+    ({"/charge_details/amount": "NaN"}, "Buyer Ltd", "Supplier Ltd"),
+    ({"/charge_details/amount": "1.001", "/charge_details/currency": "USD"}, "Buyer Ltd", "Supplier Ltd"),
+    ({"/charge_details/currency": "$"}, "Buyer Ltd", "Supplier Ltd"),
+    ({"/financial_attributes/posting_type": "AR"}, "Buyer Ltd", "Supplier Ltd"),
+    ({"/charge_details/currency": "USD"}, "Other Ltd", "Supplier Ltd"),
+    ({"/charge_details/currency": "USD", "/document_info/document_date": "2026-99-99"}, "Buyer Ltd", "Supplier Ltd"),
+    ({"/charge_details/currency": "USD", "/charge_details/quantity": "2", "/charge_details/unit_price": "30"}, "Buyer Ltd", "Supplier Ltd"),
+])
+def test_invalid_human_decision_cannot_mutate_ledger(web, tmp_path, fields, payer, payee):
+    client, store, book = web
+    result = finish(client, upload(client, book, eml(tmp_path / "a.eml", currency="$").read_bytes()))
+    body = review_request(client, book, result, fields=fields)
+    body.update(payer=payer, payee=payee)
+    response = client.post(f"/api/jobs/{result['job']['id']}/review-preview", json=body)
+    assert response.status_code == 400, response.text
+    assert store.repository.snapshot(book["id"])[0].bills == []
+    assert store.repository.get_decisions(result["job"]["id"]) == {}
+
+
+def test_changed_preview_stale_ledger_and_missing_confirmation_are_rejected(web, tmp_path):
+    client, store, book = web
+    result = finish(client, upload(client, book, eml(tmp_path / "a.eml", currency="$").read_bytes()))
+    body = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+    base = f"/api/jobs/{result['job']['id']}"
+    token = client.post(base + "/review-preview", json=body).json()["preview_token"]
+    missing = client.post(base + "/review-approve", json={**body, "preview_token": token})
+    assert missing.json()["error"]["code"] == "REVIEW_CONFIRM_REQUIRED"
+    changed = client.post(base + "/review-approve", json={**body, "reason": "changed", "confirmed": True, "preview_token": token})
+    assert changed.status_code == 409 and changed.json()["error"]["code"] == "REVIEW_PREVIEW_CHANGED"
+    state, rev = store.repository.snapshot(book["id"])
+    store.repository.commit_job(job(store.repository, book, rev), state, [], [])
+    stale = client.post(base + "/review-approve", json={**body, "confirmed": True, "preview_token": token})
+    assert stale.status_code == 409 and stale.json()["error"]["code"] == "LEDGER_CHANGED"
+    assert store.repository.snapshot(book["id"])[0].bills == []
+
+
+def test_human_transaction_rolls_back_after_receipt_insert(web, tmp_path, monkeypatch):
+    client, store, book = web
+    result = finish(client, upload(client, book, eml(tmp_path / "a.eml", currency="$").read_bytes()))
+    body = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+    base = f"/api/jobs/{result['job']['id']}"
+    token = client.post(base + "/review-preview", json=body).json()["preview_token"]
+    before = store.repository.snapshot(book["id"])
+
+    def failure(*args):
+        raise BillingError("TEST_RECEIPT_FAILURE", "Injected metadata failure")
+
+    monkeypatch.setattr(store.repository, "_save_job", failure)
+    response = client.post(base + "/review-approve", json={**body, "confirmed": True, "preview_token": token})
+    assert response.status_code == 400
+    assert store.repository.snapshot(book["id"]) == before
+    assert store.repository.get_decisions(result["job"]["id"]) == {}
+
+
+def test_old_pending_job_can_be_assigned_to_one_ledger_for_human_review(repository, tmp_path):
+    file_store = JobStore(tmp_path, Settings(**ONLINE), pipeline=pipeline)
+    item = file_store.submit([("old.eml", eml(tmp_path / "old.eml", currency="$").read_bytes())], entity="Buyer Ltd")
+    file_store.close()
+    book = repository.create_ledger("historical manual", "Buyer Ltd")
+    with TestClient(create_app(tmp_path, Settings(**ONLINE), repository=repository),
+                    base_url="http://127.0.0.1:8765") as client:
+        client.headers["x-workspace-token"] = client.get("/api/config").json()["token"]
+        result = client.get(f"/api/jobs/{item['id']}").json()
+        body = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+        approve(client, result, body)
+        assert len(repository.snapshot(book["id"])[0].bills) == 1
+        other = repository.create_ledger("wrong book", "Buyer Ltd")
+        response = client.get(f"/api/jobs/{item['id']}/review-workspace",
+                              params={"record_id": body["record_id"], "ledger_id": other["id"]})
+        assert response.status_code == 409
+
+
+def test_human_distinct_create_does_not_copy_old_erp_fields(web, tmp_path):
+    client, store, book = web
+    state = state_fixture()
+    state.bills[0].document_info.reference_no = "INV-E2E-001"
+    store.repository.import_state(book["id"], state, 0)
+    result = finish(client, upload(client, book, eml(tmp_path / "distinct.eml", 70).read_bytes()))
+    body = review_request(client, book, result)
+    approve(client, result, body)
+    accepted = store.repository.snapshot(book["id"])[0].bills
+    assert len(accepted) == 2 and accepted[0].record_id == "OLD1"
+    new = next(b.model_dump(mode="python", exclude_unset=True) for b in accepted if b.record_id != "OLD1")
+    assert "erp_metadata" not in new and not new.get("extensions")
+    assert new["charge_details"]["amount"] == 70
+
+
+def test_human_confirmed_roles_not_overwritten_by_repeated_original_ocr(web, tmp_path):
+    client, store, book = web
+    raw = eml(tmp_path / "roles.eml", currency="$").read_bytes()
+    result = finish(client, upload(client, book, raw))
+    body = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+    body.update(payer="Supplier Ltd", payee="Buyer Ltd")
+    receipt, _ = approve(client, result, body)
+    assert receipt["after"]["financial_attributes"]["posting_type"] == "AR"
+    repeated = finish(client, upload(client, book, raw))
+    assert repeated["records"][0]["operation"] == "NO_CHANGE"
+    assert store.repository.snapshot(book["id"])[0].bills[0].financial_attributes.posting_type == "AR"
+
+
+def test_competing_human_approvals_have_one_durable_receipt(web, tmp_path):
+    from shipping_billing.storage.review import ReviewRequest
+
+    client, store, book = web
+    result = finish(client, upload(client, book, eml(tmp_path / "concurrent.eml", currency="$").read_bytes()))
+    body = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+    origin = store.review_origin(result["job"]["id"], body["record_id"], book["id"])
+    request = ReviewRequest.model_validate(body)
+    token = store.repository.preview_review(origin, request)["preview_token"]
+    barrier = threading.Barrier(2)
+
+    def commit(_):
+        peer = LedgerRepository(store.repository.engine.url, allow_sqlite=True)
+        try:
+            if peer.backend == "mysql":
+                barrier.wait(timeout=10)
+            return peer.approve_review(origin, request, token)["decision_id"]
+        finally:
+            peer.close()
+
+    if store.repository.backend == "mysql":
+        with ThreadPoolExecutor(2) as executor:
+            ids = list(executor.map(commit, range(2)))
+    else:
+        ids = [commit(0), commit(1)]
+    assert ids[0] == ids[1]
+    state, revision = store.repository.snapshot(book["id"])
+    assert revision == body["revision"] + 1 and len(state.bills) == 1
+
+
+def test_changed_observation_needs_review_again_and_cannot_overwrite_decision(web, tmp_path):
+    client, store, book = web
+    raw = eml(tmp_path / "original.eml", currency="$").read_bytes()
+    result = finish(client, upload(client, book, raw))
+    body = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+    receipt, token = approve(client, result, body)
+    wrong = client.post(f"/api/jobs/{result['job']['id']}/review-approve", json={
+        **body, "reason": "attempted overwrite", "preview_token": token, "confirmed": True})
+    assert wrong.status_code == 409
+    changed = finish(client, upload(client, book, eml(tmp_path / "changed.eml", 70, currency="$").read_bytes()))
+    assert changed["records"][0]["operation"] == "PENDING_REVIEW"
+    assert store.repository.snapshot(book["id"])[0].bills[0].charge_details.amount == 40
+    assert store.repository.get_decisions(result["job"]["id"])[body["record_id"]]["decision_id"] == receipt["decision_id"]
+
+
+def test_multiple_pending_fees_resolve_individually_without_marking_all_done(web, tmp_path):
+    client, store, book = web
+    raw = eml(tmp_path / "two.eml", rows=["Handling Fee | $ | 65 | PP", "Handling Fee | $ | 35 | PP"]).read_bytes()
+    result = finish(client, upload(client, book, raw))
+    assert len(result["records"]) == 2
+    first = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+    approve(client, result, first)
+    current = client.get(f"/api/jobs/{result['job']['id']}").json()
+    assert current["job"]["review_pending_count"] == 1
+    assert len(current["review_decisions"]) == 1
+    other = {**result, "records": [result["records"][1]]}
+    second = review_request(client, book, other, fields={"/charge_details/currency": "USD"})
+    approve(client, result, second)
+    current = client.get(f"/api/jobs/{result['job']['id']}").json()
+    assert current["job"]["review_pending_count"] == 0
+    assert sorted(b.charge_details.amount for b in store.repository.snapshot(book["id"])[0].bills) == [35, 65]
+
+
+def test_tampered_review_evidence_and_original_download_are_rejected(web, tmp_path):
+    client, store, book = web
+    raw = eml(tmp_path / "tamper.eml", currency="$").read_bytes()
+    result = finish(client, upload(client, book, raw))
+    body = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+    source = result["files"][0]["source_id"]
+    for path in (store.inputs / result["job"]["id"]).iterdir():
+        path.write_bytes(b"tampered original")
+    # An intact content-addressed archive is still a valid copy of the original.
+    restored = client.get(f"/api/jobs/{result['job']['id']}/sources/{source}/download")
+    assert restored.status_code == 200 and restored.content == raw
+    from shipping_billing.web.service import native_path
+
+    for path in native_path(store.folder(result["job"]["id"]) / "result/work/sources").glob("*"):
+        if path.is_file():
+            path.write_bytes(b"tampered archive")
+    assert client.get(f"/api/jobs/{result['job']['id']}/sources/{source}/download").status_code == 404
+    (store.folder(result["job"]["id"]) / "result/normalized.json").write_text("{}", encoding="utf-8")
+    response = client.post(f"/api/jobs/{result['job']['id']}/review-preview", json=body)
+    assert response.status_code == 400 and response.json()["error"]["code"] == "RESULT_INTEGRITY_FAILED"
+    assert not store.repository.snapshot(book["id"])[0].bills

@@ -1,6 +1,7 @@
 """Loopback-only HTTP adapter. Credentials stay in Python; browsers submit files and business context."""
 
 import argparse
+import re
 import secrets
 import threading
 import webbrowser
@@ -91,9 +92,10 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repos
     async def business_error(request, exc):
         status = (
             404
-            if exc.code in ("JOB_NOT_FOUND", "RECORD_NOT_FOUND", "LEDGER_NOT_FOUND")
+            if exc.code in ("JOB_NOT_FOUND", "RECORD_NOT_FOUND", "LEDGER_NOT_FOUND", "SOURCE_NOT_FOUND")
             else 409
-            if exc.code in ("LEDGER_CHANGED", "LEDGER_NOT_EMPTY", "LEDGER_ENTITY_CONFLICT")
+            if exc.code in ("LEDGER_CHANGED", "LEDGER_NOT_EMPTY", "LEDGER_ENTITY_CONFLICT",
+                            "REVIEW_ALREADY_RESOLVED", "REVIEW_PREVIEW_CHANGED", "REVIEW_SOURCE_ALREADY_BOOKED")
             else 503
             if exc.code.startswith("DATABASE_")
             else 429
@@ -125,7 +127,7 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repos
 
     @app.get("/assets/{name}")
     def asset(name: str):
-        if name not in ("app.css", "app.js", "mark.svg"):
+        if name not in ("app.css", "app.js", "review.js", "mark.svg"):
             raise HTTPException(404)
         return FileResponse(STATIC / name)
 
@@ -142,6 +144,7 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repos
                 local_ocr_ready=local_ocr_available(),
                 database_enabled=store.repository is not None,
                 database_backend=store.repository.backend if store.repository else None,
+                manual_review_ready=store.repository is not None,
                 demo_ready=(store.project / "tests/fixtures/harness/DEV-025/input.xlsx").is_file(),
                 max_file_mb=MAX_FILE // 1024 // 1024,
                 max_total_mb=MAX_REQUEST // 1024 // 1024,
@@ -312,6 +315,55 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repos
             raise BillingError("INVALID_REVIEW", "核对请求格式无效。") from None
         return json_response(store.review(job_id, data["record_id"], data["status"], data["note"]))
 
+    @app.get("/api/jobs/{job_id}/review-workspace")
+    def review_workspace(job_id: str, record_id: str, ledger_id: str):
+        return json_response(store.review_workspace(job_id, record_id, ledger_id))
+
+    async def decision_request(request, approval=False):
+        from tempfile import TemporaryDirectory
+
+        from shipping_billing.storage.review import ReviewRequest
+
+        if int(request.headers.get("content-length", "0")) > 32000:
+            raise BillingError("INVALID_REVIEW_DECISION", "复审内容过长。")
+        content = await request.body()
+        if len(content) > 32000:
+            raise BillingError("INVALID_REVIEW_DECISION", "复审内容过长。")
+        with TemporaryDirectory(prefix="billing-review-") as temporary:
+            path = Path(temporary) / "request.json"
+            path.write_bytes(content)
+            data = load_json(path)
+        token = None
+        if not isinstance(data, dict):
+            raise BillingError("INVALID_REVIEW_DECISION", "复审决定格式无效。")
+        if approval:
+            if data.pop("confirmed", None) is not True:
+                raise BillingError("REVIEW_CONFIRM_REQUIRED", "请先预览并明确确认正式提交。")
+            token = data.pop("preview_token", None)
+            if not isinstance(token, str) or not re.fullmatch(r"[a-f0-9]{64}", token):
+                raise BillingError("REVIEW_PREVIEW_REQUIRED", "请先生成有效的复审预览。")
+        try:
+            return ReviewRequest.model_validate(data), token
+        except ValidationError:
+            raise BillingError("INVALID_REVIEW_DECISION", "请检查复审人、原因、账本版本和可修改字段。") from None
+
+    @app.post("/api/jobs/{job_id}/review-preview")
+    async def review_preview(job_id: str, request: Request):
+        decision, _ = await decision_request(request)
+        origin = store.review_origin(job_id, decision.record_id, decision.ledger_id)
+        return json_response(database().preview_review(origin, decision))
+
+    @app.post("/api/jobs/{job_id}/review-approve")
+    async def review_approve(job_id: str, request: Request):
+        decision, token = await decision_request(request, approval=True)
+        origin = store.review_origin(job_id, decision.record_id, decision.ledger_id)
+        return json_response(database().approve_review(origin, decision, token))
+
+    @app.get("/api/jobs/{job_id}/sources/{source_id}/download")
+    def original_file(job_id: str, source_id: str):
+        path, name = store.original_file(job_id, source_id)
+        return FileResponse(path, filename=name, media_type="application/octet-stream")
+
     @app.get("/api/jobs/{job_id}/download/{name}")
     def download(job_id: str, name: str):
         if name not in DOWNLOADS:
@@ -323,6 +375,10 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repos
         if name == "reviews.json" and store.repository:
             response = json_response(store.repository.get_reviews(job_id))
             response.headers["Content-Disposition"] = 'attachment; filename="reviews.json"'
+            return response
+        if name == "review-decisions.json" and store.repository:
+            response = json_response(store.repository.get_decisions(job_id))
+            response.headers["Content-Disposition"] = 'attachment; filename="review-decisions.json"'
             return response
         return FileResponse(
             folder / name if name == "reviews.json" else folder / "result" / name,
