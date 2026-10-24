@@ -13,6 +13,10 @@ if not exist ".venv\Scripts\python.exe" (
   exit /b 1
 )
 if not exist "outputs\web" mkdir "outputs\web"
+if exist "data\local\mysql\instance.json" (
+  ".venv\Scripts\python.exe" -m scripts.local_mysql start
+  if errorlevel 1 goto startup_failed
+)
 ".venv\Scripts\python.exe" -u -m shipping_billing.web.server --project-root "%~dp0." --env-file ".env" --open-browser 2>"outputs\web\startup-error.log"
 if errorlevel 1 goto startup_failed
 endlocal

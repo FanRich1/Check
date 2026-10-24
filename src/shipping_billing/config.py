@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     model_max_tokens: int = Field(default=4096, ge=128, le=4096)
     ocr_connect_retries: int = Field(default=1, ge=0, le=2)
     model_api_key: SecretStr | None = None
+    database_url: SecretStr | None = None
 
     @model_validator(mode="after")
     def online_requires_credentials(self):

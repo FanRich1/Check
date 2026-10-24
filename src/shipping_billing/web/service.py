@@ -97,11 +97,16 @@ def explain(code):
 
 
 class JobStore:
-    def __init__(self, project, settings, *, cloudflared=None, pipeline=run_pipeline):
+    def __init__(self, project, settings, *, cloudflared=None, pipeline=run_pipeline, repository=None):
         self.project = Path(project).resolve()
         self.root = self.project / "outputs/web/jobs"
         self.inputs = self.project / "data/local/web"
         self.settings, self.cloudflared, self.pipeline = settings, cloudflared, pipeline
+        self.repository = repository
+        if self.repository is None and settings.database_url:
+            from shipping_billing.storage.database import LedgerRepository
+
+            self.repository = LedgerRepository(settings.database_url.get_secret_value())
         self.root.mkdir(parents=True, exist_ok=True)
         self.executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="billing-web")
         self.lock = threading.RLock()
@@ -115,23 +120,61 @@ class JobStore:
                         status="interrupted", message="上次服务已停止，请重新提交处理。", updated_at=now()
                     )
                     write_json(path, item)
-            except (BillingError, KeyError, TypeError):
+                if self.repository:
+                    try:
+                        saved = self.repository.get_job(item["id"])
+                    except BillingError as exc:
+                        if exc.code != "JOB_NOT_FOUND":
+                            raise
+                        self.repository.save_job(item)
+                        self._migrate_artifacts(item)
+                    else:
+                        if saved["status"] in ("queued", "running"):
+                            saved.update(status="interrupted", message="上次服务已停止，请重新提交处理。")
+                            self.repository.save_job(saved)
+            except BillingError as exc:
+                if exc.code != "INVALID_JSON_INPUT":
+                    raise
+            except (KeyError, TypeError):
                 continue
+
+    def _migrate_artifacts(self, item):
+        folder = self.root / item["id"]
+        if not (folder / "result/manifest.json").is_file():
+            return
+        try:
+            verified = self.result(item["id"])
+        except BillingError as exc:
+            if exc.code == "RESULT_INTEGRITY_FAILED":
+                return
+            raise
+        records = load_json(folder / "result/records.json")
+        manifest = load_json(folder / "result/manifest.json")
+        self.repository.save_results(item, records, manifest["files"])
+        if (folder / "reviews.json").is_file():
+            known = {r["record_id"] for r in verified["records"]}
+            for record_id, review in load_json(folder / "reviews.json").items():
+                if record_id in known:
+                    self.repository.save_review(item["id"], record_id, review)
 
     def folder(self, job_id):
         if not re.fullmatch(r"[a-f0-9]{32}", job_id):
             raise BillingError("JOB_NOT_FOUND", "找不到该任务。")
         folder = self.root / job_id
-        if not (folder / "job.json").is_file():
+        if not folder.is_dir() or (not self.repository and not (folder / "job.json").is_file()):
             raise BillingError("JOB_NOT_FOUND", "找不到该任务。")
         return folder
 
     def get(self, job_id):
         with self.lock:
+            if self.repository:
+                return self.repository.get_job(job_id)
             return load_json(self.folder(job_id) / "job.json")
 
     def listing(self):
         with self.lock:
+            if self.repository:
+                return self.repository.list_jobs()
             jobs = []
             for path in self.root.glob("*/job.json"):
                 try:
@@ -143,8 +186,10 @@ class JobStore:
     def update(self, job_id, **values):
         with self.lock:
             path = self.folder(job_id) / "job.json"
-            item = load_json(path)
+            item = self.get(job_id)
             item.update(values, updated_at=now())
+            if self.repository:
+                self.repository.save_job(item)
             write_json(path, item)
 
     def submit(
@@ -159,11 +204,23 @@ class JobStore:
         local_ocr_enabled=False,
         ocr_map=None,
         demo=False,
+        ledger_id=None,
     ):
         if not files or len(files) > 20:
             raise BillingError("INVALID_FILE_COUNT", "请选择 1 至 20 个业务文件。")
         if any(not b or len(b) > MAX_FILE for _, b in files) or sum(len(b) for _, b in files) > MAX_REQUEST:
             raise BillingError("UPLOAD_SIZE_LIMIT", "单文件须为 1 字节至 20 MB，合计不超过 60 MB。")
+        if ledger_id:
+            if not self.repository:
+                raise BillingError("DATABASE_NOT_CONFIGURED", "尚未配置数据库，不能选择数据库账本。")
+            if demo or state_data is not None or base_job:
+                raise BillingError("CONFLICTING_OLD_STATE", "已选择数据库账本，请通过账本管理导入旧账单。")
+            book = self.repository.ledger(ledger_id)
+            if entity and entity != book["entity"]:
+                raise BillingError("LEDGER_ENTITY_CONFLICT", "记账主体与所选账本不一致。")
+            entity = book["entity"]
+        elif self.repository and not demo:
+            raise BillingError("LEDGER_REQUIRED", "请选择或新建一个数据库账本，再开始处理。")
         if not demo and (
             self.settings.mode != "online" or not self.settings.public_summary()["model_configured"]
         ):
@@ -248,8 +305,12 @@ class JobStore:
                 exit_code=None,
                 base_job=base_job,
                 local_ocr_enabled=local_ocr_enabled,
+                ledger_id=ledger_id,
+                ledger_commit_status="pending" if ledger_id else None,
             )
             write_json(folder / "job.json", item)
+            if self.repository:
+                self.repository.save_job(item)
             self.active.add(job_id)
             self.executor.submit(
                 self.execute, job_id, paths, state, context, temporary_ocr, mapping, demo, local_ocr_enabled
@@ -258,6 +319,11 @@ class JobStore:
 
     def execute(self, job_id, paths, state, context, temporary_ocr, mapping, demo, local_ocr_enabled=False):
         try:
+            ledger_id = self.get(job_id).get("ledger_id")
+            if ledger_id:
+                # Queued jobs read the latest committed ledger when execution actually begins.
+                state, revision = self.repository.snapshot(ledger_id)
+                self.update(job_id, ledger_base_revision=revision)
             local_ocr = None
             if local_ocr_enabled:
                 from shipping_billing.parsers.local_text import LocalTextOCR
@@ -288,8 +354,7 @@ class JobStore:
                 ),
             )
             manifest = load_json(self.folder(job_id) / "result/manifest.json")
-            self.update(
-                job_id,
+            final = dict(
                 status=manifest["status"],
                 stage="done",
                 counts=manifest["counts"],
@@ -300,14 +365,37 @@ class JobStore:
                     "error": "部分来源处理失败，已保留成功结果及错误原因。",
                 }[manifest["status"]],
             )
+            if self.repository:
+                # Verify archived artifacts before applying any balance changes.
+                self.result(job_id)
+                item = {**self.get(job_id), **final, "updated_at": now()}
+                records = load_json(self.folder(job_id) / "result/records.json")
+                if ledger_id:
+                    next_state = LedgerState.model_validate(load_json(self.folder(job_id) / "result/state.json"))
+                    item = self.repository.commit_job(item, next_state, records, manifest["files"])
+                else:
+                    self.repository.save_results(item, records, manifest["files"])
+                # A mirror-write failure cannot turn a committed SQL transaction into a failed booking.
+                try:
+                    write_json(self.folder(job_id) / "job.json", item)
+                except BillingError:
+                    pass
+            else:
+                self.update(job_id, **final)
         except BillingError as exc:
-            self.update(job_id, status="failed", message=explain(exc.code), error_code=exc.code)
+            self.update(
+                job_id, status="pending_review" if exc.code == "LEDGER_CHANGED" else "failed",
+                message=exc.message if exc.code.startswith(("LEDGER_", "DATABASE_")) else explain(exc.code),
+                error_code=exc.code,
+                ledger_commit_status="conflict" if exc.code == "LEDGER_CHANGED" else "failed",
+            )
         except Exception:
             self.update(
                 job_id,
                 status="failed",
                 message="处理未能完成，请检查材料或稍后重试。",
                 error_code="WEB_EXECUTION_FAILED",
+                ledger_commit_status="failed",
             )
         finally:
             with self.lock:
@@ -368,14 +456,19 @@ class JobStore:
             for f in manifest["files"]
         ]
         with self.lock:
-            reviews = load_json(folder / "reviews.json") if (folder / "reviews.json").exists() else {}
+            reviews = self.repository.get_reviews(job_id) if self.repository else (
+                load_json(folder / "reviews.json") if (folder / "reviews.json").exists() else {}
+            )
         return dict(
             job=item,
             records=records,
             files=files,
             reviews=reviews,
             downloads=[
-                n for n in sorted(DOWNLOADS) if (folder / n if n == "reviews.json" else result / n).is_file()
+                n for n in sorted(DOWNLOADS)
+                if (folder / n if n == "reviews.json" else result / n).is_file()
+                and not (n == "state.json" and item.get("ledger_id")
+                         and item.get("ledger_commit_status") != "committed")
             ],
         )
 
@@ -388,8 +481,12 @@ class JobStore:
             path = self.folder(job_id) / "reviews.json"
             reviews = load_json(path) if path.exists() else {}
             reviews[record_id] = dict(status=status, note=note, updated_at=now())
+            if self.repository:
+                self.repository.save_review(job_id, record_id, reviews[record_id])
             write_json(path, reviews)
         return reviews[record_id]
 
     def close(self):
         self.executor.shutdown(wait=True, cancel_futures=False)
+        if self.repository:
+            self.repository.close()

@@ -242,7 +242,7 @@ def test_explicit_ocr_delivery_passes_only_to_backend(tmp_path):
 def test_demo_parses_real_public_workbook_using_archives(tmp_path):
     fixture = Path("tests/fixtures/harness")
     for relative in (fixture / "DEV-025", fixture / "replay-cache/development/round-1"):
-        shutil.copytree(ROOT / relative, native_path(tmp_path / relative))
+        shutil.copytree(native_path(ROOT / relative), native_path(tmp_path / relative))
     with TestClient(create_app(tmp_path), base_url="http://127.0.0.1:8765") as client:
         client.headers["x-workspace-token"] = client.get("/api/config").json()["token"]
         result = finished(client, client.post("/api/demo"))

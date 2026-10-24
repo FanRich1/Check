@@ -1,7 +1,7 @@
 "use strict";
 
 const $ = (id) => document.getElementById(id);
-const S = {config: null, files: [], jobs: [], jobId: null, result: null, baseJob: null, operation: "all", search: "", timer: null, historyTimer: null, recordId: null, submitting: false};
+const S = {config: null, files: [], jobs: [], jobId: null, result: null, baseJob: null, operation: "all", search: "", timer: null, historyTimer: null, recordId: null, submitting: false, ledgers: [], ledgerId: ""};
 const operationNames = {CREATE: "新增", UPDATE: "修改", NO_CHANGE: "无变化", PENDING_REVIEW: "待复核"};
 const statusNames = {queued: "等待处理", running: "处理中", completed: "已完成", processed: "已处理", pending_review: "待复核", error: "来源异常", failed: "处理失败", interrupted: "已中断", no_charge: "无费用"};
 const reviewNames = {unreviewed: "待核对", checked: "已核对", needs_followup: "需补材料"};
@@ -45,6 +45,41 @@ async function api(path, options = {}) {
   try { data = await response.json(); } catch { throw new Error("服务没有返回有效结果，请检查工作台是否仍在运行。"); }
   if (!response.ok) throw new Error(data.error?.message || data.detail || "请求未能完成，请重试。");
   return data;
+}
+async function refreshLedgers() {
+  if (!S.config?.database_enabled) return;
+  const data = await api("/api/ledgers");
+  S.ledgers = data.ledgers;
+  const select = $("ledger-select");
+  select.replaceChildren(new Option("请选择或新建账本", ""));
+  S.ledgers.forEach((book) => select.append(new Option(`${book.name} · ${book.bill_count} 条费用`, book.id)));
+  if (!S.ledgers.some((b) => b.id === S.ledgerId)) S.ledgerId = S.ledgers.length === 1 ? S.ledgers[0].id : "";
+  select.value = S.ledgerId;
+  selectLedger();
+}
+function selectLedger() {
+  S.ledgerId = $("ledger-select").value;
+  const book = S.ledgers.find((b) => b.id === S.ledgerId);
+  $("entity").readOnly = true;
+  $("entity").value = book?.entity || "";
+  $("ledger-summary").textContent = book ? `${book.entity} · ${book.bill_count} 条有效费用 · 版本 ${book.revision}` : "新建或选择账本后，系统自动匹配该账本中的历史费用。";
+  localStorage.setItem("billing-ledger-id", S.ledgerId);
+}
+function ledgerError(message) {
+  $("ledger-error").textContent = message;
+  show("ledger-error", Boolean(message));
+}
+async function managedLedger() {
+  ledgerError("");
+  const book = S.ledgers.find((b) => b.id === S.ledgerId);
+  $("managed-ledger-summary").textContent = book ? `${book.name} · ${book.entity} · 版本 ${book.revision}` : "请先在工作台选择账本。";
+  $("export-ledger-button").disabled = !book;
+  $("import-ledger-button").disabled = !book || book.revision !== 0;
+  $("ledger-bills").replaceChildren();
+  if (!book) return;
+  const data = await api(`/api/ledgers/${book.id}`);
+  if (!data.bills.length) $("ledger-bills").textContent = "尚无有效费用。待复核费用保存在各次任务中。";
+  data.bills.forEach((bill) => $("ledger-bills").append(node("p", "", `${bill.document_info.reference_no || "无单据编号"} · ${bill.charge_details.charge_item || "费用待确认"} · ${bill.amount_display} ${bill.charge_details.currency || ""}`)));
 }
 function view(name) {
   for (const key of ["new", "history", "result"]) show(`${key}-view`, key === name);
@@ -90,7 +125,7 @@ function renderFiles() {
 function renderBase() {
   show("base-job-banner", Boolean(S.baseJob));
   $("base-job-title").textContent = S.baseJob?.title || "";
-  $("old-state").disabled = Boolean(S.baseJob);
+  $("old-state").disabled = Boolean(S.config?.database_enabled || S.baseJob);
 }
 function renderJobs() {
   $("history-count").textContent = S.jobs.length;
@@ -146,6 +181,7 @@ async function loadJob(id) {
       S.timer = setTimeout(() => loadJob(id), 1200);
     } else {
       await refreshJobs();
+      if (S.config.database_enabled) await refreshLedgers();
     }
   } catch (error) {
     if (S.jobId !== id) return;
@@ -159,6 +195,8 @@ function renderResult() {
   const active = ["queued", "running"].includes(job.status);
   $("result-title").textContent = `${job.demo ? "示例 · " : ""}${job.title}`;
   $("result-meta").textContent = `${job.entity} · ${dateText(job.created_at)} · ${job.input_files.length} 个上传文件${job.demo ? " · 已归档模型响应回放，不调用在线服务" : ""}`;
+  if (job.ledger_commit_status === "committed") $("result-meta").textContent += ` · 已同步账本版本 ${job.ledger_revision} · 共 ${job.ledger_bill_count} 条有效费用`;
+  if (job.ledger_id && !active && job.ledger_commit_status !== "committed") $("result-meta").textContent += " · 本次结果未入账，以下为处理建议";
   show("progress-card", active);
   $("progress-title").textContent = job.message;
   const stageIndex = stages.indexOf(job.stage);
@@ -171,7 +209,7 @@ function renderResult() {
   $("result-banner").textContent = `${job.message}${job.error_code ? `（${job.error_code}）` : ""}`;
   $("result-banner").className = `notice ${["error", "failed", "interrupted"].includes(job.status) ? "error" : job.status === "pending_review" ? "warning" : ""}`;
   show("result-content", data.downloads.includes("records.json"));
-  show("continue-button", data.downloads.includes("state.json") && !job.demo && !active);
+  show("continue-button", data.downloads.includes("state.json") && !job.demo && !active && (!S.config.database_enabled || Boolean(job.ledger_id)));
   if (!data.downloads.includes("records.json")) return;
   clear("metrics");
   const descriptions = {CREATE: "明确的新费用", UPDATE: "仅应用授权变更", NO_CHANGE: "已存在或重复来源", PENDING_REVIEW: "需要进一步确认"};
@@ -338,9 +376,11 @@ $("upload-form").addEventListener("submit", async (event) => {
   if (S.submitting) return;
   formError("");
   if (!S.files.length) { formError("请先添加至少一个业务文件。"); return; }
+  if (S.config.database_enabled && !S.ledgerId) { formError("请先选择或新建一个账本。"); return; }
   const form = new FormData();
   S.files.forEach((file) => form.append("documents", file));
   form.append("entity", $("entity").value.trim());
+  if (S.config.database_enabled) form.append("ledger_id", S.ledgerId);
   form.append("temporary_ocr", String($("temporary-ocr").checked));
   form.append("local_ocr_enabled", String($("local-ocr").checked));
   if (S.baseJob) form.append("base_job", S.baseJob.id);
@@ -365,9 +405,14 @@ $("demo-button").addEventListener("click", async () => {
 $("result-refresh").addEventListener("click", () => { if (S.jobId) { clearTimeout(S.timer); loadJob(S.jobId); } });
 $("continue-button").addEventListener("click", () => {
   S.baseJob = S.result.job;
+  if (S.config.database_enabled && S.result.job.ledger_id) {
+    S.ledgerId = S.result.job.ledger_id;
+    S.baseJob = null;
+    refreshLedgers().catch((error) => formError(error.message));
+  }
   S.files = [];
   renderFiles();
-  $("entity").value = S.baseJob.entity;
+  $("entity").value = S.result.job.entity;
   $("clear-old").click();
   renderBase();
   formError("");
@@ -410,6 +455,15 @@ async function initialize() {
       show("configuration-notice");
     }
     $("entity").value = localStorage.getItem("billing-entity") || "";
+    if (S.config.database_enabled) {
+      show("database-ledger-fields");
+      show("legacy-ledger-input", false);
+      $("old-state").disabled = true;
+      $("ledger-select").required = true;
+      $("submit-note").textContent = "自动匹配所选账本的历史费用；只有通过校验的项目才会入账。";
+      S.ledgerId = localStorage.getItem("billing-ledger-id") || "";
+      await refreshLedgers();
+    }
     await refreshJobs();
   } catch (error) {
     $("configuration-notice").className = "notice error";
@@ -417,4 +471,46 @@ async function initialize() {
     show("configuration-notice");
   } finally { busy(false); }
 }
+$("ledger-select").addEventListener("change", selectLedger);
+$("new-ledger-button").addEventListener("click", () => {
+  $("new-ledger-entity").value = $("entity").value;
+  managedLedger().catch((e) => ledgerError(e.message));
+  $("ledger-dialog").showModal();
+});
+$("manage-ledger-button").addEventListener("click", () => {
+  managedLedger().catch((e) => ledgerError(e.message));
+  $("ledger-dialog").showModal();
+});
+$("close-ledger").addEventListener("click", () => $("ledger-dialog").close());
+$("create-ledger-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = event.target.querySelector("button");
+  button.disabled = true;
+  try {
+    const book = await api("/api/ledgers", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({name: $("new-ledger-name").value.trim(), entity: $("new-ledger-entity").value.trim()})});
+    S.ledgerId = book.id;
+    await refreshLedgers();
+    await managedLedger();
+    toast("账本已创建并选用，可开始上传材料。");
+  } catch (error) { ledgerError(error.message); }
+  finally { button.disabled = false; }
+});
+$("import-ledger-button").addEventListener("click", async () => {
+  const book = S.ledgers.find((b) => b.id === S.ledgerId);
+  const file = $("import-ledger-file").files[0];
+  if (!book || !file) { ledgerError("请先选择新建空账本和旧账单 JSON。"); return; }
+  const form = new FormData(); form.append("state", file); form.append("revision", String(book.revision));
+  $("import-ledger-button").disabled = true;
+  try { await api(`/api/ledgers/${book.id}/import`, {method: "POST", body: form}); await refreshLedgers(); await managedLedger(); toast("旧账单已导入，后续材料将自动与它匹配。"); }
+  catch (error) { ledgerError(error.message); $("import-ledger-button").disabled = false; }
+});
+$("export-ledger-button").addEventListener("click", async () => {
+  try {
+    const response = await fetch(`/api/ledgers/${S.ledgerId}/export`);
+    if (!response.ok) throw new Error("账本导出失败，请刷新后重试。");
+    const url = URL.createObjectURL(await response.blob());
+    const link = document.createElement("a"); link.href = url; link.download = `ledger-${S.ledgerId}.json`; link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  } catch (error) { ledgerError(error.message); }
+});
 initialize();

@@ -27,11 +27,14 @@ dependencies = [
     "fastapi>=0.115,<1",
     "uvicorn>=0.34,<1",
     "python-multipart>=0.0.20,<1",
+    "SQLAlchemy>=2.0.40,<2.1",
+    "PyMySQL[rsa]>=1.1,<2",
 ]
 
 [project.scripts]
 shipping-billing = "shipping_billing.cli:main"
 shipping-billing-web = "shipping_billing.web.server:main"
+shipping-billing-db = "shipping_billing.storage.cli:main"
 
 [project.optional-dependencies]
 local-ocr = [

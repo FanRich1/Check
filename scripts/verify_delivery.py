@@ -9,6 +9,7 @@ from pathlib import Path
 
 import shipping_billing
 from shipping_billing.io import load_json, write_json
+from shipping_billing.web.service import native_path
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,6 +43,10 @@ def main():
         run("pytest", ["-m", "pytest", "-q", "--junitxml=" + str(output / "pytest.xml")])
         suite = ET.parse(output / "pytest.xml").getroot().find("testsuite")
         report["tests"] = {k: int(suite.attrib[k]) for k in ("tests", "failures", "errors", "skipped")}
+        report["unexpected_skips"] = [case.attrib["name"] for case in suite.findall("testcase")
+                                      if case.find("skipped") is not None and not (
+                                          case.attrib["name"] == "test_real_mysql_concurrent_commits_only_one_wins[sqlite]"
+                                      )]
         run("demo", ["-m", "scripts.stage7_demo", "--mode", "replay", "--storage",
                      "tests/fixtures/pipeline/replay-cache", "--output", str(output / "demo")])
         report["demo"] = load_json(output / "demo/summary.json")
@@ -49,13 +54,13 @@ def main():
         for split, cache in (("development", "development"), ("validation", "validation-final"),
                              ("holdout", "holdout")):
             run(split, ["-m", "shipping_billing", "benchmark", "--split", split, "--mode", "replay",
-                        "--storage", "tests/fixtures/harness/replay-cache/" + cache,
+                        "--storage", str(native_path(ROOT / "tests/fixtures/harness/replay-cache" / cache)),
                         "--output", str(output / split)])
             result = load_json(output / split / "evaluation.json")
             if not result["passed"] or result["live_model_calls"]:
                 raise RuntimeError("Public offline regression failed: " + split)
             report["benchmarks"][split] = result
-        report["passed"] = not any(report["tests"][k] for k in ("failures", "errors", "skipped"))
+        report["passed"] = not any(report["tests"][k] for k in ("failures", "errors")) and not report["unexpected_skips"]
     except (OSError, RuntimeError) as exc:
         report["error"] = str(exc)
     write_json(output / "verification.json", report)

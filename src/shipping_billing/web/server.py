@@ -37,9 +37,9 @@ def json_response(value, status=200):
     return Response(dumps(value), status_code=status, media_type="application/json")
 
 
-def create_app(project, settings=None, *, cloudflared=None, pipeline=None):
+def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repository=None):
     kwargs = {"pipeline": pipeline} if pipeline is not None else {}
-    store = JobStore(project, settings or Settings(), cloudflared=cloudflared, **kwargs)
+    store = JobStore(project, settings or Settings(), cloudflared=cloudflared, repository=repository, **kwargs)
     token = secrets.token_urlsafe(32)
 
     @asynccontextmanager
@@ -91,7 +91,11 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None):
     async def business_error(request, exc):
         status = (
             404
-            if exc.code in ("JOB_NOT_FOUND", "RECORD_NOT_FOUND")
+            if exc.code in ("JOB_NOT_FOUND", "RECORD_NOT_FOUND", "LEDGER_NOT_FOUND")
+            else 409
+            if exc.code in ("LEDGER_CHANGED", "LEDGER_NOT_EMPTY", "LEDGER_ENTITY_CONFLICT")
+            else 503
+            if exc.code.startswith("DATABASE_")
             else 429
             if exc.code == "QUEUE_FULL"
             else 400
@@ -136,6 +140,8 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None):
                 model_name=store.settings.model_name,
                 ocr_ready=bool(cloudflared and Path(cloudflared).is_file()),
                 local_ocr_ready=local_ocr_available(),
+                database_enabled=store.repository is not None,
+                database_backend=store.repository.backend if store.repository else None,
                 demo_ready=(store.project / "tests/fixtures/harness/DEV-025/input.xlsx").is_file(),
                 max_file_mb=MAX_FILE // 1024 // 1024,
                 max_total_mb=MAX_REQUEST // 1024 // 1024,
@@ -145,6 +151,70 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None):
     @app.get("/api/jobs")
     def jobs():
         return json_response({"jobs": store.listing()})
+
+    def database():
+        if not store.repository:
+            raise BillingError("DATABASE_NOT_CONFIGURED", "尚未配置 MySQL 数据库。")
+        return store.repository
+
+    @app.get("/api/ledgers")
+    def ledgers():
+        return json_response({"ledgers": database().ledgers()})
+
+    @app.post("/api/ledgers", status_code=201)
+    async def create_ledger(request: Request):
+        if int(request.headers.get("content-length", "0")) > 16000:
+            raise BillingError("INVALID_LEDGER", "账本设置过长。")
+        try:
+            data = await request.json()
+            if set(data) != {"name", "entity"} or not all(isinstance(v, str) for v in data.values()):
+                raise ValueError
+        except (ValueError, TypeError, AttributeError):
+            raise BillingError("INVALID_LEDGER", "请提供账本名称和记账主体。") from None
+        return json_response(database().create_ledger(data["name"], data["entity"]), 201)
+
+    @app.get("/api/ledgers/{ledger_id}")
+    def ledger(ledger_id: str):
+        repository = database()
+        state, revision = repository.snapshot(ledger_id)
+        rows = [{**b.model_dump(mode="python", exclude_unset=True),
+                 "amount_display": dumps(b.charge_details.amount)} for b in state.bills[:100]]
+        return json_response({"ledger": {**repository.ledger(ledger_id), "revision": revision}, "bills": rows})
+
+    @app.get("/api/ledgers/{ledger_id}/export")
+    def export_ledger(ledger_id: str):
+        state, _ = database().snapshot(ledger_id)
+        response = json_response(state.model_dump(mode="python"))
+        response.headers["Content-Disposition"] = f'attachment; filename="ledger-{ledger_id}.json"'
+        return response
+
+    @app.post("/api/ledgers/{ledger_id}/import")
+    async def import_ledger(ledger_id: str, request: Request):
+        from tempfile import TemporaryDirectory
+
+        from shipping_billing.reconciliation.contracts import LedgerState
+
+        async with request.form(max_files=1, max_fields=1, max_part_size=4 * 1024 * 1024) as form:
+            if set(form) != {"state", "revision"} or any(len(form.getlist(k)) != 1 for k in form):
+                raise BillingError("INVALID_LEDGER_IMPORT", "请选择一个旧账本 JSON 文件。")
+            upload = form.get("state")
+            if not isinstance(upload, UploadFile):
+                raise BillingError("INVALID_LEDGER_IMPORT", "旧账本必须是 JSON 文件。")
+            content = await upload.read(4 * 1024 * 1024 + 1)
+            if len(content) > 4 * 1024 * 1024:
+                raise BillingError("CONFIG_SIZE_LIMIT", "旧账本 JSON 最多 4 MB。")
+            try:
+                revision = int(form["revision"])
+            except (ValueError, TypeError):
+                raise BillingError("INVALID_LEDGER_IMPORT", "账本版本无效，请刷新页面。") from None
+            with TemporaryDirectory(prefix="billing-import-") as temporary:
+                path = Path(temporary) / "state.json"
+                path.write_bytes(content)
+                value = load_json(path)
+                if value is None or not isinstance(value, (dict, list)):
+                    raise BillingError("INVALID_LEDGER_IMPORT", "请选择有效账本或账单数组。")
+                state = LedgerState(bills=value) if isinstance(value, list) else LedgerState.model_validate(value)
+            return json_response(database().import_state(ledger_id, state, revision))
 
     @app.post("/api/demo", status_code=202)
     def demo():
@@ -162,10 +232,12 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None):
                 "base_job",
                 "temporary_ocr",
                 "local_ocr_enabled",
+                "ledger_id",
             }
             if unknown:
                 raise BillingError("INVALID_FORM", "上传表单包含不支持的字段。")
-            for name in ("entity", "old_state", "context", "ocr_map", "base_job", "temporary_ocr"):
+            for name in ("entity", "old_state", "context", "ocr_map", "base_job", "temporary_ocr", "ledger_id",
+                         "local_ocr_enabled"):
                 if len(form.getlist(name)) > 1:
                     raise BillingError("DUPLICATE_FORM_FIELD", "配置字段不能重复提交。")
             files = []
@@ -201,7 +273,7 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None):
                         )
                     return value
 
-            for name in ("entity", "base_job", "temporary_ocr", "local_ocr_enabled"):
+            for name in ("entity", "base_job", "temporary_ocr", "local_ocr_enabled", "ledger_id"):
                 if form.get(name) is not None and not isinstance(form.get(name), str):
                     raise BillingError("INVALID_FORM_FIELD", "记账主体或处理选项格式不正确。")
             entity = str(form.get("entity", "")).strip()
@@ -216,6 +288,7 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None):
                 base_job=form.get("base_job") or None,
                 temporary_ocr=form.get("temporary_ocr") == "true",
                 local_ocr_enabled=form.get("local_ocr_enabled") == "true",
+                ledger_id=form.get("ledger_id") or None,
             )
             return json_response(result, 202)
 
@@ -247,6 +320,10 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None):
         if name not in payload["downloads"]:
             raise HTTPException(404)
         folder = store.folder(job_id)
+        if name == "reviews.json" and store.repository:
+            response = json_response(store.repository.get_reviews(job_id))
+            response.headers["Content-Disposition"] = 'attachment; filename="reviews.json"'
+            return response
         return FileResponse(
             folder / name if name == "reviews.json" else folder / "result" / name,
             media_type="application/json",
@@ -274,8 +351,8 @@ def main():
     try:
         settings = Settings(_env_file=env)
     except ValidationError:
-        print("模型配置无效，已关闭在线处理；请修正 .env 后重启。仍可体验示例。")
-        settings = Settings(_env_file=None, mode="offline")
+        print("配置无效，请修正 .env 后重启；未切换存储方式。")
+        return 1
     cloudflared = args.cloudflared or next(
         (p for p in (project / "tools/cloudflared.exe", project / "outputs/stage2/tunnel/cloudflared.exe")
          if p.is_file()), project / "tools/cloudflared.exe"
@@ -324,8 +401,13 @@ def main():
     print(f"航运账单工作台：{url}\n按 Ctrl+C 停止服务。", flush=True)
     import uvicorn
 
+    try:
+        app = create_app(project, settings, cloudflared=cloudflared)
+    except BillingError as exc:
+        print(f"启动失败：{exc.message}（{exc.code}）", flush=True)
+        return 1
     uvicorn.run(
-        create_app(project, settings, cloudflared=cloudflared),
+        app,
         host="127.0.0.1",
         port=args.port,
         access_log=False,
