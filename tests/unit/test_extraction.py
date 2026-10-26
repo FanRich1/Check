@@ -97,6 +97,29 @@ def test_native_pdf_resolves_only_generic_ocr_warnings(tmp_path, condition, pass
         assert [c.charge_details.amount for c in file.candidates] == [65, 35]
 
 
+@pytest.mark.parametrize("role_text,keep", [
+    ("BENEFICIARY: Supplier Ltd", False),
+    ("GRAND TOTAL BALANCE DUE TO Supplier Ltd USD 100", False),
+    ("CONSIGNEE: Supplier Ltd", False),
+    ("ISSUER: Supplier Ltd", True),
+    ("BENEFICIARY: Supplier Ltd; ISSUER: Supplier Ltd", True),
+])
+def test_remittance_or_shipping_name_alone_does_not_prove_invoice_issuer(tmp_path, role_text, keep):
+    report = parsed("HANDLING 65 USD\nHANDLING 35 USD\n" + role_text)
+    response = draft()
+    response["documents"][0]["issuer"] = "Supplier Ltd"
+    response["documents"][0]["evidence"]["issuer"] = [dict(unit_id="s:u3", quote=role_text)]
+    result = engine(tmp_path, [dumps(response)]).extract(report)
+    candidates = result.files[0].candidates
+    assert len(candidates) == 2
+    assert all(c.transaction_party.issuer == ("Supplier Ltd" if keep else None) for c in candidates)
+    assert all(any(i.code == "BILLING_PARTY_ROLE_UNCONFIRMED" for i in c.issues) != keep for c in candidates)
+    if not keep:
+        assert all("/transaction_party/issuer" not in c.field_evidence for c in candidates)
+        assert all(any(e.quote == role_text for e in c.evidence) for c in candidates)
+    assert "Supplier Ltd" in result.files[0].attempts[0]["raw_content"]
+
+
 def test_same_name_rows_and_exact_replay(tmp_path):
     first = engine(tmp_path, [dumps(draft())]).extract(parsed())
     rows = first.files[0].candidates

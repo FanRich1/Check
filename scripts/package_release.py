@@ -49,13 +49,32 @@ def verify(archive):
     return manifest
 
 
+def source_files(root):
+    listed = subprocess.check_output(
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=root
+    )
+    return sorted({p.decode("utf-8") for p in listed.split(b"\0") if p and allowed(p.decode("utf-8"))})
+
+
+def compare_source(archive, root):
+    """An internally valid old ZIP is still stale when compared with the selected source tree."""
+    root = Path(root).resolve()
+    manifest = verify(archive)
+    expected = {entry["path"]: entry for entry in manifest["files"]}
+    names = set(source_files(root))
+    missing = sorted(names - expected.keys())
+    extra = sorted(expected.keys() - names)
+    changed = sorted(name for name in names & expected.keys()
+                     if not (root / name).is_file()
+                     or hashlib.sha256((root / name).read_bytes()).hexdigest() != expected[name]["sha256"])
+    return dict(passed=not (missing or extra or changed), compared=len(names), missing=missing,
+                extra=extra, changed=changed)
+
+
 def build(output, version):
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}", version):
         raise ValueError("Invalid release version")
-    listed = subprocess.check_output(
-        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"], cwd=ROOT
-    )
-    names = sorted({p.decode("utf-8") for p in listed.split(b"\0") if p})
+    names = source_files(ROOT)
     entries, contents = [], {}
     for name in names:
         if not allowed(name):
@@ -73,6 +92,8 @@ def build(output, version):
         scope="public_source_synthetic_fixtures_and_archived_model_responses",
         private_documents_included=False, credentials_included=False,
         system_dependencies="Python 3.12; Windows Microsoft Word for legacy .doc; optional cloudflared",
+        source_revision=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        source_dirty=bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT)),
     )
     contents["release-manifest.json"] = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode()
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -94,9 +115,15 @@ def main():
     parser.add_argument("--output", type=Path)
     parser.add_argument("--version", default="stage9-v1")
     parser.add_argument("--verify", type=Path)
+    parser.add_argument("--compare-root", type=Path, help="Also compare the ZIP against this Git working tree")
     args = parser.parse_args()
     if args.verify:
         print(json.dumps(dict(version=verify(args.verify)["version"], verified=True)))
+        if args.compare_root:
+            result = compare_source(args.verify, args.compare_root)
+            print(json.dumps(result))
+            if not result["passed"]:
+                raise SystemExit(1)
     elif args.output:
         build(args.output.resolve(), args.version)
     else:

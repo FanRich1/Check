@@ -47,6 +47,53 @@ def test_failed_attachment_does_not_block_independently_evidenced_body_fees(tmp_
     assert not any(i["blocks_automation"] for i in row["audit_trail"]["issues"])
 
 
+def test_live_empty_image_requires_purpose_confirmation_and_replays_without_network(tmp_path, monkeypatch):
+    import io
+
+    import httpx
+    from PIL import Image
+
+    from shipping_billing.ocr.tunnel import PageOCR
+
+    buffer = io.BytesIO()
+    Image.new("RGB", (20, 20), "cyan").save(buffer, format="PNG")
+    image = tmp_path / "banner.png"
+    image.write_bytes(buffer.getvalue())
+    sha = hashlib.sha256(image.read_bytes()).hexdigest()
+    mapping = tmp_path / "url-map.json"
+    write_json(mapping, {f"input-{sha[:20]}:page-1": dict(sha256=sha, url="https://example.invalid/banner.png")})
+    calls = []
+
+    def provider(*args, **kwargs):
+        page = PageOCR(*args, **kwargs)
+
+        def response(request):
+            calls.append(request)
+            return httpx.Response(200, json={"success": True, "data": {"list": []}})
+
+        page.client.transport = httpx.MockTransport(response)
+        return page
+
+    monkeypatch.setattr("shipping_billing.pipeline.engine.PageOCR", provider)
+    common = dict(storage=tmp_path / "cache", client=AuthoredModel())
+    live = run_pipeline([image], settings=Settings(mode="online", model_provider="test", model_name="injected",
+                                                  model_api_key="test-only"),
+                        mode="live", output=tmp_path / "live", ocr_map=mapping, **common)
+    assert live.ocr_network_calls == 1 and len(calls) == 1
+    assert live.status == "pending_review" and live.exit_code == 1 and live.counts["fee_lines"] == 0
+    assert live.counts["purpose_pending_sources"] == 1
+    parsed = load_json(tmp_path / "live/parse.json")
+    assert parsed["sources"][0]["metadata"]["ocr_page_status"][0]["code"] == "OCR_EMPTY_CONTENT"
+    replay_map = tmp_path / "live/ocr-replay-map.json"
+    assert len(load_json(replay_map)) == 1
+    replay = run_pipeline([image], settings=Settings(), mode="replay", output=tmp_path / "replay",
+                          ocr_map=replay_map, **common)
+    assert replay.ocr_network_calls == 0 and len(calls) == 1
+    assert replay.status == "pending_review" and replay.counts["fee_lines"] == 0
+    assert replay.counts["purpose_pending_sources"] == 1
+    assert "OCR_EMPTY_CONTENT" in {i.code for f in replay.files for i in f.issues}
+
+
 def test_separate_email_and_pdf_link_only_with_matching_invoice_and_transport(tmp_path):
     from email import policy
     from email.message import EmailMessage

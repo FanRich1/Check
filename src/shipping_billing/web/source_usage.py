@@ -5,13 +5,8 @@ import re
 from pydantic import Field, StrictBool, field_validator, model_validator
 
 from shipping_billing.models import Contract
-
-PURPOSE_ONLY = {
-    "OCR_EMPTY_CONTENT", "OCR_STRUCTURED_REQUIRES_CHECK", "OCR_NO_ORIGINAL_TEXT",
-    "IMAGE_TEXT_REQUIRES_VERIFICATION", "LOCAL_OCR_EMPTY", "LOCAL_OCR_LOW_CONFIDENCE",
-    "NO_SOURCE_TEXT", "CHILD_REQUIRES_REVIEW",
-}
-IMAGES = {"png", "jpg", "tiff"}
+from shipping_billing.pipeline.source_status import IMAGES as IMAGES
+from shipping_billing.pipeline.source_status import PURPOSE_ONLY, empty_image_requires_confirmation
 
 
 class SourceReviewRequest(Contract):
@@ -85,18 +80,22 @@ def assess_sources(files, parsed, extraction, records, fee_decisions, histories)
         latest = history[-1] if history else None
         confirmed = latest and latest["classification"] != "reopen"
         codes = {i["code"] for i in file["issues"] if i.get("blocks_automation", True)}
-        hard = (source.get("status") == "error" or
-                (file["status"] == "error" and bool(codes - PURPOSE_ONLY)) or
-                any(p["status"] == "error" and p.get("code") not in PURPOSE_ONLY
-                    for p in source.get("metadata", {}).get("ocr_page_status", [])))
         owned = [by_record[rid] for rid in file.get("record_ids", []) if rid in by_record]
         has_fees = bool(owned or facts.get("candidates"))
+        empty_image = empty_image_requires_confirmation(source, has_fees=has_fees, issue_codes=codes)
+        hard = (source.get("status") == "error" or (facts.get("status") == "error" and not empty_image) or
+                (file["status"] == "error" and bool(codes - PURPOSE_ONLY)) or
+                any(p["status"] == "error" and not empty_image
+                    for p in source.get("metadata", {}).get("ocr_page_status", [])))
         pending = sum(r["operation"] == "PENDING_REVIEW" and r["record_id"] not in fee_decisions for r in owned)
         evidence = native_transport_support(source, facts) if not hard and not has_fees else []
         use = dict(role="unknown", status="purpose_pending", label="用途待确认", basis="unknown",
                    reading="需核对原件", note="尚不能仅凭零条费用判断材料用途，请查看原件后确认。",
                    evidence=[], can_confirm=not hard and not has_fees and file.get("detected_format") != "eml",
                    revision=latest["revision"] if latest else 0, review=latest)
+        if empty_image:
+            use.update(reading="识别调用已完成，未返回账单内容",
+                       note="请查看原图确认用途：如为宣传图或签名图，可确认非账单图片；如含费用，请补充清晰材料重新识别。")
         if hard:
             use.update(status="error", label="识别失败，需处理", reading="读取或识别未完成",
                        note="请先处理文件读取或识别故障，材料用途确认不能替代此项处理。", can_confirm=False)
@@ -127,7 +126,9 @@ def assess_sources(files, parsed, extraction, records, fee_decisions, histories)
         if file.get("detected_format") != "eml" or file["assessment"]["status"] in {"error", "fee_pending"}:
             continue
         children = [f["assessment"] for f in result if f.get("parent_source_id") == file["source_id"]]
-        if any(c["status"] in {"error", "purpose_pending", "attachments_pending", "fee_pending"} for c in children):
-            file["assessment"].update(status="attachments_pending", label="附件仍需处理",
+        unresolved = [c for c in children if c["status"] in {"error", "purpose_pending", "attachments_pending", "fee_pending"}]
+        if unresolved:
+            file["assessment"].update(status="attachments_pending",
+                                      label="附件用途待确认" if all(c["status"] == "purpose_pending" for c in unresolved) else "附件仍需处理",
                                       note="正文费用按自身证据处理；请查看下方仍需处理的附件。")
     return result

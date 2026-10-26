@@ -115,3 +115,57 @@ def test_batch_reuses_tunnel_revokes_each_link_and_cache_needs_no_tunnel(tmp_pat
         assert provider(b"first", "source", 1, "application/pdf")["mode"] == "cache"
         assert len(downloads) == 2
     assert tunnels[0]._server is None
+
+
+def test_empty_response_is_archived_mapped_and_replayed_without_another_post(tmp_path):
+    import httpx
+
+    content = b"non-billing-image"
+    digest = hashlib.sha256(content).hexdigest()
+    mapping = tmp_path / "urls.json"
+    write_json(mapping, {"image:page-1": dict(sha256=digest, url="https://example.invalid/banner.png")})
+    provider = PageOCR(Settings(), storage=tmp_path / "live", mode="live", mapping=mapping)
+    requests = []
+
+    def handle(request):
+        requests.append(request)
+        return httpx.Response(200, json={"success": True, "data": {"list": []}})
+
+    provider.client.transport = httpx.MockTransport(handle)
+    with pytest.raises(BillingError) as exc:
+        provider(content, "image", 1, "image/png")
+    assert exc.value.code == "OCR_EMPTY_CONTENT"
+    assert len(requests) == provider.client.network_calls == 1
+    assert provider.events[0]["network_calls"] == 1
+    assert provider.events[0]["code"] == "OCR_EMPTY_CONTENT"
+    assert provider.events[0]["archive_sha256"]
+    replay_map = tmp_path / "replay.json"
+    write_json(replay_map, provider.replay_map)
+    replay = PageOCR(Settings(), storage=tmp_path / "replay", mode="replay", mapping=replay_map)
+    with pytest.raises(BillingError) as again:
+        replay(content, "image", 1, "image/png")
+    assert again.value.code == "OCR_EMPTY_CONTENT"
+    assert replay.events[0]["network_calls"] == 0
+    assert replay.events[0]["archive_sha256"] == provider.events[0]["archive_sha256"]
+
+
+def test_timeout_journal_counts_submission_and_never_creates_a_replay_success(tmp_path):
+    import httpx
+
+    content = b"page"
+    mapping = tmp_path / "urls.json"
+    write_json(mapping, {"pdf:page-1": dict(sha256=hashlib.sha256(content).hexdigest(),
+                                          url="https://example.invalid/page.pdf")})
+    provider = PageOCR(Settings(), storage=tmp_path, mode="live", mapping=mapping)
+
+    def timeout(request):
+        raise httpx.ReadTimeout("unknown outcome", request=request)
+
+    provider.client.transport = httpx.MockTransport(timeout)
+    with pytest.raises(BillingError) as exc:
+        provider(content, "pdf", 1, "application/pdf")
+    assert exc.value.code == "OCR_TIMEOUT_UNKNOWN_OUTCOME"
+    assert provider.client.network_calls == 1
+    assert provider.events[0]["outcome_unknown"] is True
+    assert provider.events[0]["network_calls"] == 1
+    assert not provider.replay_map

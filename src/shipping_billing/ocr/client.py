@@ -121,6 +121,8 @@ class OCRClient:
         self.settings = settings
         self.storage = storage
         self.transport = transport
+        self.network_calls = 0
+        self.last_archive = None
 
     def cache_path(self, source_id, file_sha256):
         fingerprint = hashlib.sha256(
@@ -165,6 +167,7 @@ class OCRClient:
         use_cache: bool = False,
     ):
         quiet_wire_logs()
+        self.last_archive = None
         if file_sha256 is not None and not re.fullmatch("[0-9a-f]{64}", file_sha256):
             raise BillingError("INVALID_CONTENT_HASH", "Content hash must be a lowercase SHA-256 digest.")
         if mode not in ("live", "replay"):
@@ -178,6 +181,7 @@ class OCRClient:
                 raise BillingError("REPLAY_SOURCE_MISMATCH", "Replay source identity does not match.")
             if file_sha256 is None or archive.get("file_sha256") != file_sha256:
                 raise BillingError("REPLAY_HASH_MISMATCH", "Replay requires the original content hash.")
+            self.last_archive = replay_path
             return {
                 **adapt(archive.get("response")),
                 "mode": "replay",
@@ -208,6 +212,7 @@ class OCRClient:
                     transport=self.transport,
                     follow_redirects=False,
                 ) as client:
+                    self.network_calls += 1
                     response = client.post(s.ocr_endpoint, json=request)
                 break
             except (httpx.ConnectTimeout, httpx.ConnectError) as exc:
@@ -236,6 +241,7 @@ class OCRClient:
                     "response_text": response.text,
                 },
             )
+            self.last_archive = archive_path
             raise BillingError(
                 "OCR_INVALID_JSON", "OCR did not return JSON; response archived locally."
             ) from exc
@@ -249,6 +255,7 @@ class OCRClient:
             "endpoint": s.ocr_endpoint,
         }
         write_json(archive_path, saved)
+        self.last_archive = archive_path
         if response.status_code != 200:
             raise BillingError(
                 "OCR_HTTP_FAILED", "OCR returned an unsuccessful HTTP status; no automatic repost."

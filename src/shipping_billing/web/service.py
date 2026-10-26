@@ -72,6 +72,7 @@ def explain(code):
     messages = {
         "MISSING_ACCOUNTING_ENTITY": "尚未指定记账主体，无法判断应收或应付。",
         "UNKNOWN_PARTY_ROLE": "尚未确认谁付款、谁收款，无法判断应收或应付。发货人、收货人和通知方不能直接当作付款双方；请核对付款说明或补充关联邮件。",
+        "BILLING_PARTY_ROLE_UNCONFIRMED": "原文仅证明收款、银行或运输角色，不能确认其为单据签发方或接收方；该字段已留空，请核对原件后确认。",
         "TUNNEL_NOT_READY": "OCR 临时访问链接未建立成功，该页尚未提交识别。请稍后重新处理；更换账本或公司名称不能解决此网络问题。",
         "TUNNEL_DOWNLOAD_FAILED": "OCR 临时文件链接无法访问，该页尚未提交识别。请检查网络后重新处理。",
         "NATIVE_TEXT_VERIFIED": "费用字段已逐项核对 PDF 原生文字；OCR 结构化结果仅作为辅助信息。",
@@ -107,6 +108,7 @@ def explain(code):
         "MODEL_TRUNCATED": "模型返回内容被长度限制截断，请减少本次材料后重新处理。",
         "MODEL_EMPTY_CONTENT": "模型未返回有效内容，请稍后重新处理。",
         "MODEL_INVALID_STRUCTURE": "模型未返回有效结构，有限修复后仍无法使用。",
+        "IMAGE_OCR_EMPTY_REQUIRES_PURPOSE_CONFIRMATION": "图片识别调用已完成，未返回账单内容；请查看原图确认用途，不能据此认定没有费用。",
         "NO_SOURCE_TEXT": "尚未取得可引用的原文，无法提取费用。图片或扫描件请启用本地文字识别后重新处理；这不代表原件没有费用。",
         "INVALID_OLD_STATE": "旧账单 JSON 无效，或记录编号缺失、重复。",
         "MODEL_NOT_CONFIGURED": "模型尚未配置。请在项目 .env 中完成配置后重启工作台。",
@@ -130,11 +132,12 @@ def processing_summary(manifest, *, pending=None, assessed_files=None):
     pending = counts["PENDING_REVIEW"] if pending is None else pending
     files = assessed_files if assessed_files is not None else files
     errors = [f for f in files if f.get("assessment", {}).get("status", f["status"]) == "error"]
-    purposes = sum(f.get("assessment", {}).get("status") == "purpose_pending" for f in files)
+    purposes = (sum(f.get("assessment", {}).get("status") == "purpose_pending" for f in files)
+                if assessed_files is not None else counts.get("purpose_pending_sources", 0))
     attachments = sum(f.get("parent_source_id") is not None for f in errors)
     fee_message = f"已识别 {fees} 条费用，其中 {pending} 条待复核"
     if not fees:
-        fee_message = "尚未提取到费用" if errors else "本次未发现费用"
+        fee_message = "尚未提取到费用" if errors or purposes else "本次未发现费用"
     source_message = f"共 {len(files)} 个来源，{len(errors)} 个异常（其中 {attachments} 个附件）"
     if assessed_files is not None:
         source_message += f"，{purposes} 个用途待确认"

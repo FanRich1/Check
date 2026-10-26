@@ -2,7 +2,9 @@
 
 ## 交付内容
 
-源码仓库和 `Check-stage9-v1.zip` 提供相同的应用、网页、模拟样本、公开模型响应回放、测试、schema 和说明。ZIP 根目录为 `Check/`，内有 `release-manifest.json`，列出版本、每个文件的字节数和 SHA-256；旁边的 `.zip.sha256` 校验整个 ZIP。
+当前补验版本为 `shipping-review-v2-20261026`，交付包名为 `Check-shipping-review-v2-20261026.zip`。旧的 `Check-stage9-v1.zip`、`Check-mysql-v1.zip` 和 `Check-manual-review-v1.zip` 保持历史状态，不代表当前源码。ZIP 根目录为 `Check/`，内有 `release-manifest.json`，列出版本、每个文件的字节数和 SHA-256；旁边的 `.zip.sha256` 校验整个 ZIP。
+
+该 ZIP 发布后的源码已追加图片 OCR 空内容状态优化：符合条件的图片转为用途待确认，真实执行故障仍报错。当前本地工作台已更新；上述 ZIP 尚不含这次追加修改，其原有安装验收结论仅适用于归档版本。
 
 私人原件、`.env`、上传材料、OCR 私有响应、开发虚拟环境、运行日志和 cloudflared 可执行程序均不进入交付包。归档中的公开回放使用明确标记的合成材料，不能当作真实客户数据。
 
@@ -10,7 +12,7 @@
 
 已验证平台是 Windows x64、Python 3.12；本项目要求 Python `>=3.12,<3.13`。离线演示指运行时不访问模型或 OCR；首次安装仍需访问 Python 包索引，或由使用方提前准备离线包缓存。
 
-1. 完整解压 ZIP，再进入 `Check`。不要在压缩文件预览窗口内运行。
+1. 完整解压 ZIP，再进入 `Check`。建议使用 `D:\Check` 等短路径；较深目录可能在解压公开回放归档时触发 Windows 路径长度限制。不要在压缩文件预览窗口内运行。
 2. 安装 Python 3.12 后，双击 `安装运行环境.cmd`。它创建本目录的 `.venv`，用固定版本 uv 和锁文件安装应用及本地辅助 OCR，不覆盖已有 `.env`。
 3. 双击 `启动账单工作台.cmd`，浏览器打开 http://127.0.0.1:8765 。保持启动窗口打开；按 Ctrl+C 可停止该窗口内的服务。
 4. 点击「先体验示例」。它回放已归档的合成 Excel 提取结果，得到两笔 21、31 的费用，不需要密钥。
@@ -110,8 +112,42 @@ BILLING_MODEL_MAX_TOKENS=4096
 .\.venv\Scripts\shipping-billing.exe benchmark --split development --mode replay --storage tests/fixtures/harness/replay-cache/development --output outputs/delivery-development
 .\.venv\Scripts\shipping-billing.exe benchmark --split validation --mode replay --storage tests/fixtures/harness/replay-cache/validation-final --output outputs/delivery-validation
 .\.venv\Scripts\shipping-billing.exe benchmark --split holdout --mode replay --storage tests/fixtures/harness/replay-cache/holdout --output outputs/delivery-holdout
-.\.venv\Scripts\python.exe -m scripts.package_release --output dist/Check-stage9-v1.zip --version stage9-v1
-.\.venv\Scripts\python.exe -m scripts.package_release --verify dist/Check-stage9-v1.zip
+.\.venv\Scripts\python.exe -m scripts.package_release --output dist/Check-shipping-review-v2-20261026.zip --version shipping-review-v2-20261026
+.\.venv\Scripts\python.exe -m scripts.package_release --verify dist/Check-shipping-review-v2-20261026.zip --compare-root .
 ```
 
 回放不发起模型或 OCR 网络请求；Word 转换为本机依赖。已公开的验证、留出材料现在是回归集，不能重复称为未见测试。最终统计和未解决的外部限制见 [阶段 9 交付报告](stage9-report.md)。
+
+## 2026-10-26 当前版本补验结果
+
+本轮应用代码指纹为 `c501552f6b4915b606b8c8c010e03d7880dd7e280452357c0b946bfd88920062`。应用及静态资源共 69 个文件；打包清单另包含脚本、测试、公开合成回放资料和文档。内部 ZIP 校验与源码一致性是两项独立检查，使用上面的 `--compare-root` 同时验证。
+
+| 检查 | 本轮实际结果 |
+|---|---|
+| 历史真实回放差异 | 少出的两条为 PNG 中的 WHARFAGE ADMINISTRATION FEE 5.00 USD 和 WHARFAGE 21.90 USD。旧映射使用原图片字节哈希，当前小图预处理生成 2 倍图像，页面哈希不同；后续模型归档也无法匹配。邮件宣传图的旧映射同样缺失。历史失败记录未改写。 |
+| 最终整批在线 | 4 个顶层原件、7 个含附件来源、8 个页面，实际 OCR 调用 8 次、模型调用 7 次；已知 7 条费用的名称、金额、明确币种与原件归属逐项对应。原始材料缺少确定的完整记账关系，7 条均保留待复核。 |
+| OCR 页面与响应 | 7 页返回可用内容，宣传图返回空业务内容；8 页都有真实调用记录和可回放响应归档。本轮没有下载或通道失败，`complete_online_success` 仍为 false，不宣称所有页面内容识别成功。 |
+| 当前版本完整回放 | 从最终在线归档重新解析，7 条费用保留；模型调用 0、OCR 网络调用 0，业务字段及字段证据与对应在线轮一致，宣传图空内容错误也如实复现。 |
+| 3 轮现有材料模型重复验证 | 最终整批在线轮加上 2 轮使用固定真实 OCR 响应、独立空模型缓存的真实模型调用，共 21 次模型调用；每轮均为 7 条费用，业务字段一致。个别证据引用范围在独立轮之间不同；固定归档回放的证据完全一致。 |
+| 费用角色修正 | 发现模型偶尔把“余额收款对象”当作签发方。增加确定性证据校验：仅有银行、收款或运输角色依据时，签发方 / 接收方留空，原文和收款候选保留供复审；不会将其直接作为确定的记账关系。 |
+| 工程回归 | 源码完整测试 600 通过、1 项仅在 SQLite 环境跳过；独立 MySQL + SQLite 验收 81 通过、1 项 SQLite 不适用跳过，真实 MySQL 行锁测试实际执行。全项目 Ruff 通过。 |
+| 公开原始文档回放 | 开发 30、验证 15、历史留出 15 个场景均通过行为检查及适用评分门槛，模型网络调用为 0；这些已公开场景仅作为回归。 |
+| 候选包干净安装 | 在项目外新建虚拟环境，按锁文件非 editable 安装，确认 69 个应用 / 静态文件均从 site-packages 加载且字节匹配；完整测试 600 通过、1 项 SQLite 不适用跳过。 |
+| 候选包数据库与浏览器 | 隔离数据库验收 81 通过、1 项 SQLite 不适用跳过；Edge 数据库工作流 15 项、邮件关联 4 项、材料用途确认 4 项通过，JS 错误为 0。未使用正式账本做验收。 |
+
+本轮包括发现角色歧义前的探索轮与修正后的最终轮，共实际发起 OCR 16 次、模型 42 次。上表的 8 / 21 次分别属于最终整批 OCR 及最终三轮模型验证，不能当作本轮全部调用成本。
+
+最终 ZIP 的哈希、源码差异、独立安装与最新校验记录保存在本机 `outputs/remediation-20261026/`；私人原件及 OCR / 模型归档位于 Git 忽略目录，不包含在 ZIP 中。重新执行真实验收时使用新的输出和缓存目录，不能覆盖既有报告或混用历史响应：
+
+```powershell
+# 所有真实页重新在线调用，先准备本机 .env 与 cloudflared。
+.\.venv\Scripts\python.exe -m scripts.stage9_real_acceptance --mode live --output outputs/my-live --storage data/local/my-live
+# 精确回放本轮归档，包括真实空内容响应；不会自动转在线。
+.\.venv\Scripts\python.exe -m scripts.stage9_real_acceptance --mode replay --output outputs/my-replay --storage data/local/my-live --ocr-map outputs/my-live/ocr-replay-map.json
+# 对比业务字段与证据，不调用外部服务。
+.\.venv\Scripts\python.exe -m scripts.real_material_audit --run outputs/my-replay --compare outputs/my-live --output outputs/my-replay-comparison.json
+# 独立模型重复轮使用固定真实 OCR，模型缓存必须是新目录。
+.\.venv\Scripts\python.exe -m scripts.stage9_real_acceptance --mode live --fixed-ocr outputs/my-live/ocr-replay-map.json --output outputs/my-model-round-2 --storage data/local/my-model-round-2
+```
+
+本次独立业务签核、新未见真实样本与生产总体准确率验收仍未完成，已按用户要求保留待办。现有 4 个原件的 7 条费用及重复运行结果不能替代它们。待复核并不等于自动正确入账，未知币种、付款关系、AR/AP 仍须提供业务依据。

@@ -46,7 +46,9 @@ def test_incomplete_page_or_ocr_does_not_become_transport_support():
 def test_empty_ocr_image_requires_explicit_purpose_confirmation_and_preserves_history():
     original = file("jpg", "OCR_EMPTY_CONTENT")
     snapshot = deepcopy(original)
-    parsed = dict(sources=[dict(source_id="s", detected_format="jpg", status="pending_review")])
+    parsed = dict(sources=[dict(source_id="s", detected_format="jpg", status="pending_review",
+                               metadata=dict(frames=1, ocr_page_status=[dict(
+                                   page=1, status="error", code="OCR_EMPTY_CONTENT")]))])
     extraction = dict(files=[dict(source_id="s", candidates=[], status="pending_review")])
     result = assess_sources([original], parsed, extraction, [], {}, {})[0]
     assert result["assessment"]["status"] == "purpose_pending"

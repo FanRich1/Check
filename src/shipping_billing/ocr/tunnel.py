@@ -5,6 +5,7 @@ import re
 import subprocess
 import time
 from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
 from uuid import uuid4
@@ -12,7 +13,7 @@ from uuid import uuid4
 import httpx
 
 from shipping_billing.errors import BillingError
-from shipping_billing.io import load_json
+from shipping_billing.io import load_json, write_json
 from shipping_billing.ocr.client import OCRClient, http_url
 from shipping_billing.ocr.file_bridge import TemporaryFileServer
 
@@ -116,6 +117,8 @@ class PageOCR:
         self._context = None
         self._server = None
         self._base_url = None
+        self.events = []
+        self.replay_map = {}
         if mode == "live" and cloudflared is None and mapping is None:
             raise BillingError(
                 "MISSING_OCR_DELIVERY", "Live parse requires explicit URL mapping or cloudflared path."
@@ -150,6 +153,38 @@ class PageOCR:
         return url, self._server
 
     def __call__(self, content, source_id, page, content_type):
+        started = time.monotonic()
+        before = self.client.network_calls
+        self.client.last_archive = None
+        unit_id = f"{source_id}:page-{page}"
+        digest = hashlib.sha256(content).hexdigest()
+        event = dict(source_id=unit_id, sha256=digest, mode=self.mode,
+                     started_at=datetime.now(timezone.utc).isoformat(), status="started")
+        path = self.storage / "events" / (uuid4().hex + ".json")
+        write_json(path, event)
+        try:
+            result = self._recognize(content, source_id, page, content_type)
+            event.update(status="completed", result_mode=result.get("mode"), archive=result.get("archive"))
+            return result
+        except BillingError as exc:
+            event.update(status="error", code=exc.code,
+                         outcome_unknown=exc.code == "OCR_TIMEOUT_UNKNOWN_OUTCOME")
+            raise
+        finally:
+            archive = event.get("archive") or self.client.last_archive
+            if archive:
+                event["archive"] = str(Path(archive).resolve())
+                saved = load_json(Path(archive))
+                event["archive_sha256"] = hashlib.sha256(Path(archive).read_bytes()).hexdigest()
+                # Even a successful HTTP response with empty business content must replay its real error.
+                if saved.get("http_status") == 200 and "response" in saved:
+                    self.replay_map[unit_id] = dict(sha256=digest, archive=event["archive"])
+            event.update(network_calls=self.client.network_calls - before,
+                         elapsed_seconds=round(time.monotonic() - started, 3))
+            self.events.append(event)
+            write_json(path, event)
+
+    def _recognize(self, content, source_id, page, content_type):
         unit_id = f"{source_id}:page-{page}"
         digest = hashlib.sha256(content).hexdigest()
         if self.mode == "replay":

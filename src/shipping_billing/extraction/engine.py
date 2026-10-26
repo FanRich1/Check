@@ -235,6 +235,26 @@ def materialize(draft, target, units, allowed):
 Fee_KEYS = ("charge_item_raw", "amount", "currency_raw", "quantity", "unit_price", "payment_term_raw")
 
 
+def verify_billing_party_roles(file):
+    """A remittance or shipping instruction alone does not establish a billing party."""
+    for candidate in file.candidates:
+        for field in ("issuer", "recipient"):
+            path = "/transaction_party/" + field
+            value = getattr(candidate.transaction_party, field)
+            refs = candidate.field_evidence.get(path, [])
+            if not value or not refs:
+                continue
+            name = re.escape(value)
+            billing = r"(?:ISSUER|ISSUED\s+BY|BILL\s+TO|BILLED\s+TO|SUPPLIER|SELLER|签发方|接收方)\s*[:：]\s*" + name
+            adverse = (r"(?:BENEFICIARY|BANK|REMIT(?:TANCE)?(?:\s+TO)?|BALANCE\s+DUE\s+TO|"
+                       r"SHIPPER|CONSIGNEE|NOTIFY\s+PARTY)\s*[:：]?\s*" + name)
+            if (not any(re.search(billing, ref.quote, re.I) for ref in refs)
+                    and all(re.search(adverse, ref.quote, re.I) for ref in refs)):
+                setattr(candidate.transaction_party, field, None)
+                candidate.field_evidence.pop(path)
+                candidate.issues.append(issue("BILLING_PARTY_ROLE_UNCONFIRMED", path))
+
+
 def verify_native_evidence(target, file, units):
     """Resolve generic vendor warnings only after successful OCR and native field checks.
 
@@ -409,6 +429,7 @@ class ExtractionEngine:
                             archive.pop("error", None)
                 file.candidates, problems = materialize(draft, target, units, allowed)
                 file.issues.extend(problems)
+                verify_billing_party_roles(file)
                 verify_native_evidence(target, file, units)
                 for observation in draft.observations:
                     if all(

@@ -20,6 +20,7 @@ from shipping_billing.pipeline.contracts import VERSION, AuditEntry, PipelineFil
 from shipping_billing.pipeline.inputs import discover
 from shipping_billing.pipeline.intents import PROMPT_VERSION as INTENT_VERSION
 from shipping_billing.pipeline.intents import IntentEngine, merge_directives
+from shipping_billing.pipeline.source_status import PURPOSE_REQUIRED, empty_image_requires_confirmation
 from shipping_billing.reconciliation.contracts import LedgerState, ReconciliationContext
 from shipping_billing.reconciliation.engine import reconcile
 
@@ -177,6 +178,7 @@ def run_pipeline(
             parser.parse_file(path, sid)
     finally:
         if provider:
+            ocr_replay.update(provider.replay_map)
             provider.close()
     parsed = parser.report
     if progress:
@@ -227,9 +229,15 @@ def run_pipeline(
             for issue in d.issues:
                 if issue not in issues:
                     issues.append(issue)
-        # OCR call errors are execution failures, distinguish from normal business review.
+        # Empty image content needs a purpose decision; actual execution failures remain errors.
         ocr_failed = any(p["status"] == "error" for p in source.metadata.get("ocr_page_status", []))
         status = "error" if ocr_failed else final.status
+        if empty_image_requires_confirmation(
+                    source.model_dump(mode="python"),
+                    has_fees=bool(decisions or extracted[source.source_id].candidates),
+                    issue_codes={i.code for i in issues if i.blocks_automation}):
+            status = "pending_review"
+            issues.append(problem(PURPOSE_REQUIRED))
         files.append(
             PipelineFile(
                 source_id=source.source_id,
@@ -303,6 +311,7 @@ def run_pipeline(
         fee_lines=len(reconciled.decisions),
         records=len(records),
         ignored_inputs=sum(d.disposition == "ignored" for d in discovery),
+        purpose_pending_sources=sum(any(i.code == PURPOSE_REQUIRED for i in f.issues) for f in files),
     )
     manifest = PipelineManifest(
         run_id=uuid4().hex,
@@ -314,6 +323,8 @@ def run_pipeline(
         model_invocations=extraction.model_invocations + intents.model_invocations,
         ocr_network_calls=0
         if mode in ("replay", "offline", "test_injected")
+        else provider.client.network_calls
+        if provider is not None
         else None
         if any(p["status"] == "error" for s in parsed.sources for p in s.metadata.get("ocr_page_status", []))
         else sum(r.get("network_calls", 0) for s in parsed.sources for r in s.ocr_results),

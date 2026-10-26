@@ -360,8 +360,8 @@ def test_source_purpose_confirmation_works_in_file_mode_and_preserves_raw_failur
     response = client.post(f"/api/jobs/{job_id}/source-review", json=body)
     assert response.status_code == 200, response.text
     current = client.get(f"/api/jobs/{job_id}").json()
-    assert current["job"]["status"] == "completed" and current["job"]["original_status"] == "error"
-    assert current["files"][1]["status"] == "error"
+    assert current["job"]["status"] == "completed" and current["job"]["original_status"] == "pending_review"
+    assert current["files"][1]["status"] == "pending_review"
     assert current["files"][1]["assessment"]["status"] == "non_billing"
     assert len(load_json(store.folder(job_id) / "source-reviews.json")[image["source_id"]]) == 1
     assert client.get(f"/api/jobs/{job_id}/download/source-reviews.json").status_code == 200

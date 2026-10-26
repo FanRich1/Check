@@ -118,7 +118,7 @@ def main():
             receipt = next(iter(repository.get_decisions(job_id).values()))
             assert len(receipt["related_fields"]) == 5 and revision == 2
             page.reload()
-            page.wait_for_function("S.config && S.ledgers.length > 0")
+            page.wait_for_function("() => S.config && S.ledgers.length > 0")
             page.evaluate("(id) => openJob(id)", job_id)
             expect(page.locator("#record-rows .pill")).to_have_text("新增")
             expect(page.locator("#result-meta")).to_contain_text("尚待复审 0 条")

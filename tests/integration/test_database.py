@@ -471,7 +471,7 @@ def test_source_purpose_confirmation_history_reopen_and_exports_do_not_change_le
     assert result["processing_summary"]["purpose_pending_count"] == 1
     assert [f["assessment"]["status"] for f in result["files"][2:]] == ["supporting", "supporting"]
     image = result["files"][1]
-    assert image["status"] == "error" and image["assessment"]["status"] == "purpose_pending"
+    assert image["status"] == "pending_review" and image["assessment"]["status"] == "purpose_pending"
     from hashlib import sha256
     from urllib.parse import quote
 
