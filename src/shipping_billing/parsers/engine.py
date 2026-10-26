@@ -150,6 +150,7 @@ class DocumentParser:
         children = [s for s in self.report.sources if s.parent_source_id == source_id]
         if any(s.status in ("error", "pending_review") for s in children):
             source.issue(
-                "CHILD_REQUIRES_REVIEW", "At least one attachment has incomplete or failed extraction."
+                "CHILD_REQUIRES_REVIEW", "An attachment needs attention; its own source retains the failure.",
+                blocking=False,
             )
         return source

@@ -23,8 +23,10 @@ from shipping_billing.domain.normalization import (
     alias_map,
     currency,
     key,
+    party_alias_map,
     payment,
     resolve,
+    resolve_party,
 )
 from shipping_billing.errors import BillingError
 from shipping_billing.extraction.engine import digest
@@ -264,7 +266,7 @@ def normalize_line(candidate, source_issues, context, charges, parties, index):
         )
     for field in ("issuer", "recipient"):
         old = getattr(c.transaction_party, field)
-        new = resolve(old, parties)
+        new = resolve_party(old, parties)
         event(
             "party.configured_alias",
             "/transaction_party/" + field,
@@ -374,7 +376,7 @@ def normalize(report, context=None):
     from shipping_billing.domain.totals import check_totals
 
     context = context or NormalizationContext()
-    parties = alias_map(context.party_aliases)
+    parties = party_alias_map(context.party_aliases)
     charges = alias_map({**CHARGES, **context.charge_aliases})
     index = EvidenceIndex(report)
     all_candidates = [c for f in report.files for c in f.candidates]

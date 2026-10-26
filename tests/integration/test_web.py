@@ -95,6 +95,9 @@ def test_partial_source_failure_and_review_do_not_change_ledger(workspace, tmp_p
     )
     result = finished(client, response)
     assert result["job"]["status"] == "error" and len(result["records"]) == 1
+    assert result["processing_summary"]["fee_lines"] == 1
+    assert result["processing_summary"]["source_errors"] == 1
+    assert result["processing_summary"]["attachment_errors"] == 0
     assert any(f["status"] == "error" for f in result["files"])
     folder = store.folder(result["job"]["id"]) / "result"
     before = {name: (folder / name).read_bytes() for name in ("state.json", "records.json", "audit.json")}
@@ -298,6 +301,26 @@ def test_local_ocr_is_explicit_and_required_dependency_checked(workspace, tmp_pa
     )
     assert response.status_code == 400
     assert response.json()["error"]["code"] == "LOCAL_OCR_NOT_INSTALLED"
+    assert len(store.listing()) == before
+
+
+@pytest.mark.parametrize("email_attachment", [False, True])
+def test_images_without_local_text_are_rejected_before_creating_a_job(workspace, tmp_path, email_attachment):
+    import io
+
+    from PIL import Image
+
+    client, store = workspace
+    image = io.BytesIO()
+    Image.new("RGB", (20, 20), "white").save(image, format="PNG")
+    path = tmp_path / "bill.png"
+    path.write_bytes(image.getvalue())
+    before = len(store.listing())
+    raw = eml(tmp_path / "image.eml", attachment=path).read_bytes() if email_attachment else path.read_bytes()
+    response = upload(client, raw, filename="image.eml" if email_attachment else "bill.png",
+                      extra=[("ocr_map", ("map.json", "{}", "application/json"))])
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "LOCAL_OCR_REQUIRED"
     assert len(store.listing()) == before
 
 

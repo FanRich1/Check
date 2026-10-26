@@ -2,7 +2,8 @@
 
 import re
 
-from shipping_billing.domain.normalization import key, resolve
+from shipping_billing.domain.normalization import party_key as key
+from shipping_billing.domain.normalization import resolve_party as resolve
 
 
 def document_kind(raw):

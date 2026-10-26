@@ -31,8 +31,8 @@ function invalidateManualPreview() {
 function manualDirection() {
   const entity = S.manual?.workspace?.ledger.entity || "";
   const payer = $("manual-payer").value.trim(), payee = $("manual-payee").value.trim();
-  const normalized = (value) => value.toLocaleLowerCase().replace(/\s+/g, " ").trim();
-  const type = entity && normalized(entity) === normalized(payer) ? "应付 AP" : entity && normalized(entity) === normalized(payee) ? "应收 AR" : "请确认记账公司在交易中的付款或收款角色";
+  const normalized = (value) => value.toLocaleLowerCase().replace(/\s+/g, " ").trim().replace(/\b(inc|ltd|llc|corp|co)\.$/, "$1");
+  const type = payer && payee && normalized(payer) === normalized(payee) ? "付款方和收款方不能相同" : entity && normalized(entity) === normalized(payer) ? "应付 AP" : entity && normalized(entity) === normalized(payee) ? "应收 AR" : "请确认记账公司在交易中的付款或收款角色";
   $("manual-direction").textContent = `${entity} · ${type}`;
 }
 function populateManualFields() {
@@ -104,6 +104,17 @@ async function openManualReview() {
   invalidateManualPreview(); $("manual-dialog").showModal(); $("manual-dialog").scrollTop = 0;
   await loadManualWorkspace();
 }
+async function openManualRecord(recordId) {
+  const record = S.result?.records.find((item) => item.record_id === recordId);
+  if (!record || !canReview(record)) return;
+  S.recordId = recordId;
+  $("review-note").value = S.result.reviews[recordId]?.note || "";
+  await openManualReview();
+}
+$("start-pending-review").addEventListener("click", () => {
+  const record = S.result?.records.find(canReview);
+  if (record) openManualRecord(record.record_id);
+});
 $("manual-review-button").addEventListener("click", openManualReview);
 $("download-current-ledger").addEventListener("click", async () => {
   const ledger = S.result?.job.ledger_id || S.result?.job.review_ledger_id;
@@ -165,7 +176,9 @@ $("manual-approve").addEventListener("click", async () => {
     await api(`/api/jobs/${session.jobId}/review-approve`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({...body, preview_token: token, confirmed: true})});
     localStorage.setItem("billing-reviewer", body.reviewer);
     if (S.manual === session) { $("manual-dialog").close(); $("detail-dialog").close(); }
-    await loadJob(session.jobId); toast("正式复审已保存，账本和人工决定已同步。");
+    await loadJob(session.jobId);
+    const posted = ["create", "update"].includes(body.action);
+    toast(posted ? "复核已保存，确认后的费用和修改记录已写入数据库。" : "复核决定已保存，当前账本费用保持不变。");
   } catch (error) {
     if (S.manual === session) { manualError(error.message); invalidateManualPreview(); }
   }

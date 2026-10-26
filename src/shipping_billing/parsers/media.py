@@ -24,6 +24,23 @@ def check_vendor_against_text(source, page):
     text = "\n".join(fragments)
     if not text.strip():
         return
+    # A local OCR box is often one table cell, not a complete fee row.
+    # Match amounts on spatial rows, keeping the original box evidence intact.
+    native = any(f.locator.page == page and f.method == "pdf_native_text" for f in source.fragments)
+    if not native:
+        rows = []
+        for item in source.metadata.get("local_ocr_pages", []):
+            if item["page"] != page:
+                continue
+            for box in sorted(item["boxes"], key=lambda b: sum(p[1] for p in b["polygon"]) / 4):
+                y = sum(p[1] for p in box["polygon"]) / 4
+                row = next((r for r in rows if abs(r[0] - y) <= 6), None)
+                if row is None:
+                    row = [y, []]
+                    rows.append(row)
+                row[1].append(box)
+        if rows:
+            text = "\n".join(" ".join(b["text"] for b in sorted(boxes, key=lambda b: min(p[0] for p in b["polygon"]))) for _, boxes in rows)
     compact = re.sub(r"\s+", "", text).upper()
     for result in source.ocr_results:
         if result["source_page"] != page:
@@ -245,6 +262,17 @@ def parse_image(data, source, limits, provider, local_ocr=None):
                     buffer = io.BytesIO()
                     frame.convert("RGB").save(buffer, format="PNG")
                     encoded, content_type = buffer.getvalue(), "image/png"
+                if getattr(local_ocr, "enhance_small_images", False) and frame.width < 900:
+                    scale = min(2, (limits.max_image_pixels / (frame.width * frame.height)) ** 0.5)
+                    if scale > 1:
+                        enhanced = frame.resize((int(frame.width * scale), int(frame.height * scale)), Image.Resampling.LANCZOS)
+                        buffer = io.BytesIO()
+                        enhanced.convert("RGB").save(buffer, format="PNG")
+                        encoded, content_type = buffer.getvalue(), "image/png"
+                        source.metadata.setdefault("ocr_preprocessing", []).append({
+                            "page": index + 1, "scale": scale, "method": "lanczos",
+                            "source_coordinates_unchanged": True,
+                        })
                 add_ocr(source, encoded, content_type, index + 1, provider)
                 add_local_text(source, frame, index + 1, local_ocr)
                 check_vendor_against_text(source, index + 1)

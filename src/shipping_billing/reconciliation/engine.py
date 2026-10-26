@@ -8,7 +8,7 @@ from shipping_billing.domain import money
 from shipping_billing.domain.engine import append_unique, normalize, problem
 from shipping_billing.domain.evidence import EvidenceIndex
 from shipping_billing.domain.finance import document_kind
-from shipping_billing.domain.normalization import CHARGES, CURRENCIES, alias_map
+from shipping_billing.domain.normalization import CHARGES, CURRENCIES, alias_map, party_alias_map
 from shipping_billing.errors import BillingError
 from shipping_billing.extraction.engine import contains_value, digest
 from shipping_billing.models import AuditTrail, BillingRecord, BillSnapshot, Change, Evidence, Locator
@@ -104,7 +104,7 @@ def merged_valid(data, line, context):
     posting = read(data, "/financial_attributes/posting_type")
     if not entity or posting not in ("AR", "AP") or not read(data, "/charge_details/charge_item"):
         return "INVALID_MERGED_CORE"
-    aliases = alias_map(context.normalization_context.party_aliases)
+    aliases = party_alias_map(context.normalization_context.party_aliases)
     a = party(read(data, "/transaction_party/issuer"), aliases)
     b = party(read(data, "/transaction_party/recipient"), aliases)
     e = party(entity, aliases)
@@ -250,7 +250,7 @@ def reconcile(normalized, extraction, *, state=None, context=None, parsed=None):
     if set(context.lines) - {line.source_line_id for line in normalized.lines}:
         raise BillingError("UNKNOWN_CONTEXT_LINE", "Directive references an unknown source line.")
     charges = alias_map({**CHARGES, **context.normalization_context.charge_aliases})
-    parties = alias_map(context.normalization_context.party_aliases)
+    parties = party_alias_map(context.normalization_context.party_aliases)
     original_bills = {b.record_id: b.model_dump(mode="python", exclude_unset=True) for b in state.bills}
     pool = deepcopy(original_bills)
     identities = {entry.record_id: set(entry.occurrence_keys) for entry in state.identities}

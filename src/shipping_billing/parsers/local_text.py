@@ -8,6 +8,8 @@ from shipping_billing.errors import BillingError
 
 
 class LocalTextOCR:
+    enhance_small_images = True
+
     def __init__(self):
         try:
             import rapidocr_onnxruntime

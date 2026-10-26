@@ -12,10 +12,12 @@ from pathlib import Path
 from uuid import uuid4
 
 from shipping_billing.config import Settings
+from shipping_billing.domain.normalization import party_key
 from shipping_billing.errors import BillingError
 from shipping_billing.io import dumps, load_json, write_json
 from shipping_billing.pipeline.engine import run_pipeline
 from shipping_billing.reconciliation.contracts import LedgerState, ReconciliationContext
+from shipping_billing.web.preflight import requires_local_text
 
 DOWNLOADS = {"records.json", "audit.json", "manifest.json", "state.json", "reviews.json", "review-decisions.json"}
 FORMATS = {".eml", ".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".xls", ".xlsx", ".doc", ".docx"}
@@ -71,10 +73,18 @@ def explain(code):
         "TUNNEL_NOT_READY": "OCR 临时访问链接未建立成功，该页尚未提交识别。请稍后重新处理；更换账本或公司名称不能解决此网络问题。",
         "TUNNEL_DOWNLOAD_FAILED": "OCR 临时文件链接无法访问，该页尚未提交识别。请检查网络后重新处理。",
         "NATIVE_TEXT_VERIFIED": "费用字段已逐项核对 PDF 原生文字；OCR 结构化结果仅作为辅助信息。",
+        "IMAGE_TEXT_VERIFIED": "图片中的交易双方和字段已核验，两路识别的费用及编号一致，费用合计也已通过校验。",
         "OCR_AMOUNT_NOT_CORROBORATED": "OCR 费用金额与 PDF 原生费用行未能对应，请核对具体费用行。",
         "MULTIPLE_MATCHES": "匹配到多条旧账单，需要人工确认目标记录。",
         "AMBIGUOUS_CURRENCY": "材料仅提供含糊货币符号，无法唯一确定币种。",
         "MISSING_CURRENCY": "材料缺少明确币种。",
+        "PAYMENT_CONDITION_ONLY": "已保留原文中的付款条件；“立即付款”或 COD 不直接等同 PP/CC，此项不单独阻止入账。",
+        "ACCOUNTING_ENTITY_NOT_PARTY": "记账主体与已识别的付款方、收款方均不匹配；请核对公司全称，缩写或其他名称需配置公司别名。",
+        "LOCAL_OCR_REQUIRED": "材料含图片或扫描页，请勾选「为图片 / 扫描件补充本地文字识别」后提交；未安装时请先运行安装脚本安装 local-ocr。",
+        "LOCAL_OCR_NOT_INSTALLED": "本地文字识别尚未安装，请运行安装脚本安装 local-ocr，再刷新页面。",
+        "CHILD_REQUIRES_REVIEW": "附件有未完成的识别或复核项，请查看对应附件；正文费用按自身证据单独核对。",
+        "OCR_IDENTIFIER_NOT_CORROBORATED": "指定 OCR 的单据号或箱号与原文不一致，需对照原件确认。",
+        "OCR_POSSIBLE_MERGED_FEE_ROWS": "指定 OCR 可能合并了原件中同名的多行费用；已保留分别提取的费用，请逐行核对。",
         "UNAUTHORIZED_CHANGE": "发现新旧值差异，但材料没有明确授权修改。",
         "IMAGE_TEXT_REQUIRES_VERIFICATION": "图片识别结果需要对照原图核对。",
         "PDF_NO_NATIVE_TEXT": "扫描 PDF 缺少可交叉校验的原生文字，需要核对识别结果。",
@@ -93,7 +103,7 @@ def explain(code):
         "MODEL_TRUNCATED": "模型返回内容被长度限制截断，请减少本次材料后重新处理。",
         "MODEL_EMPTY_CONTENT": "模型未返回有效内容，请稍后重新处理。",
         "MODEL_INVALID_STRUCTURE": "模型未返回有效结构，有限修复后仍无法使用。",
-        "NO_SOURCE_TEXT": "该文件没有可用文字，无法提取费用。",
+        "NO_SOURCE_TEXT": "尚未取得可引用的原文，无法提取费用。图片或扫描件请启用本地文字识别后重新处理；这不代表原件没有费用。",
         "INVALID_OLD_STATE": "旧账单 JSON 无效，或记录编号缺失、重复。",
         "MODEL_NOT_CONFIGURED": "模型尚未配置。请在项目 .env 中完成配置后重启工作台。",
     }
@@ -102,10 +112,32 @@ def explain(code):
 
 def explain_issue(issue):
     if not issue.get("blocks_automation", True) and issue["code"] in (
-        "OCR_STRUCTURED_REQUIRES_CHECK", "OCR_NO_ORIGINAL_TEXT"
+        "OCR_STRUCTURED_REQUIRES_CHECK", "OCR_NO_ORIGINAL_TEXT", "LOCAL_OCR_LOW_CONFIDENCE",
+        "IMAGE_TEXT_REQUIRES_VERIFICATION"
     ):
-        return "OCR 仅提供辅助结构化结果；本次费用字段已核对 PDF 原生文字，此项不再阻止自动入账。"
+        return "本次费用字段已通过证据核验，此项识别提示不再阻止自动入账。"
     return explain(issue["code"])
+
+
+def processing_summary(manifest, *, pending=None):
+    """Keep billing decisions separate from incomplete document/attachment coverage."""
+    counts, files = manifest["counts"], manifest["files"]
+    fees = counts["fee_lines"]
+    pending = counts["PENDING_REVIEW"] if pending is None else pending
+    errors = [f for f in files if f["status"] == "error"]
+    attachments = sum(f.get("parent_source_id") is not None for f in errors)
+    fee_message = f"已识别 {fees} 条费用，其中 {pending} 条待复核"
+    if not fees:
+        fee_message = "尚未提取到费用" if errors else "本次未发现费用"
+    source_message = f"共 {len(files)} 个来源，{len(errors)} 个异常（其中 {attachments} 个附件）"
+    message = (
+        f"{fee_message}；{source_message}，已保留可用结果，请查看来源列表。" if errors
+        else f"{fee_message}，请核对后处理。" if pending
+        else f"{fee_message}，可以查看和下载结果。"
+    )
+    return dict(fee_lines=fees, pending_fee_lines=pending, source_errors=len(errors),
+                attachment_errors=attachments, fee_message=fee_message,
+                source_message=source_message, message=message)
 
 
 class JobStore:
@@ -228,7 +260,7 @@ class JobStore:
             if demo or state_data is not None or base_job:
                 raise BillingError("CONFLICTING_OLD_STATE", "已选择数据库账本，请通过账本管理导入旧账单。")
             book = self.repository.ledger(ledger_id)
-            if entity and entity != book["entity"]:
+            if entity and party_key(entity) != party_key(book["entity"]):
                 raise BillingError("LEDGER_ENTITY_CONFLICT", "记账主体与所选账本不一致。")
             entity = book["entity"]
         elif self.repository and not demo:
@@ -256,7 +288,7 @@ class JobStore:
         )
         context = ReconciliationContext.model_validate(context_data if context_data is not None else {})
         configured = context.normalization_context.accounting_entity
-        if entity and configured and entity != configured:
+        if entity and configured and party_key(entity) != party_key(configured):
             raise BillingError("CONFLICTING_ACCOUNTING_ENTITY", "页面记账主体与业务配置文件中的主体不同。")
         context.normalization_context.accounting_entity = entity or configured
         if not context.normalization_context.accounting_entity:
@@ -284,6 +316,8 @@ class JobStore:
             )
         ):
             raise BillingError("MISSING_OCR_DELIVERY", explain("MISSING_OCR_DELIVERY"))
+        if not demo and not local_ocr_enabled and requires_local_text(cleaned):
+            raise BillingError("LOCAL_OCR_REQUIRED", explain("LOCAL_OCR_REQUIRED"))
         with self.lock:
             if len(self.active) >= 3:
                 raise BillingError("QUEUE_FULL", "已有三个任务正在处理或等待，请稍后再提交。")
@@ -371,11 +405,7 @@ class JobStore:
                 stage="done",
                 counts=manifest["counts"],
                 exit_code=manifest["exit_code"],
-                message={
-                    "completed": "处理完成，可以查看和下载账单。",
-                    "pending_review": "处理完成，部分内容需要人工核对。",
-                    "error": "部分来源处理失败，已保留成功结果及错误原因。",
-                }[manifest["status"]],
+                message=processing_summary(manifest)["message"],
             )
             if self.repository:
                 # Verify archived artifacts before applying any balance changes.
@@ -426,6 +456,9 @@ class JobStore:
         if not (result / "manifest.json").is_file():
             return dict(job=item, records=[], files=[], downloads=[], reviews={}, review_decisions={})
         manifest = load_json(result / "manifest.json")
+        summary = processing_summary(manifest)
+        if item["status"] in {"completed", "pending_review", "error"} and not item.get("error_code"):
+            item = {**item, "message": summary["message"]}
         # Only complete, hash-verified artifacts may be displayed, continued or exported.
         try:
             for name in ("records.json", "state.json", "audit.json", "reconciliation.json"):
@@ -475,8 +508,16 @@ class JobStore:
         from shipping_billing.storage.review import visible_plan
 
         resolutions = {rid: visible_plan(value) for rid, value in resolutions.items()}
+        if resolutions:
+            summary = processing_summary(manifest, pending=sum(
+                d["operation"] == "PENDING_REVIEW" and d["record_id"] not in resolutions
+                for d in decisions
+            ))
+            if item["status"] in {"completed", "pending_review", "error"} and not item.get("error_code"):
+                item = {**item, "message": summary["message"]}
         return dict(
             job=item,
+            processing_summary=summary,
             records=records,
             files=files,
             reviews=reviews,

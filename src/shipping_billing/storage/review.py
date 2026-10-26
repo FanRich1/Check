@@ -8,7 +8,7 @@ from typing import Annotated, Literal
 from pydantic import Field, StrictBool, ValidationError, field_validator
 
 from shipping_billing.domain import money
-from shipping_billing.domain.normalization import CHARGES, alias_map, currency, key, resolve
+from shipping_billing.domain.normalization import CHARGES, alias_map, currency, party_key, resolve
 from shipping_billing.errors import BillingError
 from shipping_billing.extraction.engine import digest
 from shipping_billing.models import BillSnapshot, Contract, same_json_value
@@ -103,9 +103,12 @@ def build_plan(state, book, origin, request):
             raise BillingError("INVALID_REVIEW_CURRENCY", "请提供明确有效的币种，例如 USD、CNY。")
         write(after, "/charge_details/currency", code)
         payer, payee = request.payer.strip(), request.payee.strip()
-        if not payer or not payee or key(payer) == key(payee):
+        if not payer or not payee or party_key(payer) == party_key(payee):
             raise BillingError("REVIEW_PARTIES_REQUIRED", "请确认不同的付款方和收款方。")
-        posting = "AP" if key(book["entity"]) == key(payer) else "AR" if key(book["entity"]) == key(payee) else None
+        posting = (
+            "AP" if party_key(book["entity"]) == party_key(payer)
+            else "AR" if party_key(book["entity"]) == party_key(payee) else None
+        )
         if posting is None:
             raise BillingError("REVIEW_ENTITY_NOT_PARTY", "记账公司必须是已确认的付款方或收款方之一。")
         after["financial_attributes"] = {**after.get("financial_attributes", {}),

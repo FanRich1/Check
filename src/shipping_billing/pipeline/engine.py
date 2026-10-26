@@ -256,7 +256,7 @@ def run_pipeline(
             if parent.status != "error":
                 parent.status = "pending_review"
             if not any(i.code == "CHILD_REQUIRES_REVIEW" for i in parent.issues):
-                parent.issues.append(problem("CHILD_REQUIRES_REVIEW"))
+                parent.issues.append(problem("CHILD_REQUIRES_REVIEW", blocking=False))
     audit = []
     for record in reconciled.records:
         members = [d for d in reconciled.decisions if d.record_id == record.record_id]

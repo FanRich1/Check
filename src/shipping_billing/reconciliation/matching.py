@@ -1,7 +1,7 @@
 """Matching keys never use missing-value equality or new amounts to select a same-name row."""
 
 from shipping_billing.domain.finance import document_kind
-from shipping_billing.domain.normalization import currency, key, resolve
+from shipping_billing.domain.normalization import currency, key, party_key, resolve, resolve_party
 from shipping_billing.extraction.engine import digest
 from shipping_billing.models import same_json_value as equal
 
@@ -38,7 +38,7 @@ def fee(data, charge_aliases):
 
 
 def party(value, aliases):
-    return key(resolve(value, aliases)) if value else None
+    return party_key(resolve_party(value, aliases)) if value else None
 
 
 def separate_adjustment(new, old):

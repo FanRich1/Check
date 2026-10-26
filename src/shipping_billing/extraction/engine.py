@@ -15,7 +15,7 @@ from shipping_billing.extraction.contracts import (
     ExtractionFile,
     ExtractionReport,
 )
-from shipping_billing.extraction.prompt import INSTRUCTIONS, PROMPT_VERSION
+from shipping_billing.extraction.prompt import INSTRUCTIONS, PROMPT_VERSION, SPATIAL_INSTRUCTIONS
 from shipping_billing.extraction.units import build_units
 from shipping_billing.io import dumps, load_json, write_json
 from shipping_billing.models import ChargeDetails, DocumentInfo, Evidence, Issue, TransactionParty
@@ -65,6 +65,14 @@ def checked_value(value, citations, units, allowed, field, issues, evidence):
         if isinstance(value, Decimal | int | float) and not contains_value(value, unit.text):
             continue
         refs.append((unit, citation.quote))
+    if field == "document_type" and isinstance(value, str) and value.upper() in {
+        "DEBIT INVOICE", "CREDIT INVOICE", "DEBIT NOTE", "CREDIT NOTE", "GENERAL NOTICE"
+    }:
+        # Preserve the printed title when OCR has only joined its spaces.
+        pattern = r"\b" + r"\s*".join(re.escape(c) for c in value if not c.isspace()) + r"\b"
+        match = next((m for _, quote in refs if (m := re.search(pattern, quote, re.I))), None)
+        if match:
+            value = match.group(0)
     if not refs or not contains_value(value, "\n".join(q for _, q in refs)):
         issues.append(issue("UNSUPPORTED_FIELD_EVIDENCE", field))
         return None
@@ -321,6 +329,9 @@ class ExtractionEngine:
             # Extract fees from their own source first. Related shipping context is joined below
             # by explicit shared identifiers; attachments cannot suppress or create body fees.
             selected = [u for u in unit_list if u.source_id == target.source_id]
+            instructions = INSTRUCTIONS + (SPATIAL_INSTRUCTIONS if any(
+                u.method == "local_ocr_address_panel" for u in selected
+            ) else "")
             payload = {
                 "target": target.source_id,
                 "related_sources": sorted(allowed - {target.source_id}),
@@ -336,7 +347,7 @@ class ExtractionEngine:
                 ],
             }
             text = dumps(payload)
-            fingerprint = digest([PROMPT_VERSION, INSTRUCTIONS, ExtractionDraft.model_json_schema(), payload])
+            fingerprint = digest([PROMPT_VERSION, instructions, ExtractionDraft.model_json_schema(), payload])
             archive_path = self.storage / (fingerprint + ".json")
             if not any(u.source_id == target.source_id for u in selected):
                 file.issues.append(issue("NO_SOURCE_TEXT"))
@@ -376,7 +387,7 @@ class ExtractionEngine:
                             draft, meta = self.client.extract(
                                 text,
                                 ExtractionDraft,
-                                instructions=INSTRUCTIONS
+                                instructions=instructions
                                 + (
                                     "\nPrevious output violated schema. Re-extract valid JSON."
                                     if attempt
@@ -409,6 +420,8 @@ class ExtractionEngine:
                         file.observations.append(observation)
                     else:
                         file.issues.append(issue("UNSUPPORTED_OBSERVATION_EVIDENCE"))
+                from shipping_billing.extraction.image_verification import verify_image_evidence
+                verify_image_evidence(target, file, units)
                 blockers = any(i.blocks_automation for i in file.issues) or any(
                     i.blocks_automation for c in file.candidates for i in c.issues
                 )

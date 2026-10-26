@@ -32,6 +32,7 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.types import TypeDecorator
 
+from shipping_billing.domain.normalization import party_key
 from shipping_billing.errors import BillingError
 from shipping_billing.io import dumps
 from shipping_billing.reconciliation.contracts import LedgerState
@@ -253,7 +254,7 @@ class LedgerRepository:
                 bill.financial_attributes.posting_type not in ("AR", "AP")
             ):
                 raise BillingError("INVALID_LEDGER_BILL", "正式账单缺少金额、币种或明确应收应付，未写入。")
-            if entity_key(bill.financial_attributes.accounting_entity or "") != book["entity_key"]:
+            if party_key(bill.financial_attributes.accounting_entity or "") != party_key(book["entity"]):
                 raise BillingError("LEDGER_ENTITY_CONFLICT", "账单的记账主体与所选账本不一致，未写入。")
             amount_value(bill.charge_details.amount)
 

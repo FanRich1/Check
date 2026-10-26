@@ -2,7 +2,7 @@
 
 const $ = (id) => document.getElementById(id);
 const S = {config: null, files: [], jobs: [], jobId: null, result: null, baseJob: null, operation: "all", search: "", timer: null, historyTimer: null, recordId: null, submitting: false, ledgers: [], ledgerId: "", entityDraft: ""};
-const operationNames = {CREATE: "新增", UPDATE: "修改", NO_CHANGE: "无变化", PENDING_REVIEW: "待复核", REJECTED: "已拒绝"};
+const operationNames = {CREATE: "新增", UPDATE: "修改", NO_CHANGE: "已有费用", PENDING_REVIEW: "待复核", REJECTED: "已拒绝"};
 const statusNames = {queued: "等待处理", running: "处理中", completed: "已完成", processed: "已处理", pending_review: "待复核", error: "来源异常", failed: "处理失败", interrupted: "已中断", no_charge: "无费用"};
 const reviewNames = {unreviewed: "待核对", checked: "已核对", needs_followup: "需补材料"};
 const fieldNames = {"/charge_details/charge_item": "标准费用名称", "/charge_details/charge_item_raw": "原始费用名称", "/charge_details/amount": "费用金额", "/charge_details/currency": "币种", "/charge_details/payment_term": "付款方式", "/document_info/reference_no": "单据编号", "/document_info/document_type": "单据类型", "/document_info/document_date": "单据日期", "/transaction_party/issuer": "签发方", "/transaction_party/recipient": "接收方", "/financial_attributes/accounting_entity": "记账主体", "/financial_attributes/posting_type": "记账方向"};
@@ -41,6 +41,25 @@ function decisionOperation(record) {
 function displayedRecord(record) {
   const decision = S.result?.review_decisions?.[record.record_id];
   return decision ? {...record, ...(decision.display_bill || decision.after || {}), record_id: record.record_id, operation: decisionOperation(record)} : record;
+}
+function unchangedResult(record) {
+  const decision = S.result?.review_decisions?.[record.record_id];
+  const committed = !S.result?.job.demo && (decision?.action === "duplicate" ||
+    (S.result?.job.ledger_id && S.result.job.ledger_commit_status === "committed"));
+  return {
+    label: committed ? "已入账，无需重复录入" : "已匹配已有费用",
+    reason: decision?.action === "duplicate" ? "人工复核已确认重复，保留指定旧账，本次未新增或修改。" :
+      committed ? "已匹配当前账本中的已有费用，本次未新增或修改。" :
+        "已匹配提供的账本记录，本次未新增或修改。",
+    target: decision?.target_record_id || record.existing_record_id || record.record_id,
+  };
+}
+function canReview(record) {
+  const job = S.result?.job;
+  return Boolean(S.config?.database_enabled && job && !job.demo &&
+    ["completed", "pending_review", "error"].includes(job.status) &&
+    (!job.ledger_id || job.ledger_commit_status === "committed") &&
+    record.operation === "PENDING_REVIEW" && !S.result.review_decisions?.[record.record_id]);
 }
 function busy(value) {
   S.submitting = value;
@@ -256,12 +275,18 @@ function renderResult() {
   $("result-banner").textContent = `${job.message}${job.error_code ? `（${job.error_code}）` : ""}`;
   if (job.review_resolved_count && !job.review_pending_count) $("result-banner").textContent = "本次已识别的待复核费用均已处理。可下载当前有效账本；原始识别结果和来源异常仍保留供核对。";
   $("result-banner").className = `notice ${["error", "failed", "interrupted"].includes(job.status) ? "error" : job.status === "pending_review" ? "warning" : ""}`;
+  const summary = data.processing_summary;
+  show("processing-summary", !active && Boolean(summary));
+  $("processing-summary").textContent = summary ? `费用结果：${summary.fee_message}。来源处理：${summary.source_message}。` : "";
+  const pending = data.records.filter(canReview);
+  show("pending-review-callout", pending.length > 0);
+  $("pending-review-summary").textContent = `还有 ${pending.length} 条费用待复核，尚未正式入账。可核对原件、修改字段，确认后保存到当前账本。`;
   show("result-content", data.downloads.includes("records.json"));
   show("continue-button", data.downloads.includes("state.json") && !job.demo && !active && (!S.config.database_enabled || Boolean(job.ledger_id || job.review_ledger_id)));
   show("download-current-ledger", Boolean(S.config.database_enabled && (job.ledger_id || job.review_ledger_id)));
   if (!data.downloads.includes("records.json")) return;
   clear("metrics");
-  const descriptions = {CREATE: "明确的新费用", UPDATE: "仅应用授权变更", NO_CHANGE: "已存在或重复来源", PENDING_REVIEW: "需要进一步确认"};
+  const descriptions = {CREATE: "明确的新费用", UPDATE: "仅应用授权变更", NO_CHANGE: "已匹配已有费用，本次未新增或修改", PENDING_REVIEW: "需要进一步确认"};
   for (const operation of ["CREATE", "UPDATE", "NO_CHANGE", "PENDING_REVIEW"]) {
     // Main records are deduplicated; per-source decisions are counted separately in the manifest.
     const count = data.records.filter((r) => decisionOperation(r) === operation).length;
@@ -296,12 +321,20 @@ function renderRecords() {
     amount.append(node("strong", "amount", record.amount_display), node("small", "currency", record.charge_details.currency || "币种待确认"));
     const posting = node("td", `posting ${record.financial_attributes.posting_type === "AR" ? "ar" : ""}`, {AR: "应收 AR", AP: "应付 AP"}[record.financial_attributes.posting_type] || "待确认");
     const operation = node("td");
-    operation.append(pill(record.operation));
+    const unchanged = record.operation === "NO_CHANGE" ? unchangedResult(record) : null;
+    operation.append(pill(record.operation, unchanged?.label));
+    if (unchanged) operation.append(node("small", "operation-explanation", unchanged.reason));
     if (S.result.review_decisions?.[record.record_id]) operation.append(node("small", "", "人工复审决定"));
     const review = S.result.reviews[record.record_id]?.status || "unreviewed";
     const resolved = Boolean(S.result.review_decisions?.[record.record_id]);
     const reviewCell = node("td", `review-mark ${resolved ? "checked" : review}`, resolved ? "已正式复审" : reviewNames[review]);
-    const actions = node("td");
+    const actions = node("td", "record-actions");
+    if (canReview(record)) {
+      const reviewButton = node("button", "button primary compact review-record-button", "复核并入账");
+      reviewButton.type = "button";
+      reviewButton.addEventListener("click", () => openManualRecord(record.record_id));
+      actions.append(reviewButton);
+    }
     const details = node("button", "text-button", S.result.review_decisions?.[record.record_id] ? "查看复审 / 依据 ↗" : "查看依据 ↗");
     details.addEventListener("click", () => openDetail(record.record_id));
     actions.append(details);
@@ -319,15 +352,31 @@ function renderSources() {
     if (file.sha256 && !S.result.job.demo) {
       info.append(originalLink(file));
     }
+    const pendingRecords = S.result.records.filter((record) => record.operation === "PENDING_REVIEW" &&
+      file.record_ids?.includes(record.record_id));
+    const reviewed = pendingRecords.filter((record) => S.result.review_decisions?.[record.record_id]).length;
+    const remaining = pendingRecords.length - reviewed;
+    let issueContainer = info;
+    if (reviewed) {
+      info.append(node("p", "source-review-summary", `本来源已识别的待复核费用：已处理 ${reviewed} 条，剩余 ${remaining} 条。`));
+      const history = node("details", "source-history");
+      history.open = remaining > 0 || file.status === "error";
+      history.append(node("summary", "", `原始识别提示（当时状态：${statusNames[file.status] || file.status}）`));
+      history.append(node("p", "field-help", "以下保留识别时的提示。费用的当前处理结果以人工复核决定为准；复核不代表整份文件已完整识别。"));
+      info.append(history);
+      issueContainer = history;
+    }
     const seen = new Set();
     for (const issue of file.issues) {
       if (seen.has(issue.code)) continue;
       seen.add(issue.code);
-      const problem = node("div", "source-issue", issue.explanation);
+      const problem = node("div", `source-issue${issue.blocks_automation ? "" : " informational"}`, issue.explanation);
       problem.append(node("code", "", issue.code));
-      info.append(problem);
+      issueContainer.append(problem);
     }
-    row.append(info, pill(file.status));
+    const status = file.status === "error" ? pill("error") : reviewed && !remaining
+      ? pill("completed", "费用已复核") : reviewed ? pill("pending_review", "部分费用待复核") : pill(file.status);
+    row.append(info, status);
     $("source-files").append(row);
   }
 }
@@ -353,6 +402,12 @@ function openDetail(id) {
   const grid = node("div", "detail-grid");
   grid.append(field("本次操作", operationNames[record.operation]), field("金额 / 币种", `${record.amount_display} ${record.charge_details.currency || "币种待确认"}`), field("原始费用名称", record.charge_details.charge_item_raw), field("单据编号", record.document_info.reference_no), field("签发方", record.transaction_party.issuer), field("接收方", record.transaction_party.recipient), field("付款描述", record.charge_details.payment_term_raw || record.charge_details.payment_term), field("数量 / 单价", `${record.quantity_display} / ${record.unit_price_display}`), field("记账主体", record.financial_attributes.accounting_entity), field("记账方向", {AP: "应付 AP", AR: "应收 AR"}[record.financial_attributes.posting_type] || "待确认"));
   $("detail-body").append(grid);
+  if (decisionOperation(record) === "NO_CHANGE") {
+    const unchanged = unchangedResult(record);
+    const explanation = section(unchanged.label);
+    explanation.append(node("p", "", unchanged.reason), node("p", "", `匹配的账单记录：${unchanged.target}`));
+    $("detail-body").append(explanation);
+  }
   const sourceIds = new Set(record.observations_display.map((item) => item.source_id));
   const originals = S.result.files.filter((file) => sourceIds.has(file.source_id) && file.sha256);
   if (originals.length && !S.result.job.demo) {
@@ -397,7 +452,7 @@ function openDetail(id) {
   if (!evidenceCount) evidence.append(node("p", "", "这条记录没有可定位证据，请对照原始材料核对。"));
   $("detail-body").append(evidence);
   const decision = S.result.review_decisions?.[id];
-  show("manual-review-button", Boolean(S.config.database_enabled && !S.result.job.demo && record.operation === "PENDING_REVIEW" && !decision));
+  show("manual-review-button", canReview(record));
   if (decision) {
     const summary = section("正式人工复审记录");
     summary.append(node("p", "", `${decision.action_label} · ${decision.reviewer} · ${dateText(decision.decided_at)} · 账本版本 ${decision.ledger_revision}`), node("p", "", decision.reason));
@@ -455,6 +510,11 @@ $("upload-form").addEventListener("submit", async (event) => {
     return;
   }
   if (!$("upload-form").reportValidity()) return;
+  if (!$("local-ocr").checked && S.files.some((file) => /\.(png|jpe?g|tiff?)$/i.test(file.name))) {
+    formError(S.config.local_ocr_ready ? "图片需要可核对的原文，请勾选「为图片 / 扫描件补充本地文字识别」后提交。" : "图片需要本地文字识别，请先安装 local-ocr，再刷新页面。");
+    $("local-ocr").focus();
+    return;
+  }
   const form = new FormData();
   S.files.forEach((file) => form.append("documents", file));
   form.append("entity", $("entity").value.trim());
@@ -526,6 +586,7 @@ async function initialize() {
     $("ocr-status").classList.toggle("unready", !S.config.ocr_ready);
     $("temporary-ocr").disabled = !S.config.ocr_ready;
     $("local-ocr").disabled = !S.config.local_ocr_ready;
+    $("local-ocr").checked = Boolean(S.config.local_ocr_ready);
     $("local-ocr-status").textContent = S.config.local_ocr_ready ? "✓ 本地辅助识别已就绪" : "未安装；可按交付说明安装 local-ocr 可选依赖";
     if (!S.config.model_ready) {
       $("configuration-notice").className = "notice warning";

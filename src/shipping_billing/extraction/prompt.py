@@ -50,3 +50,14 @@ separately. The company in a left-hand customer address panel can be the billed 
 a right-hand remittance panel names the issuer. A remittance instruction in the right panel does
 not turn the left panel's customer company into a bank beneficiary.
 """
+
+SPATIAL_INSTRUCTIONS = """
+Address-panel units preserve separate columns. Use the company name in the customer
+address panel as recipient, not its Payer/customer account code. A remittance panel
+explicitly identifies the organization receiving payment; retain its printed legal name.
+For tables with Base, Rate, Curr, Amount, R.O.E., Curr, Amount: R.O.E. means exchange
+rate, NEVER quantity. Repeated Amount columns are original and converted values of
+the SAME fee. A Base code (C/TT/etc.) is not numeric quantity. If there is no explicit
+quantity column or quantity statement for the fee, set quantity AND unit_price null;
+preserve the actual Amount as amount instead of deriving it from Rate times R.O.E.
+"""

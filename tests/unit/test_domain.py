@@ -11,6 +11,32 @@ from shipping_billing.errors import BillingError
 CASES = scenarios()
 
 
+@pytest.mark.parametrize("recipient,entity,ready", [
+    ("ALL AMERICA FORWARDING, INC.", "ALL AMERICA FORWARDING, INC", True),
+    ("Buyer Ltd.", "  buyer   LTD  ", True),
+    ("Buyer Ltd", "Buyer LLC", False),
+    ("Buyer-A Ltd", "Buyer A Ltd", False),
+    ("Buyer Ltd", "Buyer", False),
+])
+def test_party_suffix_full_stop_does_not_change_direction_or_erase_legal_name(recipient, entity, ready):
+    source, context = make_input(recipient=recipient, entity=entity)
+    line = normalize(source, context).lines[0]
+    assert line.original.transaction_party.recipient == recipient
+    assert line.candidate.transaction_party.recipient == recipient
+    assert (line.status == "ready") is ready
+    assert line.financial_attributes.posting_type == ("AP" if ready else None)
+
+
+def test_party_aliases_follow_suffix_equivalence_and_reject_conflicts():
+    source, context = make_input(recipient="Buyer Ltd.", entity="Confirmed Buyer LLC")
+    context.party_aliases = {"Buyer Ltd": "Confirmed Buyer LLC"}
+    assert normalize(source, context).lines[0].status == "ready"
+    context.party_aliases["Buyer Ltd."] = "Other Legal Entity"
+    with pytest.raises(BillingError) as exc:
+        normalize(source, context)
+    assert exc.value.code == "CONFLICTING_ALIAS"
+
+
 @pytest.mark.parametrize(
     "title,posting,ready",
     [

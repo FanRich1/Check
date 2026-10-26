@@ -12,34 +12,47 @@ def key(value):
     return " ".join(value.split()).casefold()
 
 
-def alias_map(aliases):
+def party_key(value):
+    """Ignore the optional final full stop on an explicit company suffix only."""
+    return re.sub(r"\b(inc|ltd|llc|corp|co)\.$", r"\1", key(value))
+
+
+def alias_map(aliases, *, normalize_key=key):
     result = {}
     for alias, canonical in aliases.items():
-        token = key(alias)
-        if token in result and key(result[token]) != key(canonical):
+        token = normalize_key(alias)
+        if token in result and normalize_key(result[token]) != normalize_key(canonical):
             raise BillingError("CONFLICTING_ALIAS", "Aliases with equal normalized spelling conflict.")
         result[token] = canonical
     for token in result:
         seen = set()
         current = token
-        while current in result and key(result[current]) != current:
+        while current in result and normalize_key(result[current]) != current:
             if current in seen:
                 raise BillingError("CYCLIC_ALIAS", "Alias configuration contains a cycle.")
             seen.add(current)
-            current = key(result[current])
+            current = normalize_key(result[current])
     return result
 
 
-def resolve(value, aliases):
+def resolve(value, aliases, *, normalize_key=key):
     if value is None:
         return None
     current = value
-    while key(current) in aliases:
-        target = aliases[key(current)]
-        if key(target) == key(current):
+    while normalize_key(current) in aliases:
+        target = aliases[normalize_key(current)]
+        if normalize_key(target) == normalize_key(current):
             return target
         current = target
     return " ".join(current.split())
+
+
+def party_alias_map(aliases):
+    return alias_map(aliases, normalize_key=party_key)
+
+
+def resolve_party(value, aliases):
+    return resolve(value, aliases, normalize_key=party_key)
 
 
 CHARGES = {

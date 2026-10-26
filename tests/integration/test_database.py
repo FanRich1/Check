@@ -187,6 +187,16 @@ def test_stale_commit_rejected_and_receipt_is_idempotent(repository):
     assert repository.get_job(stale["id"])["ledger_commit_status"] == "pending"
 
 
+def test_company_suffix_full_stop_accepts_existing_ledger_without_rewriting_identity(repository):
+    book = repository.create_ledger("existing spelling", "Buyer Ltd.")
+    state = state_fixture()
+    repository.import_state(book["id"], state, 0)
+    saved, revision = repository.snapshot(book["id"])
+    assert revision == 1 and len(saved.bills) == 1
+    assert repository.ledger(book["id"])["entity"] == "Buyer Ltd."
+    assert saved.bills[0].financial_attributes.accounting_entity == "Buyer Ltd"
+
+
 def test_failed_receipt_rolls_back_bills_revision_and_observations(repository, monkeypatch):
     book = repository.create_ledger("rollback", "Buyer Ltd")
     repository.import_state(book["id"], state_fixture(), 0)
@@ -370,6 +380,17 @@ def approve(client, result, body):
                                                            "confirmed": True})
     assert response.status_code == 200, response.text
     return response.json(), preview.json()["preview_token"]
+
+
+def test_human_review_uses_same_company_suffix_matching_as_automatic_posting(web, tmp_path):
+    client, store, book = web
+    result = finish(client, upload(client, book, eml(tmp_path / "ambiguous.eml", currency="$").read_bytes()))
+    body = review_request(client, book, result, fields={"/charge_details/currency": "USD"})
+    body["payer"] = "Buyer Ltd."
+    approved, _ = approve(client, result, body)
+    assert approved["after"]["financial_attributes"]["posting_type"] == "AP"
+    state, _ = store.repository.snapshot(book["id"])
+    assert len(state.bills) == 1 and state.bills[0].financial_attributes.posting_type == "AP"
 
 
 def test_human_create_exact_reupload_receipt_and_originals_immutable(web, tmp_path):
@@ -594,11 +615,16 @@ def test_multiple_pending_fees_resolve_individually_without_marking_all_done(web
     current = client.get(f"/api/jobs/{result['job']['id']}").json()
     assert current["job"]["review_pending_count"] == 1
     assert len(current["review_decisions"]) == 1
+    assert current["processing_summary"]["pending_fee_lines"] == 1
     other = {**result, "records": [result["records"][1]]}
     second = review_request(client, book, other, fields={"/charge_details/currency": "USD"})
     approve(client, result, second)
     current = client.get(f"/api/jobs/{result['job']['id']}").json()
     assert current["job"]["review_pending_count"] == 0
+    assert current["processing_summary"]["pending_fee_lines"] == 0
+    assert "0 条待复核" in current["job"]["message"]
+    # Original source facts remain immutable; the UI combines them with review decisions.
+    assert current["files"] == result["files"]
     assert sorted(b.charge_details.amount for b in store.repository.snapshot(book["id"])[0].bills) == [35, 65]
 
 

@@ -55,6 +55,34 @@ def build_units(report):
                         )
                         add(paragraph, loc, frag.method, {"original_contiguous_lines": [index + 1, end]})
         for page in source.metadata.get("local_ocr_pages", []):
+            # Separate address columns before grouping horizontal table rows.
+            # Coordinates, not company-specific names, define these panels.
+            anchors = [b for b in page["boxes"] if re.search(
+                r"all payments.*(?:issued|made)|remit\s+to|payment\s+to", b["text"], re.I
+            )]
+            for anchor in anchors:
+                split = min(p[0] for p in anchor["polygon"])
+                start = min(p[1] for p in anchor["polygon"])
+                height = max(p[1] for p in anchor["polygon"]) - start
+                nearby, bottom = [], start
+                for box in sorted(page["boxes"], key=lambda b: min(p[1] for p in b["polygon"])):
+                    top = min(p[1] for p in box["polygon"])
+                    if top < start - height:
+                        continue
+                    if top - bottom > max(24, height * 3):
+                        break
+                    nearby.append(box)
+                    bottom = max(bottom, max(p[1] for p in box["polygon"]))
+                for side in ("left", "right"):
+                    boxes = [b for b in nearby if (min(p[0] for p in b["polygon"]) < split - height) == (side == "left")]
+                    if not boxes:
+                        continue
+                    from shipping_billing.models import Locator
+                    add("\n".join(b["text"] for b in boxes),
+                        Locator(kind="image_region" if source.detected_format != "pdf" else "pdf_page",
+                                page=page["page"], region=f"address_panel:{side}:y={start}"),
+                        "local_ocr_address_panel", {"boxes": boxes, "reading_order": "top_to_bottom",
+                        "panel": side, "anchor": anchor["text"]})
             groups = []
             for box in sorted(page["boxes"], key=lambda b: sum(p[1] for p in b["polygon"]) / 4):
                 y = sum(p[1] for p in box["polygon"]) / 4

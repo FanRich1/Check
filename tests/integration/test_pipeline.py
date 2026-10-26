@@ -33,6 +33,30 @@ def saved_state(tmp_path, name="run"):
     return LedgerState.model_validate(load_json(tmp_path / name / "state.json"))
 
 
+def test_failed_attachment_does_not_block_independently_evidenced_body_fees(tmp_path):
+    attachment = tmp_path / "unreadable.docx"
+    attachment.write_bytes(b"not a valid document")
+    path = eml(tmp_path / "with-attachment.eml", attachment=attachment)
+    result = run([path], tmp_path)
+    assert result.exit_code == 3
+    assert result.counts["CREATE"] == 1 and len(saved_state(tmp_path).bills) == 1
+    assert result.files[1].status == "error" and result.files[1].parent_source_id
+    assert any(i.code == "CHILD_REQUIRES_REVIEW" and not i.blocks_automation
+               for i in result.files[0].issues)
+    row = load_json(tmp_path / "run/records.json")[0]
+    assert not any(i["blocks_automation"] for i in row["audit_trail"]["issues"])
+
+
+def test_company_suffix_punctuation_preserves_existing_bill_matching(tmp_path):
+    path = eml(tmp_path / "invoice.eml")
+    dotted = ReconciliationContext(normalization_context=NormalizationContext(accounting_entity="Buyer Ltd."))
+    first = run([path], tmp_path, context=dotted)
+    assert first.counts["CREATE"] == 1
+    second = run([path], tmp_path, "repeat", state=saved_state(tmp_path))
+    assert second.counts["NO_CHANGE"] == 1 and second.counts["CREATE"] == 0
+    assert len(saved_state(tmp_path, "repeat").bills) == 1
+
+
 def test_create_update_and_repeated_upload(tmp_path):
     path = eml(tmp_path / "new.eml")
     first = run([path], tmp_path)
