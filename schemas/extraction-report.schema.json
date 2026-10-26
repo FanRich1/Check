@@ -1,5 +1,74 @@
 {
   "$defs": {
+    "BusinessLink": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "related_source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Related Source Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "email_attachment",
+            "same_document",
+            "same_reference",
+            "same_shipment"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "reference_kind": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Kind"
+        },
+        "reference_value": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "pattern": "\\S",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference Value"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_id",
+        "related_source_id",
+        "kind"
+      ],
+      "title": "BusinessLink",
+      "type": "object"
+    },
     "ChargeDetails": {
       "additionalProperties": false,
       "properties": {
@@ -345,6 +414,13 @@
           },
           "title": "Field Evidence",
           "type": "object"
+        },
+        "related_fields": {
+          "items": {
+            "$ref": "#/$defs/RelatedField"
+          },
+          "title": "Related Fields",
+          "type": "array"
         }
       },
       "required": [
@@ -625,6 +701,67 @@
       "title": "Observation",
       "type": "object"
     },
+    "RelatedField": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "enum": [
+            "/settlement/payer",
+            "/settlement/payee",
+            "/transaction_party/issuer",
+            "/transaction_party/recipient",
+            "/charge_details/currency"
+          ],
+          "title": "Path",
+          "type": "string"
+        },
+        "value": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Value",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "applied",
+            "suggested",
+            "conflict"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Reason",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "path",
+        "value",
+        "source_id",
+        "status",
+        "reason",
+        "evidence"
+      ],
+      "title": "RelatedField",
+      "type": "object"
+    },
     "TransactionParty": {
       "additionalProperties": false,
       "properties": {
@@ -712,6 +849,19 @@
       "title": "Evidence Units",
       "type": "array"
     },
+    "business_links": {
+      "items": {
+        "$ref": "#/$defs/BusinessLink"
+      },
+      "title": "Business Links",
+      "type": "array"
+    },
+    "business_rules_version": {
+      "const": "business-context-v1",
+      "default": "business-context-v1",
+      "title": "Business Rules Version",
+      "type": "string"
+    },
     "model_invocations": {
       "default": 0,
       "title": "Model Invocations",
@@ -730,6 +880,5 @@
     "input_sha256"
   ],
   "title": "ExtractionReport",
-  "type": "object",
-  "$schema": "https://json-schema.org/draft/2020-12/schema"
+  "type": "object"
 }

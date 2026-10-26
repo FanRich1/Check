@@ -47,6 +47,34 @@ def test_failed_attachment_does_not_block_independently_evidenced_body_fees(tmp_
     assert not any(i["blocks_automation"] for i in row["audit_trail"]["issues"])
 
 
+def test_separate_email_and_pdf_link_only_with_matching_invoice_and_transport(tmp_path):
+    from email import policy
+    from email.message import EmailMessage
+    from email.parser import BytesParser
+
+    from scripts.business_context_fixtures import business_email, business_pipeline
+
+    path = business_email(tmp_path / "documents", ambiguous_currency=False)
+    mail = BytesParser(policy=policy.default).parsebytes(path.read_bytes())
+    body_only = EmailMessage()
+    body_only["From"] = "supplier@example.invalid"
+    body_only["To"] = "buyer@example.invalid"
+    body_only.set_content(mail.get_body(preferencelist=("plain",)).get_content())
+    path.write_bytes(body_only.as_bytes())
+    result = business_pipeline([path, path.parent / "support-1.pdf"], settings=Settings(),
+                               output=tmp_path / "linked", storage=tmp_path / "cache",
+                               context=ReconciliationContext(normalization_context=NormalizationContext(
+                                   accounting_entity="Buyer Ltd")))
+    assert result.counts["CREATE"] == 1 and result.counts["input_documents"] == 2
+    extraction = load_json(tmp_path / "linked/extraction.json")
+    assert any(link["kind"] == "same_document" for link in extraction["business_links"])
+    assert not any(link["kind"] == "email_attachment" for link in extraction["business_links"])
+    record = load_json(tmp_path / "linked/records.json")[0]
+    assert record["transaction_party"]["recipient"] == "Buyer Ltd"
+    assert record["financial_attributes"]["posting_type"] == "AP"
+    assert len(record["audit_trail"]["sources"]) >= 3  # fee, supporting PDF, accounting context
+
+
 def test_company_suffix_punctuation_preserves_existing_bill_matching(tmp_path):
     path = eml(tmp_path / "invoice.eml")
     dotted = ReconciliationContext(normalization_context=NormalizationContext(accounting_entity="Buyer Ltd."))

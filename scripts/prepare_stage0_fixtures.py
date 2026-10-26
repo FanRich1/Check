@@ -1,10 +1,10 @@
 """Build authored synthetic stage-0 fixtures, not application predictions."""
-from pathlib import Path
-from email.message import EmailMessage
-from email import policy
-from copy import deepcopy
 import hashlib
 import json
+from copy import deepcopy
+from email import policy
+from email.message import EmailMessage
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'tests/fixtures'

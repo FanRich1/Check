@@ -61,9 +61,12 @@ def web(repository, tmp_path):
         yield client, app.state.store, book
 
 
-def upload(client, book, raw):
-    response = client.post("/api/jobs", data={"ledger_id": book["id"]},
-                           files={"documents": ("invoice.eml", raw, "message/rfc822")})
+def upload(client, book, raw, *, ocr_map=None):
+    data = {"ledger_id": book["id"]}
+    files = {"documents": ("invoice.eml", raw, "message/rfc822")}
+    if ocr_map is not None:
+        files["ocr_map"] = ("map.json", dumps(ocr_map), "application/json")
+    response = client.post("/api/jobs", data=data, files=files)
     assert response.status_code == 202, response.text
     return response.json()["id"]
 
@@ -393,6 +396,131 @@ def test_human_review_uses_same_company_suffix_matching_as_automatic_posting(web
     assert len(state.bills) == 1 and state.bills[0].financial_attributes.posting_type == "AP"
 
 
+def test_business_context_autofill_and_reviewed_suggestions_are_persisted(web, tmp_path):
+    from scripts.business_context_fixtures import business_email, business_pipeline
+
+    client, store, book = web
+    store.pipeline = business_pipeline
+    automatic = business_email(tmp_path / "automatic", ambiguous_currency=False)
+    before = len(store.listing())
+    rejected = client.post("/api/jobs", data={"ledger_id": book["id"]},
+                           files={"documents": ("invoice.eml", automatic.read_bytes(), "message/rfc822")})
+    assert rejected.status_code == 400 and rejected.json()["error"]["code"] == "MISSING_OCR_DELIVERY"
+    assert len(store.listing()) == before and store.repository.snapshot(book["id"])[1] == 0
+    first = finish(client, upload(client, book, automatic.read_bytes(), ocr_map={}))
+    assert first["job"]["counts"]["CREATE"] == 1
+    assert len(first["records"]) == 1
+    assert any(link["kind"] == "same_document" for link in first["business_links"])
+    assert first["records"][0]["transaction_party"]["recipient"] == "Buyer Ltd"
+    assert any(field["status"] == "applied" for field in first["records"][0]["related_fields"])
+    # Another book isolates the review scenario from matching the automatic bill above.
+    other = client.post("/api/ledgers", json={"name": "关联建议复核", "entity": "Buyer Ltd"}).json()
+    pending_file = business_email(tmp_path / "suggestions", same_document=False)
+    result = finish(client, upload(client, other, pending_file.read_bytes(), ocr_map={}))
+    record = result["records"][0]
+    assert record["operation"] == "PENDING_REVIEW"
+    assert record["charge_details"]["currency"] is None
+    assert any(link["kind"] == "same_shipment" for link in result["business_links"])
+    assert {field["status"] for field in record["related_fields"]} == {"suggested"}
+    workspace = client.get(f"/api/jobs/{result['job']['id']}/review-workspace",
+                           params={"record_id": record["record_id"], "ledger_id": other["id"]}).json()
+    assert workspace["related_fields"] == record["related_fields"]
+    fields = {"/charge_details/currency": "USD", "/transaction_party/issuer": "Supplier Ltd",
+              "/transaction_party/recipient": "Buyer Ltd"}
+    body = review_request(client, other, result, fields=fields)
+    receipt, _ = approve(client, result, body)
+    assert receipt["related_fields"] == record["related_fields"]
+    state, _ = store.repository.snapshot(other["id"])
+    assert len(state.bills) == 1 and state.bills[0].charge_details.currency == "USD"
+    fresh = LedgerRepository(store.repository.engine.url, allow_sqlite=True)
+    try:
+        assert fresh.get_decisions(result["job"]["id"])[record["record_id"]]["related_fields"] == record["related_fields"]
+    finally:
+        fresh.close()
+    repeated = finish(client, upload(client, other, pending_file.read_bytes(), ocr_map={}))
+    assert repeated["records"][0]["operation"] == "NO_CHANGE"
+    assert len(store.repository.snapshot(other["id"])[0].bills) == 1
+
+
+def test_history_retains_database_jobs_whose_local_artifacts_are_missing(web):
+    client, store, book = web
+    historical = dict(id=uuid4().hex, created_at=stamp(), status="completed", ledger_id=book["id"])
+    store.repository.save_job(historical)
+    response = client.get("/api/jobs")
+    assert response.status_code == 200
+    assert next(row for row in response.json()["jobs"] if row["id"] == historical["id"])["status"] == "completed"
+    assert client.get(f"/api/jobs/{historical['id']}").status_code == 404
+
+
+def test_source_purpose_confirmation_history_reopen_and_exports_do_not_change_ledger(web, tmp_path, monkeypatch):
+    from scripts.source_usage_fixtures import DummyLocalOCR, source_email, source_pipeline
+
+    client, store, book = web
+    monkeypatch.setattr("shipping_billing.web.service.local_ocr_available", lambda: True)
+    monkeypatch.setattr("shipping_billing.parsers.local_text.LocalTextOCR", DummyLocalOCR)
+    store.pipeline = source_pipeline
+    raw = source_email(tmp_path / "sources").read_bytes()
+    response = client.post("/api/jobs", data={"ledger_id": book["id"], "local_ocr_enabled": "true"},
+                           files={"documents": ("sources.eml", raw, "message/rfc822"),
+                                  "ocr_map": ("map.json", "{}", "application/json")})
+    assert response.status_code == 202, response.text
+    result = finish(client, response.json()["id"])
+    job_id = result["job"]["id"]
+    assert result["job"]["status"] == "pending_review"
+    assert result["processing_summary"]["source_errors"] == 0
+    assert result["processing_summary"]["purpose_pending_count"] == 1
+    assert [f["assessment"]["status"] for f in result["files"][2:]] == ["supporting", "supporting"]
+    image = result["files"][1]
+    assert image["status"] == "error" and image["assessment"]["status"] == "purpose_pending"
+    from hashlib import sha256
+    from urllib.parse import quote
+
+    for source in result["files"]:
+        original = client.get(f"/api/jobs/{job_id}/sources/{quote(source['source_id'], safe='')}/download")
+        assert original.status_code == 200
+        assert sha256(original.content).hexdigest() == source["sha256"]
+    assert client.get(f"/api/jobs/{job_id}/sources/unknown%2Fpart-1/download").status_code == 404
+    folder = store.folder(job_id) / "result"
+    frozen = {name: (folder / name).read_bytes() for name in ("manifest.json", "records.json", "state.json", "parse.json", "extraction.json")}
+    ledger_before = dumps(store.repository.snapshot(book["id"])[0].model_dump(mode="python"))
+    revision_before = store.repository.snapshot(book["id"])[1]
+    body = dict(source_id=image["source_id"], sha256=image["sha256"], revision=0,
+                classification="non_billing_image", reviewer="来源核对员", reason="已查看原件，确认为无费用的宣传图。", confirmed=True)
+    endpoint = f"/api/jobs/{job_id}/source-review"
+    assert client.post(endpoint, json={**body, "confirmed": False}).status_code == 400
+    assert client.post(endpoint, json={**body, "sha256": "0" * 64}).status_code == 409
+    parent = result["files"][0]
+    assert client.post(endpoint, json={**body, "source_id": parent["source_id"], "sha256": parent["sha256"]}).status_code == 400
+    pdf = result["files"][2]
+    assert client.post(endpoint, json={**body, "source_id": pdf["source_id"], "sha256": pdf["sha256"]}).status_code == 400
+    saved = client.post(endpoint, json=body)
+    assert saved.status_code == 200, saved.text
+    assert saved.json()["revision"] == 1
+    assert client.post(endpoint, json=body).json() == saved.json()
+    assert len(store.repository.get_source_reviews(job_id)[image["source_id"]]) == 1
+    current = client.get(f"/api/jobs/{job_id}").json()
+    assert current["job"]["status"] == "completed"
+    assert current["processing_summary"]["purpose_pending_count"] == 0
+    assert current["files"][1]["assessment"]["status"] == "non_billing"
+    assert current["files"][1]["issues"] == image["issues"]
+    assert next(j for j in client.get("/api/jobs").json()["jobs"] if j["id"] == job_id)["status"] == "completed"
+    assert client.post(endpoint, json={**body, "classification": "reopen", "reason": "重新核对用途"}).status_code == 409
+    reopened = client.post(endpoint, json={**body, "revision": 1, "classification": "reopen", "reason": "重新核对用途"})
+    assert reopened.status_code == 200 and reopened.json()["revision"] == 2
+    assert client.get(f"/api/jobs/{job_id}").json()["files"][1]["assessment"]["status"] == "purpose_pending"
+    assert client.post(endpoint, json={**body, "revision": 2}).status_code == 200
+    exported = client.get(f"/api/jobs/{job_id}/download/source-reviews.json")
+    assert exported.status_code == 200 and len(exported.json()[image["source_id"]]) == 3
+    assert all((folder / name).read_bytes() == value for name, value in frozen.items())
+    state, revision = store.repository.snapshot(book["id"])
+    assert revision == revision_before and dumps(state.model_dump(mode="python")) == ledger_before
+    fresh = LedgerRepository(store.repository.engine.url, allow_sqlite=True)
+    try:
+        assert len(fresh.get_source_reviews(job_id)[image["source_id"]]) == 3
+    finally:
+        fresh.close()
+
+
 def test_human_create_exact_reupload_receipt_and_originals_immutable(web, tmp_path):
     client, store, book = web
     raw = eml(tmp_path / "ambiguous.eml", currency="$").read_bytes()
@@ -624,7 +752,8 @@ def test_multiple_pending_fees_resolve_individually_without_marking_all_done(web
     assert current["processing_summary"]["pending_fee_lines"] == 0
     assert "0 条待复核" in current["job"]["message"]
     # Original source facts remain immutable; the UI combines them with review decisions.
-    assert current["files"] == result["files"]
+    assert [{k: v for k, v in f.items() if k != "assessment"} for f in current["files"]] == [
+        {k: v for k, v in f.items() if k != "assessment"} for f in result["files"]]
     assert sorted(b.charge_details.amount for b in store.repository.snapshot(book["id"])[0].bills) == [35, 65]
 
 

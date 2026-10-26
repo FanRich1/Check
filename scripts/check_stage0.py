@@ -3,14 +3,14 @@
 Standard library only. --portable skips private real-source checks.
 """
 import argparse
+import hashlib
+import json
+import re
 from collections import Counter
 from decimal import Decimal
 from email import policy
 from email.parser import BytesParser
-import hashlib
-import json
 from pathlib import Path
-import re
 
 ROOT = Path(__file__).resolve().parents[1]
 checks = []
@@ -48,9 +48,11 @@ def main():
     check(all(c['split']=='development' for c in materialized), 'no holdout documents authored for development')
     core = {'operation','document_info','transaction_party','charge_details','financial_attributes','audit_trail'}
     for c in materialized:
-        cid=c['case_id']; folder=base/'synthetic'/cid
+        cid=c['case_id']
+        folder=base/'synthetic'/cid
         check(all((base/f).is_file() for f in c['files']), cid+' files exist')
-        req=read(folder/'request.json'); expected=read(folder/'expected.json')
+        req=read(folder/'request.json')
+        expected=read(folder/'expected.json')
         raw=(folder/'input.eml').read_bytes()
         check(hashlib.sha256(raw).hexdigest()==expected['input_sha256'], cid+' frozen input hash')
         mail=BytesParser(policy=policy.default).parsebytes(raw)
@@ -72,10 +74,12 @@ def main():
                       r['financial_attributes']['posting_type'] in {'AR','AP'},tag+' accepted core fields present')
             if r['operation']=='PENDING_REVIEW':
                 check(any(x['blocks_automation'] for x in r['audit_trail']['issues']),tag+' explicit blocking reason')
-        before=req['existing_bills']; after=expected['expected_existing_snapshot_after']
+        before=req['existing_bills']
+        after=expected['expected_existing_snapshot_after']
         if expected['authorized_change_paths']:
             check(len(before)==len(after)==1,cid+' update snapshot identity')
-            clone=json.loads(json.dumps(before)); clone[0]['charge_details']['amount']=55
+            clone=json.loads(json.dumps(before))
+            clone[0]['charge_details']['amount']=55
             check(after==clone,cid+' only authorized amount changed, including extension preservation')
         else:
             check(before==after,cid+' no unauthorized snapshot mutation')
@@ -87,7 +91,8 @@ def main():
     check(result('DEV-009')['expected_records'][0]['charge_details']['payment_term'] is None, 'COD is not CC')
     if not args.portable:
         local=ROOT/'data/local/stage0'
-        manifest=read(local/'source-manifest.json'); sources=manifest['sources']
+        manifest=read(local/'source-manifest.json')
+        sources=manifest['sources']
         check(len(sources)==7 and sum(s['parent_id'] is None for s in sources)==4, '4 top-level and 3 embedded sources')
         for s in sources:
             f=ROOT/s['path']
@@ -116,11 +121,13 @@ def main():
             'total_checks':len(checks),'passed':len(checks)-len(failed),'failed':len(failed),
             'business_tests_executed':0,'scenario_slots':60,'materialized_fixtures':12,
             'planned_not_materialized':48,'checks':checks}
-    out=ROOT/'outputs/stage0'; out.mkdir(parents=True,exist_ok=True)
+    out=ROOT/'outputs/stage0'
+    out.mkdir(parents=True,exist_ok=True)
     name='artifact-check-portable.json' if args.portable else 'artifact-check.json'
     (out/name).write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(f"Stage-0 artifact checks: {report['passed']}/{len(checks)} passed; {len(failed)} failed. Business tests executed: 0.")
-    for x in failed: print('FAIL:',x['check'])
+    for x in failed:
+        print('FAIL:',x['check'])
     raise SystemExit(bool(failed))
 
 

@@ -324,6 +324,62 @@ def test_images_without_local_text_are_rejected_before_creating_a_job(workspace,
     assert len(store.listing()) == before
 
 
+def test_email_pdf_attachments_need_ocr_delivery_before_creating_a_job(workspace, tmp_path, monkeypatch):
+    from scripts.business_context_fixtures import business_email
+
+    client, store = workspace
+    def must_not_run(*args, **kwargs):
+        raise AssertionError("No model or OCR work may run before prerequisite validation")
+    store.pipeline = must_not_run
+    monkeypatch.setattr("shipping_billing.web.service.local_ocr_available", lambda: True)
+    before = len(store.listing())
+    response = upload(client, business_email(tmp_path / "mail").read_bytes(),
+                      data={"local_ocr_enabled": "true"})
+    assert response.status_code == 400
+    error = response.json()["error"]
+    assert error["code"] == "MISSING_OCR_DELIVERY"
+    assert "为 PDF / 图片启用指定 OCR" in error["message"]
+    assert len(store.listing()) == before
+    assert not store.inputs.exists() or not list(store.inputs.iterdir())
+
+
+def test_source_purpose_confirmation_works_in_file_mode_and_preserves_raw_failure(workspace, tmp_path, monkeypatch):
+    from scripts.source_usage_fixtures import DummyLocalOCR, source_email, source_pipeline
+
+    client, store = workspace
+    monkeypatch.setattr("shipping_billing.web.service.local_ocr_available", lambda: True)
+    monkeypatch.setattr("shipping_billing.parsers.local_text.LocalTextOCR", DummyLocalOCR)
+    store.pipeline = source_pipeline
+    result = finished(client, upload(client, source_email(tmp_path / "materials").read_bytes(),
+        data={"local_ocr_enabled": "true"}, extra=[("ocr_map", ("map.json", "{}", "application/json"))]))
+    image = result["files"][1]
+    assert image["assessment"]["status"] == "purpose_pending"
+    job_id = result["job"]["id"]
+    body = dict(source_id=image["source_id"], sha256=image["sha256"], revision=0,
+                classification="non_billing_image", reviewer="File reviewer", reason="Viewed original banner", confirmed=True)
+    response = client.post(f"/api/jobs/{job_id}/source-review", json=body)
+    assert response.status_code == 200, response.text
+    current = client.get(f"/api/jobs/{job_id}").json()
+    assert current["job"]["status"] == "completed" and current["job"]["original_status"] == "error"
+    assert current["files"][1]["status"] == "error"
+    assert current["files"][1]["assessment"]["status"] == "non_billing"
+    assert len(load_json(store.folder(job_id) / "source-reviews.json")[image["source_id"]]) == 1
+    assert client.get(f"/api/jobs/{job_id}/download/source-reviews.json").status_code == 200
+
+
+def test_source_purpose_confirmation_cannot_hide_unreadable_files(workspace, tmp_path):
+    client, _ = workspace
+    attachment = tmp_path / "broken.docx"
+    attachment.write_bytes(b"not an Office file")
+    result = finished(client, upload(client, eml(tmp_path / "mail.eml", attachment=attachment).read_bytes()))
+    source = result["files"][1]
+    assert source["assessment"]["status"] == "error" and not source["assessment"]["can_confirm"]
+    response = client.post(f"/api/jobs/{result['job']['id']}/source-review", json=dict(
+        source_id=source["source_id"], sha256=source["sha256"], revision=0, classification="supporting_document",
+        reviewer="Reviewer", reason="Trying to hide a read failure", confirmed=True))
+    assert response.status_code == 400 and response.json()["error"]["code"] == "SOURCE_REVIEW_UNAVAILABLE"
+
+
 def test_local_ocr_option_reaches_pipeline_and_is_saved(workspace, tmp_path, monkeypatch):
     client, store = workspace
     marker = object()

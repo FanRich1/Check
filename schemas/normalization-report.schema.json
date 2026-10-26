@@ -340,6 +340,13 @@
           },
           "title": "Field Evidence",
           "type": "object"
+        },
+        "related_fields": {
+          "items": {
+            "$ref": "#/$defs/RelatedField"
+          },
+          "title": "Related Fields",
+          "type": "array"
         }
       },
       "required": [
@@ -715,6 +722,67 @@
       "title": "NormalizedLine",
       "type": "object"
     },
+    "RelatedField": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "enum": [
+            "/settlement/payer",
+            "/settlement/payee",
+            "/transaction_party/issuer",
+            "/transaction_party/recipient",
+            "/charge_details/currency"
+          ],
+          "title": "Path",
+          "type": "string"
+        },
+        "value": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Value",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "applied",
+            "suggested",
+            "conflict"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "pattern": "\\S",
+          "title": "Reason",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "path",
+        "value",
+        "source_id",
+        "status",
+        "reason",
+        "evidence"
+      ],
+      "title": "RelatedField",
+      "type": "object"
+    },
     "RuleEvent": {
       "additionalProperties": false,
       "properties": {
@@ -876,6 +944,5 @@
     "lines"
   ],
   "title": "NormalizationReport",
-  "type": "object",
-  "$schema": "https://json-schema.org/draft/2020-12/schema"
+  "type": "object"
 }

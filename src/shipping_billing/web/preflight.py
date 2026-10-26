@@ -1,4 +1,4 @@
-"""Read-only checks for images and scanned pages before queuing remote work."""
+"""Read-only OCR prerequisites, including email attachments, before queuing work."""
 
 import io
 from email import policy
@@ -11,6 +11,14 @@ from shipping_billing.parsers.formats import detect
 
 
 def requires_local_text(files):
+    return _requires_ocr(files, scanned_only=True)
+
+
+def requires_ocr_delivery(files):
+    return _requires_ocr(files, scanned_only=False)
+
+
+def _requires_ocr(files, *, scanned_only):
     """Recognize real bytes, including email attachments; leave corrupt files to parsing."""
     budget = [0, 0]
     limits = ParseLimits()
@@ -26,6 +34,8 @@ def requires_local_text(files):
             if kind in {"png", "jpg", "tiff"}:
                 return True
             if kind == "pdf":
+                if not scanned_only:
+                    return True
                 pdf = PdfReader(io.BytesIO(content), strict=False)
                 if pdf.is_encrypted or len(pdf.pages) > limits.max_pages:
                     return False

@@ -95,7 +95,8 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repos
             if exc.code in ("JOB_NOT_FOUND", "RECORD_NOT_FOUND", "LEDGER_NOT_FOUND", "SOURCE_NOT_FOUND")
             else 409
             if exc.code in ("LEDGER_CHANGED", "LEDGER_NOT_EMPTY", "LEDGER_ENTITY_CONFLICT",
-                            "REVIEW_ALREADY_RESOLVED", "REVIEW_PREVIEW_CHANGED", "REVIEW_SOURCE_ALREADY_BOOKED")
+                            "REVIEW_ALREADY_RESOLVED", "REVIEW_PREVIEW_CHANGED", "REVIEW_SOURCE_ALREADY_BOOKED",
+                            "SOURCE_REVIEW_CHANGED")
             else 503
             if exc.code.startswith("DATABASE_")
             else 429
@@ -319,6 +320,26 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repos
     def review_workspace(job_id: str, record_id: str, ledger_id: str):
         return json_response(store.review_workspace(job_id, record_id, ledger_id))
 
+    @app.post("/api/jobs/{job_id}/source-review")
+    async def source_review(job_id: str, request: Request):
+        from tempfile import TemporaryDirectory
+
+        from shipping_billing.web.source_usage import SourceReviewRequest
+
+        if int(request.headers.get("content-length", "0")) > 16000:
+            raise BillingError("INVALID_SOURCE_REVIEW", "材料用途确认内容过长。")
+        content = await request.body()
+        if len(content) > 16000:
+            raise BillingError("INVALID_SOURCE_REVIEW", "材料用途确认内容过长。")
+        try:
+            with TemporaryDirectory(prefix="billing-source-review-") as temporary:
+                path = Path(temporary) / "request.json"
+                path.write_bytes(content)
+                data = SourceReviewRequest.model_validate(load_json(path))
+        except ValidationError:
+            raise BillingError("INVALID_SOURCE_REVIEW", "请检查材料用途、确认人、原因和原件核对确认。") from None
+        return json_response(store.review_source(job_id, data))
+
     async def decision_request(request, approval=False):
         from tempfile import TemporaryDirectory
 
@@ -359,7 +380,7 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repos
         origin = store.review_origin(job_id, decision.record_id, decision.ledger_id)
         return json_response(database().approve_review(origin, decision, token))
 
-    @app.get("/api/jobs/{job_id}/sources/{source_id}/download")
+    @app.get("/api/jobs/{job_id}/sources/{source_id:path}/download")
     def original_file(job_id: str, source_id: str):
         path, name = store.original_file(job_id, source_id)
         return FileResponse(path, filename=name, media_type="application/octet-stream")
@@ -379,6 +400,10 @@ def create_app(project, settings=None, *, cloudflared=None, pipeline=None, repos
         if name == "review-decisions.json" and store.repository:
             response = json_response(store.repository.get_decisions(job_id))
             response.headers["Content-Disposition"] = 'attachment; filename="review-decisions.json"'
+            return response
+        if name == "source-reviews.json":
+            response = json_response(store.source_reviews(job_id))
+            response.headers["Content-Disposition"] = 'attachment; filename="source-reviews.json"'
             return response
         return FileResponse(
             folder / name if name == "reviews.json" else folder / "result" / name,

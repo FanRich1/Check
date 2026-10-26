@@ -1,5 +1,47 @@
 "use strict";
 
+const sourceKinds = {non_billing_image: "非账单图片", supporting_document: "支持材料", reopen: "用途仍待确认"};
+function openSourceReview(file) {
+  S.sourceReview = {jobId: S.jobId, file};
+  $("source-review-form").reset();
+  show("source-review-error", false);
+  $("source-review-name").textContent = file.original_name;
+  $("source-review-original").replaceChildren(originalLink(file));
+  const image = ["png", "jpg", "tiff"].includes(file.detected_format);
+  $("source-review-kind").options[0].disabled = !image;
+  $("source-review-kind").value = file.assessment.review?.classification || (image ? "non_billing_image" : "supporting_document");
+  $("source-reviewer").value = localStorage.getItem("billing-reviewer") || "";
+  $("source-review-reason").value = "";
+  const history = S.result.source_reviews?.[file.source_id] || [];
+  $("source-review-history-items").replaceChildren();
+  for (const item of history) $("source-review-history-items").append(node("p", "", `${sourceKinds[item.classification]} · ${item.reviewer} · ${dateText(item.decided_at)}\n${item.reason}`));
+  show("source-review-history", history.length > 0);
+  $("source-review-dialog").showModal();
+}
+$("close-source-review").addEventListener("click", () => $("source-review-dialog").close());
+$("source-review-dialog").addEventListener("close", () => { S.sourceReview = null; });
+$("source-review-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const session = S.sourceReview;
+  if (!session || session.submitting) return;
+  show("source-review-error", false);
+  const body = {source_id: session.file.source_id, sha256: session.file.sha256,
+    classification: $("source-review-kind").value, revision: session.file.assessment.revision,
+    reviewer: $("source-reviewer").value.trim(), reason: $("source-review-reason").value.trim(),
+    confirmed: $("source-review-confirm").checked};
+  session.submitting = true;
+  $("source-review-form").inert = true;
+  try {
+    await api(`/api/jobs/${session.jobId}/source-review`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+    localStorage.setItem("billing-reviewer", body.reviewer);
+    if (S.sourceReview === session) $("source-review-dialog").close();
+    await loadJob(session.jobId);
+    toast("材料用途与确认记录已保存，费用及账本版本保持原值。");
+  } catch (error) {
+    if (S.sourceReview === session) { $("source-review-error").textContent = error.message; show("source-review-error"); }
+  } finally { session.submitting = false; $("source-review-form").inert = false; }
+});
+
 const manualFields = [
   ["document-type", "/document_info/document_type", "单据类型", "text"],
   ["reference", "/document_info/reference_no", "单据编号", "text"],
@@ -58,6 +100,8 @@ function populateManualFields() {
   for (const id of ["manual-payer", "manual-payee"]) { $(id).disabled = !edits; $(id).required = edits; }
   $("manual-payer").value = proposed["/transaction_party/recipient"] || "";
   $("manual-payee").value = proposed["/transaction_party/issuer"] || "";
+  $("manual-related-fields").replaceChildren();
+  if (work.related_fields?.length) $("manual-related-fields").append(relatedFieldsPanel(work.related_fields, edits));
   manualDirection();
 }
 async function loadManualWorkspace() {

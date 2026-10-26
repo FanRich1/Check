@@ -52,10 +52,30 @@ class EvidenceUnit(Contract):
     metadata: dict = Field(default_factory=dict)
 
 
+class BusinessLink(Contract):
+    source_id: Text
+    related_source_id: Text
+    kind: Literal["email_attachment", "same_document", "same_reference", "same_shipment"]
+    reference_kind: Text | None = None
+    reference_value: Text | None = None
+    evidence: list[Evidence] = Field(default_factory=list)
+
+
+class RelatedField(Contract):
+    path: Literal["/settlement/payer", "/settlement/payee", "/transaction_party/issuer",
+                  "/transaction_party/recipient", "/charge_details/currency"]
+    value: Text
+    source_id: Text
+    status: Literal["applied", "suggested", "conflict"]
+    reason: Text
+    evidence: list[Evidence] = Field(min_length=1)
+
+
 class ExtractedCandidate(Candidate):
     source_id: Text
     shipping_info: dict[str, str | list[str]] = Field(default_factory=dict)
     field_evidence: dict[str, list[Evidence]] = Field(default_factory=dict)
+    related_fields: list[RelatedField] = Field(default_factory=list)
 
 
 class ExtractionFile(Contract):
@@ -76,5 +96,7 @@ class ExtractionReport(Contract):
     input_sha256: Text
     files: list[ExtractionFile] = Field(default_factory=list)
     evidence_units: list[EvidenceUnit] = Field(default_factory=list)
+    business_links: list[BusinessLink] = Field(default_factory=list)
+    business_rules_version: Literal["business-context-v1"] = "business-context-v1"
     model_invocations: int = 0
     billing_pipeline_executed: Literal[False] = False

@@ -105,7 +105,7 @@ def manual_checks(page, output, checks):
         expect(page.locator(".review-record-button")).to_have_count(0)
         expect(page.locator("#source-files .pill")).to_have_text("费用已复核")
         expect(page.locator(".source-review-summary")).to_contain_text("剩余 0 条")
-        expect(page.locator(".source-history summary")).to_contain_text("原始识别提示")
+        expect(page.locator("#source-files .source-history summary")).to_contain_text("原始识别提示")
         expect(page.locator("#processing-summary")).to_contain_text("0 条待复核")
 
     path = eml(output / "manual-new.eml", currency="$")

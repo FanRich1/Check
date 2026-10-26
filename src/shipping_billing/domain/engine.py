@@ -177,6 +177,9 @@ def normalize_line(candidate, source_issues, context, charges, parties, index):
             )
 
     validate_literals(line, index)
+    for field in c.related_fields:
+        if field.status == "applied" and index.verify(field.evidence, field.value, c.source_id):
+            event("business.same_document_fill", field.path, None, field.value, field.evidence)
     raw_type = c.document_info.document_type
     title = explicit_document_title(raw_type)
     event(

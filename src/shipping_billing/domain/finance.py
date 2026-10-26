@@ -130,6 +130,16 @@ def financial_direction(line, policy, context, aliases, index, add_issue, event)
             add_issue("UNSUPPORTED_SETTLEMENT_ROLES", "/financial_attributes/posting_type")
             return
         roles, refs = (fact.payer, fact.payee), fact.evidence
+    elif all(any(f.path == "/settlement/" + role and f.status == "applied"
+                 for f in candidate.related_fields) for role in ("payer", "payee")):
+        fields = {role: [f for f in candidate.related_fields
+                         if f.path == "/settlement/" + role and f.status == "applied"]
+                  for role in ("payer", "payee")}
+        roles = tuple(fields[role][0].value for role in ("payer", "payee"))
+        refs = [e for values in fields.values() for f in values for e in f.evidence]
+        if not role_supported(roles, refs, index, line.source_id):
+            add_issue("UNSUPPORTED_SETTLEMENT_ROLES", "/financial_attributes/posting_type")
+            return
     elif kind == "normal" and candidate.transaction_party.issuer and candidate.transaction_party.recipient:
         # Literal company names under shipping/bank roles do not prove billing roles.
         for field in ("issuer", "recipient"):

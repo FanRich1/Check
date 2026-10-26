@@ -76,7 +76,11 @@ async function api(path, options = {}) {
   }
   let data;
   try { data = await response.json(); } catch { throw new Error("服务没有返回有效结果，请检查工作台是否仍在运行。"); }
-  if (!response.ok) throw new Error(data.error?.message || data.detail || "请求未能完成，请重试。");
+  if (!response.ok) {
+    const error = new Error(data.error?.message || data.detail || "请求未能完成，请重试。");
+    error.code = data.error?.code;
+    throw error;
+  }
   return data;
 }
 async function refreshLedgers() {
@@ -204,7 +208,9 @@ function renderJobs() {
       button.type = "button";
       const content = node("span", "job-card-main");
       content.append(node("strong", "", `${job.demo ? "[示例] " : ""}${job.title}`), node("small", "", `${job.entity} · ${dateText(job.created_at)}`));
-      button.append(node("span", "job-file-icon", "▤"), content, pill(job.status, job.review_resolved_count && !job.review_pending_count ? "已复审" : undefined), node("span", "chevron", "›"));
+      button.append(node("span", "job-file-icon", "▤"), content, pill(job.status,
+        job.status !== "error" && job.source_purpose_pending_count ? "材料用途待确认" :
+        job.status === "completed" && job.review_resolved_count && !job.review_pending_count ? "已复审" : undefined), node("span", "chevron", "›"));
       button.addEventListener("click", () => openJob(job.id));
       $(id).append(button);
     });
@@ -273,7 +279,7 @@ function renderResult() {
   }
   show("result-banner", !active);
   $("result-banner").textContent = `${job.message}${job.error_code ? `（${job.error_code}）` : ""}`;
-  if (job.review_resolved_count && !job.review_pending_count) $("result-banner").textContent = "本次已识别的待复核费用均已处理。可下载当前有效账本；原始识别结果和来源异常仍保留供核对。";
+  if (job.review_resolved_count && !job.review_pending_count && !data.processing_summary?.purpose_pending_count && !data.processing_summary?.source_errors) $("result-banner").textContent = "本次已识别的待复核费用均已处理。可下载当前有效账本；原始识别提示保留供追溯。";
   $("result-banner").className = `notice ${["error", "failed", "interrupted"].includes(job.status) ? "error" : job.status === "pending_review" ? "warning" : ""}`;
   const summary = data.processing_summary;
   show("processing-summary", !active && Boolean(summary));
@@ -344,6 +350,18 @@ function renderRecords() {
 }
 function renderSources() {
   clear("source-files");
+  clear("business-links");
+  const links = S.result.business_links || [];
+  show("business-links", links.length > 0);
+  if (links.length) {
+    $("business-links").append(node("strong", "", "业务关联"));
+    const names = Object.fromEntries(S.result.files.map((file) => [file.source_id, file.original_name]));
+    const kinds = {email_attachment: "邮件附件", same_document: "同一账单", same_reference: "同账单号，待确认关联", same_shipment: "同票运输业务"};
+    for (const link of links) {
+      $("business-links").append(node("p", "", `${names[link.source_id] || link.source_id} ↔ ${names[link.related_source_id] || link.related_source_id} · ${kinds[link.kind]}${link.reference_value ? ` · ${link.reference_value}` : ""}`));
+    }
+    $("business-links").append(node("p", "field-help", "附件归属和同票运输关联用于查找相关材料；付款双方及币种是否适用，会在费用详情中另行说明。"));
+  }
   $("source-count").textContent = `${S.result.files.length} 个来源（含附件）`;
   for (const file of S.result.files) {
     const row = node("div", "source-row");
@@ -356,13 +374,31 @@ function renderSources() {
       file.record_ids?.includes(record.record_id));
     const reviewed = pendingRecords.filter((record) => S.result.review_decisions?.[record.record_id]).length;
     const remaining = pendingRecords.length - reviewed;
+    const assessment = file.assessment;
+    if (assessment) {
+      info.append(node("p", "source-usage-note", `${assessment.reading}。${assessment.note}`));
+      if (assessment.review) info.append(node("p", "source-usage-review", `用途记录：${assessment.review.reviewer} · ${dateText(assessment.review.decided_at)}`));
+      if (assessment.evidence.length) {
+        const proof = node("details", "source-history");
+        proof.append(node("summary", "", "用途判断依据"));
+        for (const evidence of assessment.evidence) proof.append(node("p", "field-help", `${locatorText(evidence.locator)} · ${evidence.quote}`));
+        info.append(proof);
+      }
+      if (assessment.can_confirm && !S.result.job.demo) {
+        const action = node("button", "text-button source-review-button", assessment.review ? "查看 / 调整用途确认" :
+          assessment.status === "purpose_pending" && ["png", "jpg", "tiff"].includes(file.detected_format) ? "确认非账单图片" : "核对材料用途");
+        action.type = "button";
+        action.addEventListener("click", () => openSourceReview(file));
+        info.append(action);
+      }
+    }
     let issueContainer = info;
-    if (reviewed) {
-      info.append(node("p", "source-review-summary", `本来源已识别的待复核费用：已处理 ${reviewed} 条，剩余 ${remaining} 条。`));
+    if (reviewed || assessment) {
+      if (reviewed) info.append(node("p", "source-review-summary", `本来源已识别的待复核费用：已处理 ${reviewed} 条，剩余 ${remaining} 条。`));
       const history = node("details", "source-history");
-      history.open = remaining > 0 || file.status === "error";
+      history.open = remaining > 0 || (assessment ? assessment.status === "error" : file.status === "error");
       history.append(node("summary", "", `原始识别提示（当时状态：${statusNames[file.status] || file.status}）`));
-      history.append(node("p", "field-help", "以下保留识别时的提示。费用的当前处理结果以人工复核决定为准；复核不代表整份文件已完整识别。"));
+      history.append(node("p", "field-help", "以下保留识别时的提示。当前材料用途与费用处理结果分别展示，历史 OCR 提示不会被删除。"));
       info.append(history);
       issueContainer = history;
     }
@@ -374,7 +410,9 @@ function renderSources() {
       problem.append(node("code", "", issue.code));
       issueContainer.append(problem);
     }
-    const status = file.status === "error" ? pill("error") : reviewed && !remaining
+    const sourceStyles = {error: "error", purpose_pending: "pending_review", attachments_pending: "pending_review",
+      fee_pending: "pending_review", fee_processed: "completed", supporting: "completed", non_billing: "completed", email_read: "processed"};
+    const status = assessment ? pill(sourceStyles[assessment.status], assessment.label) : file.status === "error" ? pill("error") : reviewed && !remaining
       ? pill("completed", "费用已复核") : reviewed ? pill("pending_review", "部分费用待复核") : pill(file.status);
     row.append(info, status);
     $("source-files").append(row);
@@ -390,6 +428,37 @@ function section(title) {
   item.append(node("h3", "", title));
   return item;
 }
+function relatedFieldsPanel(fields, manual = false, resolved = false) {
+  const panel = section(resolved ? "原始业务关联建议（已复核）" : "业务关联与补充建议");
+  if (resolved) panel.append(node("p", "", "这里保留复核前的建议与证据，最终采用值见正式人工复审记录。"));
+  const labels = {...fieldNames, "/settlement/payer": "确认付款方", "/settlement/payee": "确认收款方"};
+  const statuses = resolved ? {applied: "当时自动补充", suggested: "复核前建议", conflict: "复核前冲突"} :
+    {applied: "已按同一账单补充", suggested: "需确认的建议", conflict: "存在冲突"};
+  const manualInputs = {"/settlement/payer": "manual-payer", "/settlement/payee": "manual-payee",
+    "/transaction_party/issuer": "manual-field-issuer", "/transaction_party/recipient": "manual-field-recipient",
+    "/charge_details/currency": "manual-field-currency"};
+  for (const item of fields) {
+    const row = node("div", `related-field ${item.status}`);
+    row.append(node("strong", "", `${labels[item.path] || item.path}：${item.value} · ${statuses[item.status]}`), node("p", "", item.reason));
+    const file = S.result.files.find((source) => source.source_id === item.source_id);
+    row.append(node("small", "", `来源：${file?.original_name || item.source_id}`));
+    for (const evidence of item.evidence) row.append(node("blockquote", "", `${locatorText(evidence.locator)}\n${evidence.quote}`));
+    if (file?.sha256 && !S.result.job.demo) row.append(originalLink(file));
+    if (manual && manualInputs[item.path] && !$(manualInputs[item.path]).disabled) {
+      const use = node("button", "button secondary compact", "采用此候选");
+      use.type = "button";
+      use.addEventListener("click", () => {
+        const input = $(manualInputs[item.path]);
+        input.value = item.value;
+        input.dispatchEvent(new Event("input", {bubbles: true}));
+        input.focus();
+      });
+      row.append(use);
+    }
+    panel.append(row);
+  }
+  return panel;
+}
 function locatorText(locator) {
   return [locator.page ? `第 ${locator.page} 页` : null, locator.sheet ? `工作表 ${locator.sheet}` : null, locator.cells, locator.block, locator.region, locator.section, locator.pointer].filter(Boolean).join(" · ");
 }
@@ -402,6 +471,8 @@ function openDetail(id) {
   const grid = node("div", "detail-grid");
   grid.append(field("本次操作", operationNames[record.operation]), field("金额 / 币种", `${record.amount_display} ${record.charge_details.currency || "币种待确认"}`), field("原始费用名称", record.charge_details.charge_item_raw), field("单据编号", record.document_info.reference_no), field("签发方", record.transaction_party.issuer), field("接收方", record.transaction_party.recipient), field("付款描述", record.charge_details.payment_term_raw || record.charge_details.payment_term), field("数量 / 单价", `${record.quantity_display} / ${record.unit_price_display}`), field("记账主体", record.financial_attributes.accounting_entity), field("记账方向", {AP: "应付 AP", AR: "应收 AR"}[record.financial_attributes.posting_type] || "待确认"));
   $("detail-body").append(grid);
+  if (record.related_fields?.length) $("detail-body").append(relatedFieldsPanel(record.related_fields, false,
+    Boolean(S.result.review_decisions?.[id])));
   if (decisionOperation(record) === "NO_CHANGE") {
     const unchanged = unchangedResult(record);
     const explanation = section(unchanged.label);
@@ -530,7 +601,16 @@ $("upload-form").addEventListener("submit", async (event) => {
     const job = await api("/api/jobs", {method: "POST", body: form});
     localStorage.setItem("billing-entity", $("entity").value.trim());
     await openJob(job.id);
-  } catch (error) { formError(error.message); }
+  } catch (error) {
+    formError(error.message);
+    if (error.code === "MISSING_OCR_DELIVERY") {
+      if ($("temporary-ocr").disabled) {
+        $("ocr-map").closest("details").open = true;
+        $("ocr-map").focus();
+      } else $("temporary-ocr").focus();
+    }
+    else if (error.code === "LOCAL_OCR_REQUIRED") $("local-ocr").focus();
+  }
   finally { busy(false); }
 });
 $("demo-button").addEventListener("click", async () => {

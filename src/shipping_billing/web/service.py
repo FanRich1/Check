@@ -17,9 +17,11 @@ from shipping_billing.errors import BillingError
 from shipping_billing.io import dumps, load_json, write_json
 from shipping_billing.pipeline.engine import run_pipeline
 from shipping_billing.reconciliation.contracts import LedgerState, ReconciliationContext
-from shipping_billing.web.preflight import requires_local_text
+from shipping_billing.web.preflight import requires_local_text, requires_ocr_delivery
+from shipping_billing.web.source_usage import IMAGES, assess_sources
 
-DOWNLOADS = {"records.json", "audit.json", "manifest.json", "state.json", "reviews.json", "review-decisions.json"}
+DOWNLOADS = {"records.json", "audit.json", "manifest.json", "state.json", "reviews.json", "review-decisions.json",
+             "source-reviews.json"}
 FORMATS = {".eml", ".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".xls", ".xlsx", ".doc", ".docx"}
 STAGES = {
     "queued": "等待处理",
@@ -76,6 +78,8 @@ def explain(code):
         "IMAGE_TEXT_VERIFIED": "图片中的交易双方和字段已核验，两路识别的费用及编号一致，费用合计也已通过校验。",
         "OCR_AMOUNT_NOT_CORROBORATED": "OCR 费用金额与 PDF 原生费用行未能对应，请核对具体费用行。",
         "MULTIPLE_MATCHES": "匹配到多条旧账单，需要人工确认目标记录。",
+        "RELATED_BUSINESS_FIELD_CONFLICT": "相关材料对同一字段提供了不同取值，已保留各自出处，请确认本笔费用应采用哪一个。",
+        "RELATED_PARTIES_REQUIRE_CHECK": "已从相关材料找到付款双方候选，请核对是否适用于本笔费用，再确认入账。",
         "AMBIGUOUS_CURRENCY": "材料仅提供含糊货币符号，无法唯一确定币种。",
         "MISSING_CURRENCY": "材料缺少明确币种。",
         "PAYMENT_CONDITION_ONLY": "已保留原文中的付款条件；“立即付款”或 COD 不直接等同 PP/CC，此项不单独阻止入账。",
@@ -93,7 +97,7 @@ def explain(code):
         "OCR_NO_ORIGINAL_TEXT": "指定 OCR 未返回页面原文，不能仅将其结构化字段作为原文证据；请对照原文件核对。",
         "UPDATE_WITHOUT_OLD_SNAPSHOT": "检测到可能的修改请求，但没有对应旧账单，需确认本次是否确实涉及修改。",
         "INVALID_MERGED_CORE": "金额、币种、费用名称或应收应付等必需信息未齐全，暂不能自动入账。",
-        "MISSING_OCR_DELIVERY": "该来源需要 OCR。请启用临时识别链接，或提供已有页面链接映射后重新处理。",
+        "MISSING_OCR_DELIVERY": "文件或邮件附件包含 PDF / 图片，请勾选「为 PDF / 图片启用指定 OCR」，或提供已有页面链接映射后重新提交。本地文字识别不能替代此选项。",
         "OCR_TIMEOUT_UNKNOWN_OUTCOME": "OCR 请求超时，未将不确定的识别结果作为成功。",
         "MODEL_REQUEST_FAILED": "模型请求失败，请检查模型配置或网络后重新处理。",
         "MODEL_CALL_FAILED": "模型服务调用失败。请检查网络或模型服务状态，再重新提交；本次没有自动换模型或重试。",
@@ -119,25 +123,30 @@ def explain_issue(issue):
     return explain(issue["code"])
 
 
-def processing_summary(manifest, *, pending=None):
+def processing_summary(manifest, *, pending=None, assessed_files=None):
     """Keep billing decisions separate from incomplete document/attachment coverage."""
     counts, files = manifest["counts"], manifest["files"]
     fees = counts["fee_lines"]
     pending = counts["PENDING_REVIEW"] if pending is None else pending
-    errors = [f for f in files if f["status"] == "error"]
+    files = assessed_files if assessed_files is not None else files
+    errors = [f for f in files if f.get("assessment", {}).get("status", f["status"]) == "error"]
+    purposes = sum(f.get("assessment", {}).get("status") == "purpose_pending" for f in files)
     attachments = sum(f.get("parent_source_id") is not None for f in errors)
     fee_message = f"已识别 {fees} 条费用，其中 {pending} 条待复核"
     if not fees:
         fee_message = "尚未提取到费用" if errors else "本次未发现费用"
     source_message = f"共 {len(files)} 个来源，{len(errors)} 个异常（其中 {attachments} 个附件）"
+    if assessed_files is not None:
+        source_message += f"，{purposes} 个用途待确认"
     message = (
         f"{fee_message}；{source_message}，已保留可用结果，请查看来源列表。" if errors
+        else f"{fee_message}；{purposes} 个来源用途待确认，请查看原件后确认。" if purposes
         else f"{fee_message}，请核对后处理。" if pending
         else f"{fee_message}，可以查看和下载结果。"
     )
     return dict(fee_lines=fees, pending_fee_lines=pending, source_errors=len(errors),
                 attachment_errors=attachments, fee_message=fee_message,
-                source_message=source_message, message=message)
+                source_message=source_message, purpose_pending_count=purposes, message=message)
 
 
 class JobStore:
@@ -218,14 +227,24 @@ class JobStore:
     def listing(self):
         with self.lock:
             if self.repository:
-                return self.repository.list_jobs()
-            jobs = []
-            for path in self.root.glob("*/job.json"):
-                try:
-                    jobs.append(load_json(path))
-                except BillingError:
-                    continue
-            return sorted(jobs, key=lambda j: j["created_at"], reverse=True)[:100]
+                jobs = self.repository.list_jobs()
+            else:
+                jobs = []
+                for path in self.root.glob("*/job.json"):
+                    try:
+                        jobs.append(load_json(path))
+                    except BillingError:
+                        continue
+                jobs = sorted(jobs, key=lambda j: j["created_at"], reverse=True)[:100]
+            for index, item in enumerate(jobs):
+                if item["status"] in {"completed", "pending_review", "error"}:
+                    try:
+                        if not (self.folder(item["id"]) / "result/manifest.json").is_file():
+                            continue
+                        jobs[index] = self.result(item["id"])["job"]
+                    except BillingError:
+                        pass  # History remains visible; opening a damaged task reports integrity failure.
+            return jobs
 
     def update(self, job_id, **values):
         with self.lock:
@@ -310,10 +329,10 @@ class JobStore:
             not demo
             and not temporary_ocr
             and ocr_map is None
-            and any(
+            and (requires_ocr_delivery(cleaned) or any(
                 Path(n).suffix.lower() in {".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff"}
                 for n, _ in cleaned
-            )
+            ))
         ):
             raise BillingError("MISSING_OCR_DELIVERY", explain("MISSING_OCR_DELIVERY"))
         if not demo and not local_ocr_enabled and requires_local_text(cleaned):
@@ -461,7 +480,7 @@ class JobStore:
             item = {**item, "message": summary["message"]}
         # Only complete, hash-verified artifacts may be displayed, continued or exported.
         try:
-            for name in ("records.json", "state.json", "audit.json", "reconciliation.json"):
+            for name in ("records.json", "state.json", "audit.json", "reconciliation.json", "extraction.json", "parse.json"):
                 if hashlib.sha256((result / name).read_bytes()).hexdigest() != manifest[
                     "artifact_sha256"
                 ].get(name):
@@ -469,6 +488,9 @@ class JobStore:
         except OSError:
             raise BillingError("RESULT_INTEGRITY_FAILED", "结果文件缺失或无法读取，请重新处理。") from None
         rows = load_json(result / "records.json")
+        extraction_data = load_json(result / "extraction.json")
+        candidate_fields = {c["source_line_id"]: c.get("related_fields", [])
+                            for file in extraction_data["files"] for c in file["candidates"]}
         audit = {r["record_id"]: r for r in load_json(result / "audit.json")}
         decisions = load_json(result / "reconciliation.json")["decisions"]
         records = []
@@ -495,6 +517,8 @@ class JobStore:
                 for d in decisions
                 if d["record_id"] == row["record_id"]
             ]
+            record["related_fields"] = [field for d in decisions if d["record_id"] == row["record_id"]
+                                        for field in candidate_fields.get(d["source_line_id"], [])]
             records.append(record)
         files = [
             {**f, "issues": [dict(**i, explanation=explain_issue(i)) for i in f["issues"]]}
@@ -508,13 +532,17 @@ class JobStore:
         from shipping_billing.storage.review import visible_plan
 
         resolutions = {rid: visible_plan(value) for rid, value in resolutions.items()}
-        if resolutions:
-            summary = processing_summary(manifest, pending=sum(
-                d["operation"] == "PENDING_REVIEW" and d["record_id"] not in resolutions
-                for d in decisions
-            ))
-            if item["status"] in {"completed", "pending_review", "error"} and not item.get("error_code"):
-                item = {**item, "message": summary["message"]}
+        source_reviews = self.source_reviews(job_id)
+        files = assess_sources(files, load_json(result / "parse.json"), extraction_data, records, resolutions, source_reviews)
+        summary = processing_summary(manifest, pending=sum(
+            d["operation"] == "PENDING_REVIEW" and d["record_id"] not in resolutions
+            for d in decisions), assessed_files=files)
+        if item["status"] in {"completed", "pending_review", "error"} and not item.get("error_code"):
+            status = ("error" if summary["source_errors"] else "pending_review"
+                      if summary["pending_fee_lines"] or summary["purpose_pending_count"] else "completed")
+            item = {**item, "original_status": item["status"], "status": status, "message": summary["message"],
+                    "source_purpose_pending_count": summary["purpose_pending_count"],
+                    "source_error_count": summary["source_errors"]}
         return dict(
             job=item,
             processing_summary=summary,
@@ -522,13 +550,54 @@ class JobStore:
             files=files,
             reviews=reviews,
             review_decisions=resolutions,
+            business_links=extraction_data.get("business_links", []),
+            source_reviews=source_reviews,
             downloads=[
                 n for n in sorted(DOWNLOADS)
                 if (folder / n if n == "reviews.json" else result / n).is_file()
                 and not (n == "state.json" and item.get("ledger_id")
                          and item.get("ledger_commit_status") != "committed")
-            ] + (["review-decisions.json"] if resolutions else []),
+            ] + (["review-decisions.json"] if resolutions else []) + (["source-reviews.json"] if source_reviews else []),
         )
+
+    def source_reviews(self, job_id):
+        if self.repository:
+            return self.repository.get_source_reviews(job_id)
+        path = self.folder(job_id) / "source-reviews.json"
+        return load_json(path) if path.is_file() else {}
+
+    def review_source(self, job_id, request):
+        from shipping_billing.extraction.engine import digest
+
+        with self.lock:
+            result = self.result(job_id)
+            if result["job"].get("demo") or result["job"]["status"] not in {"completed", "pending_review", "error"}:
+                raise BillingError("SOURCE_REVIEW_UNAVAILABLE", "任务尚未完成或不能确认材料用途。")
+            file = next((f for f in result["files"] if f["source_id"] == request.source_id), None)
+            if file is None:
+                raise BillingError("SOURCE_NOT_FOUND", "找不到该来源文件。")
+            if request.sha256 != file.get("sha256"):
+                raise BillingError("SOURCE_REVIEW_CHANGED", "来源文件哈希不匹配，请刷新后核对原件。")
+            if not file["assessment"]["can_confirm"]:
+                raise BillingError("SOURCE_REVIEW_UNAVAILABLE", "该来源有费用或真实读取故障，不能用用途确认代替费用复核或故障处理。")
+            if request.classification == "non_billing_image" and file["detected_format"] not in IMAGES:
+                raise BillingError("INVALID_SOURCE_REVIEW", "只有图片可以确认为非账单图片。")
+            self.original_file(job_id, request.source_id)  # The hashed original must still be available.
+            if self.repository:
+                return self.repository.save_source_review(job_id, request, file)
+            history = self.source_reviews(job_id)
+            previous = history.get(request.source_id, [])
+            fingerprint = digest(request.model_dump(mode="python"))
+            if previous and previous[-1]["request_sha256"] == fingerprint:
+                return previous[-1]
+            revision = previous[-1]["revision"] if previous else 0
+            if request.revision != revision:
+                raise BillingError("SOURCE_REVIEW_CHANGED", "该来源的用途确认已更新，请刷新后重新核对。")
+            item = {**request.model_dump(mode="python"), "revision": revision + 1, "decided_at": now(),
+                    "original_status": file["status"], "original_issues": file["issues"], "request_sha256": fingerprint}
+            history.setdefault(request.source_id, []).append(item)
+            write_json(self.folder(job_id) / "source-reviews.json", history)
+            return item
 
     def review_origin(self, job_id, record_id, ledger_id):
         if not self.repository:
@@ -585,7 +654,10 @@ class JobStore:
         checked = [dict(values=line.candidate.charge_details.model_dump(mode="python")) for line in normalized.lines
                    if line.source_line_id in {d["source_line_id"] for d in observed}
                    and any(c.code == "QUANTITY_PRICE" and c.status == "passed" for c in line.checks)]
+        related = [field.model_dump(mode="python") for file in extraction.files for c in file.candidates
+                   if c.source_line_id in {d["source_line_id"] for d in observed} for field in c.related_fields]
         return dict(job_id=job_id, original=original, suggested=suggested, new_bill=new_bill, observations=observed,
+                    related_fields=related,
                     checked_lines=checked,
                     occurrences=occurrences, issues=original["audit_trail"]["issues"])
 
@@ -603,6 +675,7 @@ class JobStore:
                     existing_record_id=origin["original"].get("existing_record_id"),
                     observations=[dict(source_id=d["source_id"], amount_display=display(
                         d["observed"].get("charge_details", {}).get("amount"))) for d in origin["observations"]],
+                    related_fields=origin["related_fields"],
                     decision=self.repository.get_decisions(job_id).get(record_id))
 
     def original_file(self, job_id, source_id):

@@ -69,12 +69,15 @@ class EvidenceIndex:
             self.roots[source] = current
         if any(u.source_id not in parents for u in self.units):
             raise BillingError("UNKNOWN_EVIDENCE_SOURCE", "Evidence references an unregistered source.")
+        from shipping_billing.extraction.business import same_document_sources
+        self.same_documents = same_document_sources(self.units, self.roots)
 
     def verify(self, refs, value, source_id, *, native=False):
         if not refs:
             return False
         for ref in refs:
-            if self.roots.get(ref.source_id) != self.roots.get(source_id):
+            if (self.roots.get(ref.source_id) != self.roots.get(source_id)
+                    and ref.source_id not in self.same_documents.get(source_id, set())):
                 return False
             matches = [
                 u

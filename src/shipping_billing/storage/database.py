@@ -142,6 +142,13 @@ review_decisions = Table(
     Column("ledger_id", String(32), ForeignKey("billing_ledgers.id"), nullable=False),
     Column("payload", PAYLOAD, nullable=False), PrimaryKeyConstraint("job_id", "record_key"),
 )
+source_reviews = Table(
+    "billing_source_reviews", metadata,
+    Column("job_id", String(32), ForeignKey("billing_jobs.id"), nullable=False),
+    Column("source_key", String(64), nullable=False), Column("revision", Integer, nullable=False),
+    Column("source_id", PAYLOAD, nullable=False), Column("payload", PAYLOAD, nullable=False),
+    PrimaryKeyConstraint("job_id", "source_key", "revision"),
+)
 snapshots = Table(
     "billing_revisions", metadata,
     Column("ledger_id", String(32), ForeignKey("billing_ledgers.id"), nullable=False),
@@ -375,6 +382,38 @@ class LedgerRepository:
         with self.transaction() as connection:
             return {r.record_id: loads(r.payload) for r in connection.execute(
                 select(reviews.c.record_id, reviews.c.payload).where(reviews.c.job_id == job_id))}
+
+    def get_source_reviews(self, job_id):
+        with self.transaction() as connection:
+            result = {}
+            for row in connection.execute(select(source_reviews.c.source_id, source_reviews.c.payload).where(
+                source_reviews.c.job_id == job_id).order_by(source_reviews.c.revision)):
+                result.setdefault(row.source_id, []).append(loads(row.payload))
+            return result
+
+    def save_source_review(self, job_id, request, original):
+        from shipping_billing.extraction.engine import digest as content_digest
+
+        fingerprint = content_digest(request.model_dump(mode="python"))
+        with self.transaction() as connection:
+            if connection.execute(select(jobs.c.id).where(jobs.c.id == job_id).with_for_update()).first() is None:
+                raise BillingError("JOB_NOT_FOUND", "找不到该任务。")
+            key = digest(request.source_id)
+            previous = connection.execute(select(source_reviews.c.payload).where(
+                (source_reviews.c.job_id == job_id) & (source_reviews.c.source_key == key))
+                .order_by(source_reviews.c.revision.desc()).limit(1)).scalar_one_or_none()
+            previous = loads(previous) if previous else None
+            if previous and previous["request_sha256"] == fingerprint:
+                return previous
+            revision = previous["revision"] if previous else 0
+            if request.revision != revision:
+                raise BillingError("SOURCE_REVIEW_CHANGED", "该来源的用途确认已更新，请刷新后重新核对。")
+            item = {**request.model_dump(mode="python"), "revision": revision + 1, "decided_at": stamp(),
+                    "original_status": original["status"], "original_issues": original["issues"],
+                    "request_sha256": fingerprint}
+            connection.execute(insert(source_reviews).values(job_id=job_id, source_key=key,
+                revision=item["revision"], source_id=request.source_id, payload=dumps(item)))
+            return item
 
     def get_decisions(self, job_id):
         with self.transaction() as connection:

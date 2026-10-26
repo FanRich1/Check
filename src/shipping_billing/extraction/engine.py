@@ -435,6 +435,8 @@ class ExtractionEngine:
                 file.status = "error"
         supplement_email_allocations(report)
         enrich_related_shipping(report, roots)
+        from shipping_billing.extraction.business import enrich_business_context
+        enrich_business_context(report, roots)
         return report
 
 

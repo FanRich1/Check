@@ -48,6 +48,7 @@ BILLING_DATABASE_URL=mysql+pymysql://billing_app:REPLACE_WITH_URL_ENCODED_PASSWO
 | `billing_documents` | 来源文件及哈希元数据 |
 | `billing_reviews` | 人工核对标记和备注 |
 | `billing_review_decisions` | 正式人工复审回执、修改前后值及依据 |
+| `billing_source_reviews` | 来源材料用途确认、撤销及逐次历史，不修改费用或账本版本 |
 | `billing_revisions` | 每次提交的完整账本版本与哈希 |
 | `billing_schema` | 数据结构版本 |
 

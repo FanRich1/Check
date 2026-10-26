@@ -149,6 +149,7 @@ def build_plan(state, book, origin, request):
                 reviewer=request.reviewer, reason=request.reason, payer=request.payer.strip(), payee=request.payee.strip(),
                 base_revision=book["revision"], before=before, after=after, changes=changes,
                 original=origin["original"], observations=origin["observations"],
+                related_fields=origin.get("related_fields", []),
                 occurrences=origin["occurrences"], acknowledged_issues=origin["issues"],
                 request_sha256=request_hash(request))
     plan["preview_token"] = digest(plan)
